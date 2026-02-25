@@ -79,12 +79,15 @@
                 <i data-lucide="alert-circle" class="w-6 h-6 text-red-600"></i>
             </div>
             <div class="flex-1">
-                <h4 class="font-bold text-lg mb-1 text-red-800">เกิดข้อผิดพลาดในการเชื่อมต่อ (Failed to fetch)</h4>
+                <h4 class="font-bold text-lg mb-1 text-red-800">เกิดข้อผิดพลาดจากโดเมนข้ามไซต์ (CORS / Failed to fetch)</h4>
                 <p id="errorText" class="text-sm text-red-700 leading-relaxed">
-                    ไม่สามารถเชื่อมต่อกับ Google Sheets ได้ สาเหตุหลักคือ:<br>
-                    1. <b>การตั้งค่า Deploy:</b> ใน Google Apps Script ต้องตั้งค่า <b>Who has access</b> เป็น <b>"Anyone" (ทุกคน)</b> เท่านั้น ห้ามเลือก Anyone with Google Account<br>
-                    2. <b>การอนุญาตสิทธิ์:</b> ต้องใช้บัญชีเจ้าของ Script ทำการ Deploy เพื่ออนุญาตสิทธิ์ (Authorize) ให้เรียบร้อย<br>
-                    <i>* หากเพิ่งแก้ไขการตั้งค่าใน Google Script อย่าลืมกด Deploy > New deployment เพื่อสร้างเวอร์ชันใหม่เสมอ</i>
+                    เบราว์เซอร์บล็อกการเชื่อมต่อไปยัง Google Sheets เนื่องจากสิทธิ์การเข้าถึงไม่ถูกต้อง<br>
+                    <b>วิธีแก้ไขที่ฝั่ง Google Apps Script:</b><br>
+                    1. กดปุ่ม <b>Deploy</b> (การทำให้ใช้งานได้) ด้านบนขวา > เลือก <b>Manage deployments</b><br>
+                    2. กดไอคอนรูป <b>ดินสอ (แก้ไข)</b><br>
+                    3. สำคัญมาก! เปลี่ยน Version เป็น <b>New version (เวอร์ชันใหม่)</b> ทุกครั้ง<br>
+                    4. ช่อง Execute as เลือก <b>Me</b> และช่อง Who has access <b>ต้องเลือกเป็น "Anyone" (ทุกคน) เท่านั้น</b><br>
+                    5. กด Deploy ใหม่ แล้วรีเฟรชหน้านี้อีกครั้ง
                 </p>
             </div>
             <button onclick="document.getElementById('errorBanner').classList.add('hidden')" class="text-red-400 hover:text-red-700 bg-red-100/50 hover:bg-red-100 p-2 rounded-full transition-colors shrink-0">
@@ -565,6 +568,7 @@
             try {
                 const response = await fetch(scriptURL, {
                     method: 'POST',
+                    mode: 'cors', // เพิ่ม mode cors
                     body: params
                 });
                 
@@ -581,7 +585,7 @@
                 }
             } catch (error) {
                 console.error("Booking Create Failed:", error);
-                alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
+                alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์ (CORS): รบกวนตรวจสอบการ Deploy ฝั่ง Google Apps Script ว่าตั้งค่า 'Who has access' เป็น 'Anyone' หรือไม่");
             } finally {
                 btn.innerHTML = '<span>ยืนยันการจองคิวใหม่</span>';
                 btn.disabled = false;
@@ -598,7 +602,10 @@
             
             try {
                 const urlWithCacheBuster = scriptURL + "?action=read&t=" + new Date().getTime();
-                const response = await fetch(urlWithCacheBuster);
+                const response = await fetch(urlWithCacheBuster, {
+                    method: 'GET',
+                    mode: 'cors' // เพิ่ม mode cors เพื่อความชัดเจนบน Github/Vercel
+                });
                 
                 if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
                 const textData = await response.text();
@@ -970,7 +977,7 @@
                 updateParams.append('rowId', currentRowId);
                 updateParams.append('status', 'เลื่อนนัด');
 
-                let updateResponse = await fetch(scriptURL, { method: 'POST', body: updateParams });
+                let updateResponse = await fetch(scriptURL, { method: 'POST', mode: 'cors', body: updateParams });
                 let updateResult = await updateResponse.json();
 
                 if (updateResult.status !== 'success') {
@@ -1001,7 +1008,7 @@
                 createParams.append('procedure', procVal);
                 createParams.append('bookerName', currentEventProps.booker || '');
 
-                let createResponse = await fetch(scriptURL, { method: 'POST', body: createParams });
+                let createResponse = await fetch(scriptURL, { method: 'POST', mode: 'cors', body: createParams });
                 let createResult = await createResponse.json();
 
                 if (createResult.status === 'duplicate') {
@@ -1025,7 +1032,7 @@
 
             } catch (error) {
                 console.error("Reschedule Error:", error);
-                alert("เกิดข้อผิดพลาดในการเลื่อนนัด: " + error.message);
+                alert("เกิดข้อผิดพลาดในการเลื่อนนัด (CORS): รบกวนตรวจสอบการ Deploy ฝั่ง Google Apps Script ว่าเลือกเป็น 'Anyone' หรือยัง");
                 btn.innerHTML = '<span>ยืนยันการย้ายคิว</span>';
                 btn.disabled = false;
             } finally {
@@ -1049,6 +1056,7 @@
             try {
                 const response = await fetch(scriptURL, {
                     method: 'POST',
+                    mode: 'cors',
                     body: params
                 });
                 
@@ -1072,7 +1080,7 @@
                 }
             } catch (error) {
                 console.error("Update Failed:", error);
-                alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
+                alert("เกิดข้อผิดพลาด (CORS): กรุณากด Deploy เป็นเวอร์ชันใหม่ใน Google Apps Script อีกครั้ง");
             } finally {
                 actionContainer.style.opacity = '1';
                 actionContainer.style.pointerEvents = 'auto';
