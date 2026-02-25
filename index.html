@@ -552,9 +552,25 @@
                     alert('เกิดข้อผิดพลาด: ' + result.message);
                 }
             } catch (error) {
-                console.error("Booking Create Failed:", error);
-                alert("ข้อมูลอาจถูกส่งผ่าน API ไม่สมบูรณ์ (หรือกำลังรันอยู่ในโหมด Demo) แต่ระบบจะพยายามแสดงข้อมูลหลอกให้ดูบนหน้าจอ");
+                console.warn("Booking Create Warning (Mocking locally):", error.message);
+                
+                // Fallback: Add to local memory so UI still functions during API issues
+                const newBooking = {
+                    "rowId": "mock_" + Date.now(),
+                    "วันที่นัด": nbDate,
+                    "เวลานัด": nbTime,
+                    "หัตถการ": formData.get('procedure') || "-",
+                    "ชื่อลูกค้า": formData.get('customerName') || "ไม่มีชื่อ",
+                    "hn": formData.get('hn') || "-",
+                    "เบอร์โทรศัพท์": formData.get('phoneNumber') || "-",
+                    "ชื่อผู้นัด": formData.get('bookerName') || "-",
+                    "สถานะ": "ยังไม่มา"
+                };
+                allData.push(newBooking);
+
+                alert("เพิ่มข้อมูลจำลองสำเร็จ (เนื่องจากไม่สามารถเชื่อมต่อเซิร์ฟเวอร์จริงได้)");
                 closeNewBookingModal();
+                updateDashboard(allData);
             } finally {
                 btn.innerHTML = '<span>ยืนยันการจองคิวใหม่</span>';
                 btn.disabled = false;
@@ -595,13 +611,15 @@
                 
                 updateDashboard(allData);
             } catch (error) {
-                console.error('🚨 Fetch Error:', error);
+                console.warn('🚨 Fetch Warning:', error.message);
                 if(errorBanner) {
                     errorBanner.classList.remove('hidden');
-                    document.getElementById('errorText').innerHTML = `${error.message} <br> <span class="text-blue-600 font-semibold mt-1 inline-block">*ระบบกำลังแสดงข้อมูลจำลอง (Mock Data) เพื่อให้ดูการทำงานของ UI ได้</span>`;
+                    document.getElementById('errorText').innerHTML = `ไม่สามารถเชื่อมต่อฐานข้อมูลได้ (${error.message}) <br> <span class="text-blue-600 font-semibold mt-1 inline-block">*ระบบกำลังทำงานด้วยข้อมูลจำลอง (Mock Data) ในหน่วยความจำ</span>`;
                 }
-                // FALLBACK TO MOCK DATA
-                allData = getMockData();
+                // FALLBACK TO MOCK DATA ONLY IF CURRENT DATA IS EMPTY
+                if (allData.length === 0) {
+                    allData = getMockData();
+                }
                 updateDashboard(allData);
             } finally {
                 if(refreshIcon) refreshIcon.classList.remove('animate-spin');
@@ -918,10 +936,11 @@
                 }
 
                 allData = allData.map(item => {
-                    const rowIdKey = Object.keys(item).find(k => k.trim() === "rowId");
-                    if (rowIdKey && item[rowIdKey] === currentRowId) {
+                    const rowIdKey = Object.keys(item).find(k => k.trim() === "rowId") || "rowId";
+                    if (item[rowIdKey] === currentRowId || item.rowId === currentRowId) {
                         const statusKey = Object.keys(item).find(k => k.trim() === "สถานะ") || "สถานะ";
                         item[statusKey] = 'เลื่อนนัด';
+                        item._status = 'เลื่อนนัด';
                     }
                     return item;
                 });
@@ -931,14 +950,45 @@
                 fetchData(); 
 
             } catch (error) {
-                console.error("Reschedule Error:", error);
-                alert("เกิดข้อผิดพลาด หรืออาจอยู่ในโหมด Demo Data ปิดหน้าต่างนี้ได้เลยครับ");
+                console.warn("Reschedule Warning (Mocking locally):", error.message);
+                
+                // Fallback: Local data mutation to keep UI functioning without API
+                allData = allData.map(item => {
+                    const rowIdKey = Object.keys(item).find(k => k.trim() === "rowId") || "rowId";
+                    if (item[rowIdKey] === currentRowId || item.rowId === currentRowId) {
+                        const statusKey = Object.keys(item).find(k => k.trim() === "สถานะ") || "สถานะ";
+                        item[statusKey] = 'เลื่อนนัด';
+                        item._status = 'เลื่อนนัด';
+                    }
+                    return item;
+                });
+
+                let oldDateParts = currentEventProps.dateStr.split('-');
+                let formattedOldDate = oldDateParts.length === 3 ? `${oldDateParts[2]}/${oldDateParts[1]}/${oldDateParts[0]}` : currentEventProps.dateStr;
+                let originalProc = currentEventProps.proc === '-' ? '' : String(currentEventProps.proc);
+                originalProc = originalProc.replace(/\s*\(ย้ายจาก.*?\)/g, '').trim(); 
+                let procVal = originalProc ? `${originalProc} (ย้ายจาก ${formattedOldDate} เวลา ${currentEventProps.timeStr} น.)` : `(ย้ายจาก ${formattedOldDate} เวลา ${currentEventProps.timeStr} น.)`;
+
+                const newBooking = {
+                    "rowId": "mock_reschedule_" + Date.now(),
+                    "วันที่นัด": newDate,
+                    "เวลานัด": newTime,
+                    "หัตถการ": procVal,
+                    "ชื่อลูกค้า": currentEventProps.name,
+                    "hn": currentEventProps.hn,
+                    "เบอร์โทรศัพท์": currentEventProps.phone,
+                    "ชื่อผู้นัด": currentEventProps.booker,
+                    "สถานะ": "ยังไม่มา"
+                };
+                allData.push(newBooking);
+
+                updateDashboard(allData); 
                 closeModal();
-                btn.innerHTML = '<span>ยืนยันการย้ายคิว</span>';
-                btn.disabled = false;
             } finally {
                 actionContainer.style.opacity = '1';
                 actionContainer.style.pointerEvents = 'auto';
+                btn.innerHTML = '<span>ยืนยันการย้ายคิว</span>';
+                btn.disabled = false;
             }
         }
 
@@ -964,10 +1014,11 @@
                 
                 if (result.status === 'success') {
                     allData = allData.map(item => {
-                        const rowIdKey = Object.keys(item).find(k => k.trim() === "rowId");
-                        if (rowIdKey && item[rowIdKey] === currentRowId) {
+                        const rowIdKey = Object.keys(item).find(k => k.trim() === "rowId") || "rowId";
+                        if (item[rowIdKey] === currentRowId || item.rowId === currentRowId) {
                             const statusKey = Object.keys(item).find(k => k.trim() === "สถานะ") || "สถานะ";
                             item[statusKey] = status;
+                            item._status = status;
                         }
                         return item;
                     });
@@ -979,12 +1030,14 @@
                     alert('ไม่สามารถอัปเดตข้อมูลได้: ' + result.message);
                 }
             } catch (error) {
-                console.error("Update Failed:", error);
+                console.warn("Update Status Warning (Mocking locally):", error.message);
                 
-                // Demo Update - if API failed, locally update the data array to show working UI
+                // Fallback Update - if API failed, locally update the data array to show working UI
                 allData = allData.map(item => {
-                    if (item.rowId === currentRowId) {
-                        item["สถานะ"] = status;
+                    const rowIdKey = Object.keys(item).find(k => k.trim() === "rowId") || "rowId";
+                    if (item[rowIdKey] === currentRowId || item.rowId === currentRowId) {
+                        const statusKey = Object.keys(item).find(k => k.trim() === "สถานะ") || "สถานะ";
+                        item[statusKey] = status;
                         item._status = status;
                     }
                     return item;
