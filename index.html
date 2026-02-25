@@ -82,9 +82,9 @@
                 <h4 class="font-bold text-lg mb-1 text-red-800">เกิดข้อผิดพลาดในการเชื่อมต่อ (Failed to fetch)</h4>
                 <p id="errorText" class="text-sm text-red-700 leading-relaxed">
                     ไม่สามารถเชื่อมต่อกับ Google Sheets ได้ สาเหตุหลักคือ:<br>
-                    1. <b>การตั้งค่า Deploy:</b> ใน Google Apps Script ต้องตั้งค่า <b>Who has access</b> เป็น <b>"Anyone"</b><br>
-                    2. <b>ถูกบล็อกโดยเบราว์เซอร์ (CORS):</b> อาจเกิดจากส่วนขยายบล็อกโฆษณา หรือหน้าต่าง Preview ของระบบ<br>
-                    <i>* หากเพิ่งแก้ไข Script ใน Google อย่าลืมกด Deploy > New deployment เสมอ</i>
+                    1. <b>การตั้งค่า Deploy:</b> ใน Google Apps Script ต้องตั้งค่า <b>Who has access</b> เป็น <b>"Anyone" (ทุกคน)</b> เท่านั้น ห้ามเลือก Anyone with Google Account<br>
+                    2. <b>การอนุญาตสิทธิ์:</b> ต้องใช้บัญชีเจ้าของ Script ทำการ Deploy เพื่ออนุญาตสิทธิ์ (Authorize) ให้เรียบร้อย<br>
+                    <i>* หากเพิ่งแก้ไขการตั้งค่าใน Google Script อย่าลืมกด Deploy > New deployment เพื่อสร้างเวอร์ชันใหม่เสมอ</i>
                 </p>
             </div>
             <button onclick="document.getElementById('errorBanner').classList.add('hidden')" class="text-red-400 hover:text-red-700 bg-red-100/50 hover:bg-red-100 p-2 rounded-full transition-colors shrink-0">
@@ -565,7 +565,6 @@
             try {
                 const response = await fetch(scriptURL, {
                     method: 'POST',
-                    redirect: 'follow',
                     body: params
                 });
                 
@@ -599,10 +598,7 @@
             
             try {
                 const urlWithCacheBuster = scriptURL + "?action=read&t=" + new Date().getTime();
-                const response = await fetch(urlWithCacheBuster, {
-                    method: 'GET',
-                    redirect: 'follow'
-                });
+                const response = await fetch(urlWithCacheBuster);
                 
                 if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
                 const textData = await response.text();
@@ -974,7 +970,7 @@
                 updateParams.append('rowId', currentRowId);
                 updateParams.append('status', 'เลื่อนนัด');
 
-                let updateResponse = await fetch(scriptURL, { method: 'POST', redirect: 'follow', body: updateParams });
+                let updateResponse = await fetch(scriptURL, { method: 'POST', body: updateParams });
                 let updateResult = await updateResponse.json();
 
                 if (updateResult.status !== 'success') {
@@ -1005,7 +1001,7 @@
                 createParams.append('procedure', procVal);
                 createParams.append('bookerName', currentEventProps.booker || '');
 
-                let createResponse = await fetch(scriptURL, { method: 'POST', redirect: 'follow', body: createParams });
+                let createResponse = await fetch(scriptURL, { method: 'POST', body: createParams });
                 let createResult = await createResponse.json();
 
                 if (createResult.status === 'duplicate') {
@@ -1053,7 +1049,6 @@
             try {
                 const response = await fetch(scriptURL, {
                     method: 'POST',
-                    redirect: 'follow',
                     body: params
                 });
                 
