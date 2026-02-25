@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dashboard ระบบนัดหมาย FRC</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -13,13 +13,76 @@
     <style>
         body { font-family: 'Kanit', sans-serif; background-color: #f8fafc; }
         
+        /* ===== FULLCALENDAR BASE ===== */
         .fc { --fc-border-color: #e2e8f0; --fc-daygrid-event-dot-width: 8px; background-color: white; }
         .fc-header-toolbar { padding: 1.25rem !important; margin-bottom: 0 !important; background-color: #ffffff; }
         .fc-toolbar-title { font-size: 1.25rem !important; font-weight: 700 !important; color: #1e293b; }
         .fc-button-primary { background-color: #ffffff !important; border-color: #e2e8f0 !important; color: #475569 !important; text-transform: capitalize !important; font-weight: 500 !important; box-shadow: none !important; }
         .fc-button-primary:hover { background-color: #f1f5f9 !important; border-color: #cbd5e1 !important; }
         .fc-button-active { background-color: #3b82f6 !important; border-color: #3b82f6 !important; color: #ffffff !important; }
-        
+
+        /* ===== FULLCALENDAR MOBILE RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            /* Toolbar: Stack ปุ่มต่างๆ บนมือถือ */
+            .fc-header-toolbar {
+                padding: 0.75rem !important;
+                flex-wrap: wrap !important;
+                gap: 0.5rem !important;
+            }
+            .fc-toolbar-chunk {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 4px !important;
+            }
+            /* ซ่อน View Switcher (week/day) บนมือถือ เหลือแค่ prev/next/today */
+            .fc-header-toolbar .fc-toolbar-chunk:last-child {
+                display: none !important;
+            }
+            /* ย่อขนาด title */
+            .fc-toolbar-title {
+                font-size: 1rem !important;
+            }
+            /* ปุ่มนำทาง */
+            .fc-button-primary {
+                padding: 0.35rem 0.6rem !important;
+                font-size: 0.75rem !important;
+            }
+            /* ปุ่มเพิ่มคิว */
+            .fc-addBookingBtn-button {
+                padding: 0.35rem 0.7rem !important;
+                font-size: 0.75rem !important;
+            }
+            /* ตัวอักษรในปฏิทิน */
+            .fc-col-header-cell-cushion {
+                padding: 6px 2px !important;
+                font-size: 0.7rem !important;
+            }
+            .fc-daygrid-day-number {
+                padding: 4px !important;
+                font-size: 0.75rem !important;
+            }
+            /* Event บนมือถือ */
+            .fc-event {
+                padding: 1px 3px !important;
+                margin: 1px !important;
+                font-size: 0.72rem !important;
+                border-radius: 4px !important;
+            }
+            .custom-event-time { font-size: 0.62rem !important; }
+            .custom-event-title { font-size: 0.68rem !important; }
+            /* ลดความสูง timegrid slot */
+            .fc-timegrid-slot { height: 2.5rem !important; }
+            .fc-timegrid-axis-cushion { font-size: 0.65rem !important; }
+            /* ซ่อนปุ่ม + บนมือถือ (ใช้ปุ่ม toolbar แทน) */
+            .add-event-btn { display: none !important; }
+        }
+
+        @media (max-width: 480px) {
+            /* ซ่อน label ยาวๆ ของปุ่ม เหลือแค่ icon-like text */
+            .fc-addBookingBtn-button { font-size: 0.7rem !important; }
+            .fc-toolbar-title { font-size: 0.9rem !important; }
+        }
+
         /* เปลี่ยนเคอร์เซอร์เป็น Pointer เมื่อชี้ที่ช่องปฏิทิน */
         .fc-daygrid-day-frame, .fc-timegrid-slot { cursor: pointer; transition: background-color 0.2s; }
         .fc-daygrid-day-frame:hover, .fc-timegrid-slot:hover { background-color: #f8fafc; }
@@ -39,7 +102,7 @@
         @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: #64748b; }
-        .legend-color { width: 12px; height: 12px; border-radius: 3px; }
+        .legend-color { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
         
         /* สไตล์ Scrollbar สำหรับ Modal */
         #modalContent::-webkit-scrollbar, #newBookingModalContent::-webkit-scrollbar, #statusListContent::-webkit-scrollbar { width: 4px; }
@@ -49,6 +112,71 @@
         .fc-addBookingBtn-button { background-color: #2563eb !important; border-color: #2563eb !important; color: #ffffff !important; font-weight: 600 !important; border-radius: 0.5rem !important; }
         .fc-addBookingBtn-button:hover { background-color: #1d4ed8 !important; border-color: #1d4ed8 !important; }
         @media (max-width: 768px) { .add-event-btn { opacity: 1 !important; background-color: #eff6ff; color: #3b82f6; } }
+
+        /* ===== NAVBAR MOBILE ===== */
+        @media (max-width: 640px) {
+            .nav-title-text { font-size: 1rem; }
+            #realtimeStatus { padding: 0.4rem 0.7rem; font-size: 0.75rem; border-radius: 0.65rem; }
+        }
+
+        /* ===== REPORT DATE FILTER MOBILE ===== */
+        @media (max-width: 640px) {
+            #reportDateFilter { font-size: 0.8rem; }
+        }
+
+        /* ===== SUMMARY CARDS MOBILE ===== */
+        @media (max-width: 480px) {
+            .stat-card { padding: 0.85rem 0.6rem !important; border-radius: 1.25rem !important; }
+            .stat-icon-wrap { padding: 0.55rem !important; border-radius: 0.85rem !important; margin-bottom: 0.5rem !important; }
+            .stat-icon-wrap svg { width: 1.1rem !important; height: 1.1rem !important; }
+            .stat-label { font-size: 0.6rem !important; }
+            .stat-value { font-size: 1.4rem !important; }
+        }
+
+        /* ===== MODAL MOBILE ===== */
+        @media (max-width: 640px) {
+            /* ให้ modal เต็มหน้าจอจากด้านล่างบนมือถือ */
+            #eventModal > div,
+            #newBookingModal > div,
+            #statusListModal > div {
+                border-bottom-left-radius: 0 !important;
+                border-bottom-right-radius: 0 !important;
+                max-height: 92vh !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                position: absolute !important;
+                bottom: 0 !important;
+                border-radius: 1.75rem 1.75rem 0 0 !important;
+            }
+            #eventModal,
+            #newBookingModal,
+            #statusListModal {
+                align-items: flex-end !important;
+            }
+            /* Action buttons ใน modal ให้ wrap ได้ */
+            #actionContainer .flex.flex-wrap { gap: 0.5rem; }
+            #actionContainer button { font-size: 0.8rem !important; padding: 0.6rem 0.5rem !important; }
+        }
+
+        /* ===== CALENDAR WRAPPER MOBILE PADDING ===== */
+        @media (max-width: 640px) {
+            .calendar-wrapper { padding: 0.25rem !important; }
+            /* ลด padding ของ section */
+            .section-header { padding: 1rem !important; }
+        }
+
+        /* ===== LEGEND MOBILE ===== */
+        @media (max-width: 640px) {
+            .legend-wrap { gap: 0.5rem !important; }
+            .legend-item { font-size: 0.72rem !important; }
+            .legend-color { width: 9px !important; height: 9px !important; }
+        }
+
+        /* ===== HINT BAR MOBILE ===== */
+        @media (max-width: 640px) {
+            .hint-bar { font-size: 0.68rem !important; padding: 0.5rem 0.75rem !important; }
+        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -56,82 +184,94 @@
     <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center gap-3">
-                    <div class="bg-blue-600 p-2 rounded-xl text-white shadow-lg shadow-blue-200">
-                        <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <div class="bg-blue-600 p-2 rounded-xl text-white shadow-lg shadow-blue-200 shrink-0">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                     </div>
-                    <span class="text-xl font-bold text-gray-800 tracking-tight">FRC <span class="text-blue-600 font-medium">System</span></span>
+                    <span class="nav-title-text text-lg sm:text-xl font-bold text-gray-800 tracking-tight">FRC <span class="text-blue-600 font-medium">System</span></span>
                 </div>
-                <div class="flex items-center gap-3">
-                    <!-- ป้ายสถานะการเชื่อมต่อ Firebase -->
-                    <button id="realtimeStatus" class="flex items-center gap-2 bg-slate-50 text-slate-500 px-4 py-2 rounded-xl font-semibold text-sm transition-all">
-                        <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <button id="realtimeStatus" class="flex items-center gap-1.5 sm:gap-2 bg-slate-50 text-slate-500 px-3 sm:px-4 py-2 rounded-xl font-semibold text-xs sm:text-sm transition-all">
+                        <i data-lucide="loader-2" class="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin"></i>
                         <span class="hidden sm:inline">กำลังเชื่อมต่อ...</span>
+                        <span class="sm:hidden">กำลังเชื่อม...</span>
                     </button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
         <!-- Report Header with Date Filter -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-5">
             <div>
-                <h2 class="text-2xl font-bold text-gray-800 tracking-tight">รายงานประจำวัน</h2>
-                <p class="text-sm text-gray-500">สรุปข้อมูลการนัดหมายตามวันที่คุณเลือกด้านขวา</p>
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 tracking-tight">รายงานประจำวัน</h2>
+                <p class="text-xs sm:text-sm text-gray-500">สรุปข้อมูลการนัดหมายตามวันที่คุณเลือกด้านขวา</p>
             </div>
-            <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-2xl px-4 py-2.5 shadow-sm w-full sm:w-auto hover:border-blue-300 transition-colors">
-                <div class="p-1.5 bg-blue-50 text-blue-600 rounded-lg">
-                    <i data-lucide="calendar-search" class="w-5 h-5"></i>
+            <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 shadow-sm w-full sm:w-auto hover:border-blue-300 transition-colors">
+                <div class="p-1.5 bg-blue-50 text-blue-600 rounded-lg shrink-0">
+                    <i data-lucide="calendar-search" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                 </div>
-                <div class="flex flex-col">
-                    <label class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">เลือกวันที่ดูรายงาน</label>
-                    <input type="date" id="reportDateFilter" class="text-sm font-bold text-slate-800 outline-none bg-transparent cursor-pointer">
+                <div class="flex flex-col flex-1 sm:flex-none">
+                    <label class="text-[9px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider">เลือกวันที่ดูรายงาน</label>
+                    <input type="date" id="reportDateFilter" class="text-sm font-bold text-slate-800 outline-none bg-transparent cursor-pointer w-full">
                 </div>
             </div>
         </div>
 
-        <!-- Summary Cards Grid (กรองตามวัน) -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-            <div onclick="showStatusList('ทั้งหมด')" class="cursor-pointer hover:-translate-y-1 bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
-                <div class="p-3 bg-blue-50 text-blue-600 rounded-2xl mb-3"><i data-lucide="users" class="w-6 h-6"></i></div>
-                <p class="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">ทั้งหมด (รายวัน)</p>
-                <h3 class="text-2xl font-bold text-gray-800" id="statTotal">-</h3>
+        <!-- Summary Cards Grid -->
+        <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4 mb-5 sm:mb-8">
+            <div onclick="showStatusList('ทั้งหมด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
+                <div class="stat-icon-wrap p-2 sm:p-3 bg-blue-50 text-blue-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                    <i data-lucide="users" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                </div>
+                <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1 leading-tight">ทั้งหมด<br class="sm:hidden">(รายวัน)</p>
+                <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statTotal">-</h3>
             </div>
-            <div onclick="showStatusList('มาแล้ว')" class="cursor-pointer hover:-translate-y-1 bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
-                <div class="p-3 bg-emerald-50 text-emerald-600 rounded-2xl mb-3"><i data-lucide="check-circle" class="w-6 h-6"></i></div>
-                <p class="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">มาแล้ว</p>
-                <h3 class="text-2xl font-bold text-gray-800" id="statArrived">-</h3>
+            <div onclick="showStatusList('มาแล้ว')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
+                <div class="stat-icon-wrap p-2 sm:p-3 bg-emerald-50 text-emerald-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                    <i data-lucide="check-circle" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                </div>
+                <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">มาแล้ว</p>
+                <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statArrived">-</h3>
             </div>
-            <div onclick="showStatusList('ยังไม่มา')" class="cursor-pointer hover:-translate-y-1 bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
-                <div class="p-3 bg-amber-50 text-amber-600 rounded-2xl mb-3"><i data-lucide="clock" class="w-6 h-6"></i></div>
-                <p class="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">ยังไม่มา</p>
-                <h3 class="text-2xl font-bold text-gray-800" id="statUpcoming">-</h3>
+            <div onclick="showStatusList('ยังไม่มา')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
+                <div class="stat-icon-wrap p-2 sm:p-3 bg-amber-50 text-amber-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                    <i data-lucide="clock" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                </div>
+                <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">ยังไม่มา</p>
+                <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statUpcoming">-</h3>
             </div>
-            <div onclick="showStatusList('เลื่อนนัด')" class="cursor-pointer hover:-translate-y-1 bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
-                <div class="p-3 bg-indigo-50 text-indigo-600 rounded-2xl mb-3"><i data-lucide="calendar-days" class="w-6 h-6"></i></div>
-                <p class="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">เลื่อนนัด</p>
-                <h3 class="text-2xl font-bold text-gray-800" id="statRescheduled">-</h3>
+            <div onclick="showStatusList('เลื่อนนัด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
+                <div class="stat-icon-wrap p-2 sm:p-3 bg-indigo-50 text-indigo-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                    <i data-lucide="calendar-days" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                </div>
+                <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">เลื่อนนัด</p>
+                <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statRescheduled">-</h3>
             </div>
-            <div onclick="showStatusList('ไม่มาตามนัด')" class="cursor-pointer hover:-translate-y-1 bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
-                <div class="p-3 bg-rose-50 text-rose-600 rounded-2xl mb-3"><i data-lucide="user-x" class="w-6 h-6"></i></div>
-                <p class="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">ไม่มาตามนัด</p>
-                <h3 class="text-2xl font-bold text-gray-800" id="statNoShow">-</h3>
+            <div onclick="showStatusList('ไม่มาตามนัด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
+                <div class="stat-icon-wrap p-2 sm:p-3 bg-rose-50 text-rose-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                    <i data-lucide="user-x" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                </div>
+                <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1 leading-tight">ไม่มา<br class="sm:hidden">ตามนัด</p>
+                <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statNoShow">-</h3>
             </div>
-            <div onclick="showStatusList('ยกเลิกนัด')" class="cursor-pointer hover:-translate-y-1 bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
-                <div class="p-3 bg-slate-100 text-slate-600 rounded-2xl mb-3"><i data-lucide="x-circle" class="w-6 h-6"></i></div>
-                <p class="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">ยกเลิกนัด</p>
-                <h3 class="text-2xl font-bold text-gray-800" id="statCancelled">-</h3>
+            <div onclick="showStatusList('ยกเลิกนัด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
+                <div class="stat-icon-wrap p-2 sm:p-3 bg-slate-100 text-slate-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                    <i data-lucide="x-circle" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                </div>
+                <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">ยกเลิกนัด</p>
+                <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statCancelled">-</h3>
             </div>
         </div>
 
-        <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
-            <div class="px-6 py-4 bg-white border-b border-gray-100 flex flex-wrap items-center justify-between gap-4">
+        <div class="bg-white rounded-[1.5rem] sm:rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+            <div class="section-header px-4 sm:px-6 py-3 sm:py-4 bg-white border-b border-gray-100 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
                 <div class="flex items-center gap-2">
-                    <i data-lucide="calendar" class="w-5 h-5 text-blue-600"></i>
-                    <h2 class="font-bold text-gray-800">ตารางนัดหมาย</h2>
+                    <i data-lucide="calendar" class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600"></i>
+                    <h2 class="font-bold text-gray-800 text-sm sm:text-base">ตารางนัดหมาย</h2>
                 </div>
-                <div class="flex flex-wrap gap-4">
+                <div class="legend-wrap flex flex-wrap gap-2 sm:gap-4">
                     <div class="legend-item"><div class="legend-color bg-blue-500"></div> ยังไม่มา</div>
                     <div class="legend-item"><div class="legend-color bg-yellow-500"></div> มาแล้ว</div>
                     <div class="legend-item"><div class="legend-color bg-indigo-500"></div> เลื่อนนัด</div>
@@ -139,17 +279,18 @@
                     <div class="legend-item"><div class="legend-color bg-red-800"></div> ยกเลิก</div>
                 </div>
             </div>
-            <div class="px-6 py-2 bg-blue-50 border-b border-blue-100 text-blue-700 text-xs font-medium flex items-center gap-2">
-                <i data-lucide="mouse-pointer-click" class="w-4 h-4"></i>
-                เคล็ดลับ: คุณสามารถเพิ่มคิวใหม่ได้ง่ายๆ เพียงแค่ "คลิก" ไปยังวันที่บนปฏิทินด้านล่าง ข้อมูลจะบันทึกลง Firebase ทันที
+            <div class="hint-bar px-4 sm:px-6 py-2 bg-blue-50 border-b border-blue-100 text-blue-700 text-xs font-medium flex items-center gap-2">
+                <i data-lucide="mouse-pointer-click" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0"></i>
+                <span class="hidden sm:inline">เคล็ดลับ: คุณสามารถเพิ่มคิวใหม่ได้ง่ายๆ เพียงแค่ "คลิก" ไปยังวันที่บนปฏิทินด้านล่าง ข้อมูลจะบันทึกลง Firebase ทันที</span>
+                <span class="sm:hidden">กด "คลิก" วันที่บนปฏิทิน หรือกดปุ่ม "+ เพิ่มคิวใหม่" เพื่อเพิ่มนัดหมาย</span>
             </div>
-            <div id="calendar" class="p-2 sm:p-4"></div>
+            <div id="calendar" class="calendar-wrapper p-1 sm:p-2 md:p-4"></div>
         </div>
     </main>
 
-    <!-- Modals (โครงสร้าง HTML เหมือนเดิมทุกประการ) -->
-    <div id="eventModal" class="fixed inset-0 bg-slate-900/70 hidden items-center justify-center z-[100] p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-[2rem] max-w-md w-full p-6 sm:p-8 shadow-2xl modal-content scale-95 opacity-0 transform transition-all duration-300 flex flex-col max-h-[90vh]">
+    <!-- Modal: Event Detail -->
+    <div id="eventModal" class="fixed inset-0 bg-slate-900/70 hidden items-center justify-center z-[100] p-0 sm:p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-[2rem] sm:max-w-md w-full p-6 sm:p-8 shadow-2xl modal-content scale-95 opacity-0 transform transition-all duration-300 flex flex-col max-h-[90vh] sm:max-h-[90vh]">
             <div class="flex justify-between items-start mb-6 shrink-0">
                 <div id="statusBadge" class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest">STATUS</div>
                 <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors">
@@ -161,27 +302,28 @@
         </div>
     </div>
 
-    <div id="newBookingModal" class="fixed inset-0 bg-slate-900/70 hidden items-center justify-center z-[100] p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-[2rem] max-w-md w-full p-6 sm:p-8 shadow-2xl modal-content scale-95 opacity-0 transform transition-all duration-300 flex flex-col max-h-[90vh]">
+    <!-- Modal: New Booking -->
+    <div id="newBookingModal" class="fixed inset-0 bg-slate-900/70 hidden items-center justify-center z-[100] p-0 sm:p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-[2rem] sm:max-w-md w-full p-6 sm:p-8 shadow-2xl modal-content scale-95 opacity-0 transform transition-all duration-300 flex flex-col max-h-[92vh] sm:max-h-[90vh]">
             <div class="flex justify-between items-start mb-4 shrink-0">
                 <div class="flex items-center gap-3 text-blue-600">
-                    <div class="p-2 bg-blue-100 rounded-xl"><i data-lucide="calendar-plus" class="w-6 h-6"></i></div>
-                    <h3 class="text-xl font-bold text-slate-800">เพิ่มคิวนัดหมายใหม่</h3>
+                    <div class="p-2 bg-blue-100 rounded-xl"><i data-lucide="calendar-plus" class="w-5 h-5 sm:w-6 sm:h-6"></i></div>
+                    <h3 class="text-lg sm:text-xl font-bold text-slate-800">เพิ่มคิวนัดหมายใหม่</h3>
                 </div>
                 <button onclick="closeNewBookingModal()" class="text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            <div id="newBookingModalContent" class="overflow-y-auto pr-2 pb-2 flex-1">
-                <form id="newBookingForm" class="space-y-4 text-sm mt-2">
-                    <div class="grid grid-cols-2 gap-3">
+            <div id="newBookingModalContent" class="overflow-y-auto pr-1 sm:pr-2 pb-2 flex-1">
+                <form id="newBookingForm" class="space-y-3 sm:space-y-4 text-sm mt-2">
+                    <div class="grid grid-cols-2 gap-2 sm:gap-3">
                         <div>
-                            <label class="block font-bold text-slate-700 mb-1">วันที่ <span class="text-red-500">*</span></label>
-                            <input type="date" id="nbDate" name="bookingDate" class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-blue-500" required readonly>
+                            <label class="block font-bold text-slate-700 mb-1 text-xs sm:text-sm">วันที่ <span class="text-red-500">*</span></label>
+                            <input type="date" id="nbDate" name="bookingDate" class="w-full p-2 sm:p-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm" required readonly>
                         </div>
                         <div>
-                            <label class="block font-bold text-slate-700 mb-1">เวลา <span class="text-red-500">*</span></label>
-                            <select id="nbTime" name="bookingTime" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 bg-white" required>
+                            <label class="block font-bold text-slate-700 mb-1 text-xs sm:text-sm">เวลา <span class="text-red-500">*</span></label>
+                            <select id="nbTime" name="bookingTime" class="w-full p-2 sm:p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 bg-white text-xs sm:text-sm" required>
                                 <option value="">เลือกเวลา</option>
                                 <option value="11:00">11:00</option>
                                 <option value="12:00">12:00</option>
@@ -197,63 +339,63 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">เลขที่ HN (ถ้ามี)</label>
-                        <input type="text" name="hn" oninput="checkDuplicateHN()" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 bg-white" placeholder="เช่น HN12345">
-                        <div id="hnWarning" class="hidden mt-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm transition-all">
+                        <label class="block font-bold text-slate-700 mb-1 text-xs sm:text-sm">เลขที่ HN (ถ้ามี)</label>
+                        <input type="text" name="hn" oninput="checkDuplicateHN()" class="w-full p-2 sm:p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 bg-white text-xs sm:text-sm" placeholder="เช่น HN12345">
+                        <div id="hnWarning" class="hidden mt-2 p-2.5 sm:p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm transition-all">
                             <div class="flex items-start gap-2 text-amber-800">
                                 <i data-lucide="alert-triangle" class="w-4 h-4 mt-0.5 shrink-0"></i>
                                 <div class="w-full overflow-hidden">
-                                    <span class="font-bold block mb-1">พบประวัติการนัดหมายในวันนี้แล้ว!</span>
+                                    <span class="font-bold block mb-1 text-xs sm:text-sm">พบประวัติการนัดหมายในวันนี้แล้ว!</span>
                                     <div id="hnWarningDetails" class="text-amber-700 space-y-1.5 mt-1"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">ชื่อ-นามสกุลลูกค้า <span class="text-red-500">*</span></label>
-                        <input type="text" name="customerName" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 bg-white" placeholder="ระบุชื่อผู้รับบริการ" required>
+                        <label class="block font-bold text-slate-700 mb-1 text-xs sm:text-sm">ชื่อ-นามสกุลลูกค้า <span class="text-red-500">*</span></label>
+                        <input type="text" name="customerName" class="w-full p-2 sm:p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 bg-white text-xs sm:text-sm" placeholder="ระบุชื่อผู้รับบริการ" required>
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">เบอร์โทรศัพท์ <span class="text-red-500">*</span></label>
-                        <input type="tel" name="phoneNumber" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 bg-white" placeholder="08x-xxx-xxxx" required>
+                        <label class="block font-bold text-slate-700 mb-1 text-xs sm:text-sm">เบอร์โทรศัพท์ <span class="text-red-500">*</span></label>
+                        <input type="tel" name="phoneNumber" class="w-full p-2 sm:p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 bg-white text-xs sm:text-sm" placeholder="08x-xxx-xxxx" required>
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">หัตถการ <span class="text-red-500">*</span></label>
-                        <input type="text" name="procedure" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 bg-white" placeholder="ระบุบริการที่ต้องการรับ" required>
+                        <label class="block font-bold text-slate-700 mb-1 text-xs sm:text-sm">หัตถการ <span class="text-red-500">*</span></label>
+                        <input type="text" name="procedure" class="w-full p-2 sm:p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 bg-white text-xs sm:text-sm" placeholder="ระบุบริการที่ต้องการรับ" required>
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">ชื่อผู้นัด</label>
-                        <input type="text" name="bookerName" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50" placeholder="ชื่อผู้ดำเนินการจอง">
+                        <label class="block font-bold text-slate-700 mb-1 text-xs sm:text-sm">ชื่อผู้นัด</label>
+                        <input type="text" name="bookerName" class="w-full p-2 sm:p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50 text-xs sm:text-sm" placeholder="ชื่อผู้ดำเนินการจอง">
                     </div>
                 </form>
             </div>
-            <div class="mt-4 pt-4 border-t border-slate-100 shrink-0">
-                <button type="button" onclick="submitNewBooking()" id="btnSubmitNewBooking" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-all flex justify-center items-center gap-2 active:scale-95 shadow-md shadow-blue-200">
+            <div class="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-slate-100 shrink-0">
+                <button type="button" onclick="submitNewBooking()" id="btnSubmitNewBooking" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-all flex justify-center items-center gap-2 active:scale-95 shadow-md shadow-blue-200 text-sm sm:text-base">
                     <span>ยืนยันการจองคิวใหม่</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <div id="statusListModal" class="fixed inset-0 bg-slate-900/70 hidden items-center justify-center z-[110] p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-[2rem] max-w-md w-full p-6 sm:p-8 shadow-2xl modal-content scale-95 opacity-0 transform transition-all duration-300 flex flex-col max-h-[90vh]">
+    <!-- Modal: Status List -->
+    <div id="statusListModal" class="fixed inset-0 bg-slate-900/70 hidden items-center justify-center z-[110] p-0 sm:p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-[2rem] sm:max-w-md w-full p-6 sm:p-8 shadow-2xl modal-content scale-95 opacity-0 transform transition-all duration-300 flex flex-col max-h-[92vh] sm:max-h-[90vh]">
             <div class="flex justify-between items-start mb-4 shrink-0">
                 <div class="flex items-center gap-3">
-                    <div id="statusListIcon" class="p-2 rounded-xl"><i data-lucide="users" class="w-6 h-6"></i></div>
-                    <h3 class="text-xl font-bold text-slate-800" id="statusListTitle">รายชื่อ</h3>
+                    <div id="statusListIcon" class="p-2 rounded-xl"><i data-lucide="users" class="w-5 h-5 sm:w-6 sm:h-6"></i></div>
+                    <h3 class="text-lg sm:text-xl font-bold text-slate-800" id="statusListTitle">รายชื่อ</h3>
                 </div>
                 <button onclick="closeStatusListModal()" class="text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            <div id="statusListContent" class="overflow-y-auto pr-2 pb-2 flex-1 space-y-3"></div>
+            <div id="statusListContent" class="overflow-y-auto pr-1 sm:pr-2 pb-2 flex-1 space-y-2 sm:space-y-3"></div>
         </div>
     </div>
 
     <!-- อัปเกรด Firebase Web SDK เป็น 11.6.1 -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        // 💡 นำเข้า memoryLocalCache เพื่อปิดการใช้ IndexedDB ของเบราว์เซอร์
         import { initializeFirestore, collection, addDoc, updateDoc, doc, onSnapshot, query, serverTimestamp, memoryLocalCache } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
@@ -269,8 +411,6 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        
-        // 💡 บังคับให้ Firestore ใช้ Long Polling และเก็บแคชลง Memory เท่านั้น เพื่อหลีกเลี่ยงข้อจำกัดใน Iframe/Canvas
         const db = initializeFirestore(app, {
             experimentalForceLongPolling: true,
             localCache: memoryLocalCache()
@@ -278,7 +418,6 @@
         
         const COLLECTION_NAME = "bookings";
 
-        // State variables
         let calendar;
         let allData = [];
         let currentRowId = null; 
@@ -295,13 +434,11 @@
             initCalendar();
             
             try {
-                // รอจนกว่าจะ Login สำเร็จก่อนถึงจะเรียกข้อมูล
                 await signInAnonymously(auth);
                 console.log("Firebase Auth: Signed in anonymously");
                 setupRealtimeListener(); 
             } catch (error) {
                 console.warn("Firebase Auth Error:", error);
-                // หาก Auth พัง ก็ยังให้ลองดึงข้อมูลดู (เผื่อ Firestore rules เปิดสาธารณะอยู่)
                 setupRealtimeListener();
             }
         });
@@ -322,13 +459,15 @@
 
         function initCalendar() {
             const calendarEl = document.getElementById('calendar');
+            const isMobile = window.innerWidth < 640;
+
             calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
+                initialView: isMobile ? 'dayGridMonth' : 'dayGridMonth',
                 locale: 'th',
                 firstDay: 1, 
                 customButtons: {
                     addBookingBtn: {
-                        text: '+ เพิ่มคิวใหม่',
+                        text: isMobile ? '+ เพิ่มคิว' : '+ เพิ่มคิวใหม่',
                         click: function() {
                             let d = new Date();
                             let year = d.getFullYear();
@@ -338,7 +477,9 @@
                         }
                     }
                 },
-                headerToolbar: { left: 'prev,next today addBookingBtn', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay' },
+                headerToolbar: isMobile
+                    ? { left: 'prev,next', center: 'title', right: 'addBookingBtn' }
+                    : { left: 'prev,next today addBookingBtn', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay' },
                 buttonText: { today: 'วันนี้', month: 'เดือน', week: 'สัปดาห์', day: 'วัน' },
                 slotMinTime: '11:00:00', slotMaxTime: '21:00:00', allDaySlot: false,       
                 expandRows: true, stickyHeaderDates: true, nowIndicator: true,
@@ -390,11 +531,11 @@
                 const statusBtn = document.getElementById('realtimeStatus');
                 
                 if (snapshot.metadata.fromCache) {
-                    statusBtn.innerHTML = `<i data-lucide="wifi-off" class="w-4 h-4"></i><span class="hidden sm:inline">ออฟไลน์ (อ่านจากแคช)</span>`;
-                    statusBtn.className = "flex items-center gap-2 bg-amber-50 text-amber-600 px-4 py-2 rounded-xl font-semibold text-sm transition-all";
+                    statusBtn.innerHTML = `<i data-lucide="wifi-off" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i><span class="hidden sm:inline">ออฟไลน์ (อ่านจากแคช)</span><span class="sm:hidden">ออฟไลน์</span>`;
+                    statusBtn.className = "flex items-center gap-1.5 sm:gap-2 bg-amber-50 text-amber-600 px-3 sm:px-4 py-2 rounded-xl font-semibold text-xs sm:text-sm transition-all";
                 } else {
-                    statusBtn.innerHTML = `<span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span></span><span class="hidden sm:inline">เชื่อมต่อแล้ว (Real-time)</span>`;
-                    statusBtn.className = "flex items-center gap-2 bg-emerald-50 text-emerald-600 px-4 py-2 rounded-xl font-semibold text-sm transition-all";
+                    statusBtn.innerHTML = `<span class="relative flex h-2.5 w-2.5 sm:h-3 sm:w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 bg-emerald-500"></span></span><span class="hidden sm:inline">เชื่อมต่อแล้ว (Real-time)</span><span class="sm:hidden">เชื่อมต่อแล้ว</span>`;
+                    statusBtn.className = "flex items-center gap-1.5 sm:gap-2 bg-emerald-50 text-emerald-600 px-3 sm:px-4 py-2 rounded-xl font-semibold text-xs sm:text-sm transition-all";
                 }
                 initIcons();
 
@@ -419,8 +560,8 @@
             }, (error) => {
                 console.error("Firebase Error: ", error);
                 const statusBtn = document.getElementById('realtimeStatus');
-                statusBtn.innerHTML = `<i data-lucide="alert-circle" class="w-4 h-4"></i><span class="hidden sm:inline">เชื่อมต่อล้มเหลว</span>`;
-                statusBtn.className = "flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-xl font-semibold text-sm transition-all";
+                statusBtn.innerHTML = `<i data-lucide="alert-circle" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i><span class="hidden sm:inline">เชื่อมต่อล้มเหลว</span><span class="sm:hidden">ล้มเหลว</span>`;
+                statusBtn.className = "flex items-center gap-1.5 sm:gap-2 bg-red-50 text-red-600 px-3 sm:px-4 py-2 rounded-xl font-semibold text-xs sm:text-sm transition-all";
                 initIcons();
             });
         }
@@ -476,7 +617,6 @@
             const duplicates = allData.filter(item => {
                 const hn = item["HN"];
                 if (!hn || String(hn).trim().toLowerCase() !== hnInput.toLowerCase()) return false;
-                
                 const datePart = item["วันที่นัด"];
                 return datePart === dateInput;
             });
@@ -488,7 +628,6 @@
                     const proc = dup["หัตถการ"] || '-';
                     const status = dup["สถานะ"] || 'ยังไม่มา';
                     const timePart = dup["เวลานัด"] || '??:??';
-
                     html += `<div class="bg-amber-100/70 p-2 rounded text-[11px] sm:text-xs text-amber-900 border border-amber-200">
                                 <div class="flex justify-between items-center mb-0.5">
                                     <span class="font-bold text-amber-700"><i data-lucide="clock" class="w-3 h-3 inline pb-0.5"></i> ${timePart} น.</span> 
@@ -508,10 +647,7 @@
 
         window.submitNewBooking = async function() {
             const form = document.getElementById('newBookingForm');
-            if (!form.checkValidity()) {
-                form.reportValidity();
-                return;
-            }
+            if (!form.checkValidity()) { form.reportValidity(); return; }
 
             const btn = document.getElementById('btnSubmitNewBooking');
             btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> กำลังบันทึกข้อมูล...';
@@ -519,7 +655,6 @@
             initIcons();
 
             const formData = new FormData(form);
-            
             const newBookingData = {
                 bookingDate: formData.get('bookingDate'),
                 bookingTime: formData.get('bookingTime'),
@@ -551,7 +686,6 @@
             const processedData = data.map(item => {
                 let timePart = item["เวลานัด"];
                 if(timePart && timePart.length === 5) timePart = `${timePart}:00`;
-
                 return {
                     ...item,
                     _normalizedDate: item["วันที่นัด"],
@@ -566,7 +700,6 @@
             currentReportData = reportData; 
             
             const countByStatus = (statusName) => reportData.filter(item => item._status === statusName).length;
-
             document.getElementById('statTotal').textContent = reportData.length;
             document.getElementById('statArrived').textContent = countByStatus("มาแล้ว");
             document.getElementById('statUpcoming').textContent = countByStatus("ยังไม่มา");
@@ -576,16 +709,13 @@
 
             const events = processedData.map(item => {
                 if (!item._normalizedDate) return null;
-
                 let eventColor = '#3b82f6'; 
                 let titleSuffix = "";
                 let textColor = '#ffffff'; 
-                
                 if(item._status === "มาแล้ว") { eventColor = '#eab308'; textColor = '#422006'; } 
                 else if(item._status === "เลื่อนนัด") { eventColor = '#6366f1'; titleSuffix = " (เลื่อน)"; } 
                 else if(item._status === "ไม่มาตามนัด") { eventColor = '#fca5a5'; textColor = '#7f1d1d'; } 
                 else if(item._status === "ยกเลิกนัด") { eventColor = '#991b1b'; }
-
                 return {
                     title: (item["ชื่อลูกค้า"] || "ไม่มีชื่อ") + titleSuffix, 
                     start: `${item._normalizedDate}T${item._normalizedTime}`, 
@@ -628,26 +758,26 @@
             
             content.innerHTML = `
                 <div>
-                    <h4 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">${props.name || 'ไม่มีชื่อ'}</h4>
+                    <h4 class="text-xl sm:text-3xl font-bold text-slate-900 mb-1">${props.name || 'ไม่มีชื่อ'}</h4>
                     <div class="flex items-center gap-2 text-blue-600 font-bold text-sm">
                         <i data-lucide="hash" class="w-4 h-4"></i><span>HN: ${props.hn || 'ลูกค้าใหม่'}</span>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 gap-4">
-                    <div class="flex items-center gap-4 bg-slate-50 p-3 rounded-2xl">
-                        <div class="w-10 h-10 bg-white shadow-sm rounded-xl flex items-center justify-center text-slate-500"><i data-lucide="phone" class="w-5 h-5"></i></div>
+                <div class="grid grid-cols-1 gap-3 sm:gap-4">
+                    <div class="flex items-center gap-3 sm:gap-4 bg-slate-50 p-3 rounded-2xl">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 bg-white shadow-sm rounded-xl flex items-center justify-center text-slate-500 shrink-0"><i data-lucide="phone" class="w-4 h-4 sm:w-5 sm:h-5"></i></div>
                         <div><p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">เบอร์โทรศัพท์</p><p class="font-bold text-slate-700 text-sm">${props.phone || '-'}</p></div>
                     </div>
-                    <div class="flex items-center gap-4 bg-slate-50 p-3 rounded-2xl">
-                        <div class="w-10 h-10 bg-white shadow-sm rounded-xl flex items-center justify-center text-slate-500"><i data-lucide="calendar" class="w-5 h-5"></i></div>
+                    <div class="flex items-center gap-3 sm:gap-4 bg-slate-50 p-3 rounded-2xl">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 bg-white shadow-sm rounded-xl flex items-center justify-center text-slate-500 shrink-0"><i data-lucide="calendar" class="w-4 h-4 sm:w-5 sm:h-5"></i></div>
                         <div><p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">วันเวลาที่นัด</p><p class="font-bold text-slate-700 text-sm">${props.dateStr} @ ${props.timeStr}</p></div>
                     </div>
-                    <div class="flex items-center gap-4 bg-slate-50 p-3 rounded-2xl">
-                        <div class="w-10 h-10 bg-white shadow-sm rounded-xl flex items-center justify-center text-slate-500"><i data-lucide="activity" class="w-5 h-5"></i></div>
+                    <div class="flex items-center gap-3 sm:gap-4 bg-slate-50 p-3 rounded-2xl">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 bg-white shadow-sm rounded-xl flex items-center justify-center text-slate-500 shrink-0"><i data-lucide="activity" class="w-4 h-4 sm:w-5 sm:h-5"></i></div>
                         <div><p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">หัตถการ</p><p class="font-bold text-slate-700 text-sm whitespace-normal">${props.proc}</p></div>
                     </div>
-                    <div class="flex items-center gap-4 bg-slate-50 p-3 rounded-2xl">
-                        <div class="w-10 h-10 bg-white shadow-sm rounded-xl flex items-center justify-center text-slate-500"><i data-lucide="user-check" class="w-5 h-5"></i></div>
+                    <div class="flex items-center gap-3 sm:gap-4 bg-slate-50 p-3 rounded-2xl">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 bg-white shadow-sm rounded-xl flex items-center justify-center text-slate-500 shrink-0"><i data-lucide="user-check" class="w-4 h-4 sm:w-5 sm:h-5"></i></div>
                         <div><p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">ชื่อผู้นัด</p><p class="font-bold text-slate-700 text-sm whitespace-normal">${props.booker || '-'}</p></div>
                     </div>
                 </div>
@@ -655,24 +785,23 @@
 
             actionContainer.innerHTML = `
                 <div class="flex flex-wrap gap-2" id="mainButtonsGroup">
-                    <button onclick="updateStatus('มาแล้ว')" class="flex-1 min-w-[80px] bg-yellow-100 hover:bg-yellow-200 text-yellow-700 py-3 rounded-xl text-sm font-bold transition-all active:scale-95">มาแล้ว</button>
-                    <button onclick="toggleRescheduleForm()" class="flex-1 min-w-[80px] bg-indigo-100 hover:bg-indigo-200 text-indigo-700 py-3 rounded-xl text-sm font-bold transition-all active:scale-95">เลื่อนนัด</button>
-                    <button onclick="updateStatus('ไม่มาตามนัด')" class="flex-1 min-w-[80px] bg-red-100 hover:bg-red-200 text-red-600 py-3 rounded-xl text-sm font-bold transition-all active:scale-95">ไม่มา</button>
-                    <button onclick="updateStatus('ยกเลิกนัด')" class="flex-1 min-w-[80px] bg-red-800 hover:bg-red-900 text-white py-3 rounded-xl text-sm font-bold transition-all active:scale-95">ยกเลิก</button>
+                    <button onclick="updateStatus('มาแล้ว')" class="flex-1 min-w-[70px] bg-yellow-100 hover:bg-yellow-200 text-yellow-700 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95">มาแล้ว</button>
+                    <button onclick="toggleRescheduleForm()" class="flex-1 min-w-[70px] bg-indigo-100 hover:bg-indigo-200 text-indigo-700 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95">เลื่อนนัด</button>
+                    <button onclick="updateStatus('ไม่มาตามนัด')" class="flex-1 min-w-[70px] bg-red-100 hover:bg-red-200 text-red-600 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95">ไม่มา</button>
+                    <button onclick="updateStatus('ยกเลิกนัด')" class="flex-1 min-w-[70px] bg-red-800 hover:bg-red-900 text-white py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95">ยกเลิก</button>
                 </div>
-
-                <div id="rescheduleForm" class="hidden mt-3 p-4 bg-indigo-50 border border-indigo-100 rounded-2xl">
-                    <h5 class="text-sm font-bold text-indigo-800 mb-3 flex items-center gap-2"><i data-lucide="calendar-clock" class="w-4 h-4"></i> ระบุวันและเวลาใหม่</h5>
+                <div id="rescheduleForm" class="hidden mt-3 p-3 sm:p-4 bg-indigo-50 border border-indigo-100 rounded-2xl">
+                    <h5 class="text-xs sm:text-sm font-bold text-indigo-800 mb-3 flex items-center gap-2"><i data-lucide="calendar-clock" class="w-4 h-4"></i> ระบุวันและเวลาใหม่</h5>
                     <div class="grid grid-cols-2 gap-2 mb-3">
-                        <input type="date" id="rescheduleDate" min="${new Date().toISOString().split('T')[0]}" class="w-full p-2.5 rounded-xl border border-indigo-200 text-sm outline-none focus:ring-2 focus:ring-indigo-500 bg-white" value="${props.dateStr}">
-                        <select id="rescheduleTime" class="w-full p-2.5 rounded-xl border border-indigo-200 text-sm outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                        <input type="date" id="rescheduleDate" min="${new Date().toISOString().split('T')[0]}" class="w-full p-2 sm:p-2.5 rounded-xl border border-indigo-200 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-indigo-500 bg-white" value="${props.dateStr}">
+                        <select id="rescheduleTime" class="w-full p-2 sm:p-2.5 rounded-xl border border-indigo-200 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
                             <option value="">เลือกเวลา</option>
                             ${['11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'].map(t => `<option value="${t}" ${t === props.timeStr ? 'selected' : ''}>${t}</option>`).join('')}
                         </select>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="toggleRescheduleForm()" class="px-4 py-2 bg-white text-indigo-600 border border-indigo-200 font-bold rounded-xl text-sm hover:bg-indigo-50">ยกเลิก</button>
-                        <button onclick="submitReschedule()" id="btnSubmitReschedule" class="flex-1 bg-indigo-600 text-white font-bold py-2 rounded-xl text-sm hover:bg-indigo-700 transition-all flex justify-center items-center gap-2">
+                        <button onclick="toggleRescheduleForm()" class="px-3 py-2 bg-white text-indigo-600 border border-indigo-200 font-bold rounded-xl text-xs sm:text-sm hover:bg-indigo-50">ยกเลิก</button>
+                        <button onclick="submitReschedule()" id="btnSubmitReschedule" class="flex-1 bg-indigo-600 text-white font-bold py-2 rounded-xl text-xs sm:text-sm hover:bg-indigo-700 transition-all flex justify-center items-center gap-2">
                             <span>ยืนยันการย้ายคิว</span>
                         </button>
                     </div>
@@ -703,21 +832,19 @@
             }
 
             document.getElementById('statusListTitle').textContent = `รายชื่อ${statusName} (${filteredData.length})`;
-            
             const iconDiv = document.getElementById('statusListIcon');
             iconDiv.className = `p-2 rounded-xl ${bgColor} ${textColor}`;
-            iconDiv.innerHTML = `<i data-lucide="${iconName}" class="w-6 h-6"></i>`;
+            iconDiv.innerHTML = `<i data-lucide="${iconName}" class="w-5 h-5 sm:w-6 sm:h-6"></i>`;
 
             const content = document.getElementById('statusListContent');
             if (filteredData.length === 0) {
-                content.innerHTML = `<div class="text-center py-8 text-slate-400 font-medium">ไม่มีข้อมูลสำหรับสถานะนี้ในวันนี้</div>`;
+                content.innerHTML = `<div class="text-center py-8 text-slate-400 font-medium text-sm">ไม่มีข้อมูลสำหรับสถานะนี้ในวันนี้</div>`;
             } else {
                 content.innerHTML = filteredData.map(item => {
                     const name = item["ชื่อลูกค้า"] || 'ไม่มีชื่อ';
                     const phone = item["เบอร์โทรศัพท์"] || '-';
                     const time = item._normalizedTime ? item._normalizedTime.substring(0, 5) : '-';
                     const proc = item._proc || '-';
-                    
                     return `
                         <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100 flex justify-between items-center hover:bg-slate-100 transition-colors">
                             <div class="flex-1 overflow-hidden pr-2">
@@ -726,7 +853,7 @@
                             </div>
                             <div class="text-right shrink-0">
                                 <div class="text-blue-600 font-bold text-sm">${time} น.</div>
-                                <div class="text-[10px] text-slate-400 max-w-[100px] whitespace-nowrap overflow-hidden text-ellipsis">${proc}</div>
+                                <div class="text-[10px] text-slate-400 max-w-[90px] sm:max-w-[100px] whitespace-nowrap overflow-hidden text-ellipsis">${proc}</div>
                             </div>
                         </div>
                     `;
@@ -766,14 +893,8 @@
             const newDate = document.getElementById('rescheduleDate').value;
             const newTime = document.getElementById('rescheduleTime').value;
             
-            if (!newDate || !newTime) {
-                alert("กรุณาเลือกวันและเวลาใหม่ให้ครบถ้วน");
-                return;
-            }
-            if (newDate === currentEventProps.dateStr && newTime === currentEventProps.timeStr) {
-                alert("กรุณาเลือกวันหรือเวลาที่ต่างจากเดิม");
-                return;
-            }
+            if (!newDate || !newTime) { alert("กรุณาเลือกวันและเวลาใหม่ให้ครบถ้วน"); return; }
+            if (newDate === currentEventProps.dateStr && newTime === currentEventProps.timeStr) { alert("กรุณาเลือกวันหรือเวลาที่ต่างจากเดิม"); return; }
 
             const btn = document.getElementById('btnSubmitReschedule');
             btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> กำลังดำเนินการ...';
@@ -791,7 +912,6 @@
                 let hnVal = currentEventProps.hn === '-' || currentEventProps.hn === 'ลูกค้าใหม่' ? '' : currentEventProps.hn;
                 let oldDateParts = currentEventProps.dateStr.split('-');
                 let formattedOldDate = oldDateParts.length === 3 ? `${oldDateParts[2]}/${oldDateParts[1]}/${oldDateParts[0]}` : currentEventProps.dateStr;
-                
                 let originalProc = currentEventProps.proc === '-' ? '' : String(currentEventProps.proc);
                 originalProc = originalProc.replace(/\s*\(ย้ายจาก.*?\)/g, '').trim(); 
                 let procVal = originalProc 
@@ -811,7 +931,6 @@
                 };
 
                 await addDoc(collection(db, COLLECTION_NAME), newBookingData);
-
                 window.closeModal(); 
             } catch (error) {
                 console.error("Reschedule Error:", error);
@@ -826,11 +945,9 @@
 
         window.updateStatus = async function(status) {
             if (!currentRowId) return;
-
             const actionContainer = document.getElementById('actionContainer');
             actionContainer.style.opacity = '0.5';
             actionContainer.style.pointerEvents = 'none';
-
             try {
                 const docRef = doc(db, COLLECTION_NAME, currentRowId);
                 await updateDoc(docRef, { status: status });
