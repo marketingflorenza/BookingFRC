@@ -42,8 +42,8 @@
         .legend-color { width: 12px; height: 12px; border-radius: 3px; }
         
         /* สไตล์ Scrollbar สำหรับ Modal */
-        #modalContent::-webkit-scrollbar, #newBookingModalContent::-webkit-scrollbar { width: 4px; }
-        #modalContent::-webkit-scrollbar-thumb, #newBookingModalContent::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        #modalContent::-webkit-scrollbar, #newBookingModalContent::-webkit-scrollbar, #statusListContent::-webkit-scrollbar { width: 4px; }
+        #modalContent::-webkit-scrollbar-thumb, #newBookingModalContent::-webkit-scrollbar-thumb, #statusListContent::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
         /* สไตล์ปุ่ม + ในปฏิทิน */
         .fc-addBookingBtn-button { background-color: #2563eb !important; border-color: #2563eb !important; color: #ffffff !important; font-weight: 600 !important; border-radius: 0.5rem !important; }
@@ -79,8 +79,13 @@
                 <i data-lucide="alert-circle" class="w-6 h-6 text-red-600"></i>
             </div>
             <div class="flex-1">
-                <h4 class="font-bold text-lg mb-1 text-red-800">สถานะการเชื่อมต่อข้อมูล</h4>
-                <p id="errorText" class="text-sm text-red-700 leading-relaxed"></p>
+                <h4 class="font-bold text-lg mb-1 text-red-800">เกิดข้อผิดพลาดในการเชื่อมต่อ (Failed to fetch)</h4>
+                <p id="errorText" class="text-sm text-red-700 leading-relaxed">
+                    ไม่สามารถเชื่อมต่อกับ Google Sheets ได้ สาเหตุหลักคือ:<br>
+                    1. <b>การตั้งค่า Deploy:</b> ใน Google Apps Script ต้องตั้งค่า <b>Who has access</b> เป็น <b>"Anyone"</b><br>
+                    2. <b>ถูกบล็อกโดยเบราว์เซอร์ (CORS):</b> อาจเกิดจากส่วนขยายบล็อกโฆษณา หรือหน้าต่าง Preview ของระบบ<br>
+                    <i>* หากเพิ่งแก้ไข Script ใน Google อย่าลืมกด Deploy > New deployment เสมอ</i>
+                </p>
             </div>
             <button onclick="document.getElementById('errorBanner').classList.add('hidden')" class="text-red-400 hover:text-red-700 bg-red-100/50 hover:bg-red-100 p-2 rounded-full transition-colors shrink-0">
                 <i data-lucide="x" class="w-5 h-5"></i>
@@ -106,32 +111,32 @@
 
         <!-- Summary Cards Grid (กรองตามวัน) -->
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-            <div onclick="showStatusList('ทั้งหมด')" class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all cursor-pointer transform hover:-translate-y-1 duration-200">
+            <div onclick="showStatusList('ทั้งหมด')" class="cursor-pointer hover:-translate-y-1 bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
                 <div class="p-3 bg-blue-50 text-blue-600 rounded-2xl mb-3"><i data-lucide="users" class="w-6 h-6"></i></div>
                 <p class="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">ทั้งหมด (รายวัน)</p>
                 <h3 class="text-2xl font-bold text-gray-800" id="statTotal">-</h3>
             </div>
-            <div onclick="showStatusList('มาแล้ว')" class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all cursor-pointer transform hover:-translate-y-1 duration-200">
+            <div onclick="showStatusList('มาแล้ว')" class="cursor-pointer hover:-translate-y-1 bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
                 <div class="p-3 bg-emerald-50 text-emerald-600 rounded-2xl mb-3"><i data-lucide="check-circle" class="w-6 h-6"></i></div>
                 <p class="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">มาแล้ว</p>
                 <h3 class="text-2xl font-bold text-gray-800" id="statArrived">-</h3>
             </div>
-            <div onclick="showStatusList('ยังไม่มา')" class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all cursor-pointer transform hover:-translate-y-1 duration-200">
+            <div onclick="showStatusList('ยังไม่มา')" class="cursor-pointer hover:-translate-y-1 bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
                 <div class="p-3 bg-amber-50 text-amber-600 rounded-2xl mb-3"><i data-lucide="clock" class="w-6 h-6"></i></div>
                 <p class="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">ยังไม่มา</p>
                 <h3 class="text-2xl font-bold text-gray-800" id="statUpcoming">-</h3>
             </div>
-            <div onclick="showStatusList('เลื่อนนัด')" class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all cursor-pointer transform hover:-translate-y-1 duration-200">
+            <div onclick="showStatusList('เลื่อนนัด')" class="cursor-pointer hover:-translate-y-1 bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
                 <div class="p-3 bg-indigo-50 text-indigo-600 rounded-2xl mb-3"><i data-lucide="calendar-days" class="w-6 h-6"></i></div>
                 <p class="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">เลื่อนนัด</p>
                 <h3 class="text-2xl font-bold text-gray-800" id="statRescheduled">-</h3>
             </div>
-            <div onclick="showStatusList('ไม่มาตามนัด')" class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all cursor-pointer transform hover:-translate-y-1 duration-200">
+            <div onclick="showStatusList('ไม่มาตามนัด')" class="cursor-pointer hover:-translate-y-1 bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
                 <div class="p-3 bg-rose-50 text-rose-600 rounded-2xl mb-3"><i data-lucide="user-x" class="w-6 h-6"></i></div>
                 <p class="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">ไม่มาตามนัด</p>
                 <h3 class="text-2xl font-bold text-gray-800" id="statNoShow">-</h3>
             </div>
-            <div onclick="showStatusList('ยกเลิกนัด')" class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all cursor-pointer transform hover:-translate-y-1 duration-200">
+            <div onclick="showStatusList('ยกเลิกนัด')" class="cursor-pointer hover:-translate-y-1 bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
                 <div class="p-3 bg-slate-100 text-slate-600 rounded-2xl mb-3"><i data-lucide="x-circle" class="w-6 h-6"></i></div>
                 <p class="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">ยกเลิกนัด</p>
                 <h3 class="text-2xl font-bold text-gray-800" id="statCancelled">-</h3>
@@ -226,7 +231,18 @@
                     
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">เลขที่ HN (ถ้ามี)</label>
-                        <input type="text" name="hn" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 bg-white" placeholder="เช่น HN12345">
+                        <input type="text" name="hn" oninput="checkDuplicateHN()" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 bg-white" placeholder="เช่น HN12345">
+                        
+                        <!-- แจ้งเตือน HN ซ้ำ -->
+                        <div id="hnWarning" class="hidden mt-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm transition-all">
+                            <div class="flex items-start gap-2 text-amber-800">
+                                <i data-lucide="alert-triangle" class="w-4 h-4 mt-0.5 shrink-0"></i>
+                                <div class="w-full overflow-hidden">
+                                    <span class="font-bold block mb-1">พบประวัติการนัดหมายในวันนี้แล้ว!</span>
+                                    <div id="hnWarningDetails" class="text-amber-700 space-y-1.5 mt-1"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">ชื่อ-นามสกุลลูกค้า <span class="text-red-500">*</span></label>
@@ -256,30 +272,32 @@
         </div>
     </div>
 
-    <!-- Modal 3: แสดงรายชื่อตามสถานะ -->
-    <div id="listModal" class="fixed inset-0 bg-slate-900/70 hidden items-center justify-center z-[100] p-4 backdrop-blur-sm">
+    <!-- Modal 3: แสดงรายชื่อตามสถานะ เมื่อคลิกที่ Card -->
+    <div id="statusListModal" class="fixed inset-0 bg-slate-900/70 hidden items-center justify-center z-[110] p-4 backdrop-blur-sm">
         <div class="bg-white rounded-[2rem] max-w-md w-full p-6 sm:p-8 shadow-2xl modal-content scale-95 opacity-0 transform transition-all duration-300 flex flex-col max-h-[90vh]">
             <div class="flex justify-between items-start mb-4 shrink-0">
                 <div class="flex items-center gap-3">
-                    <div id="listModalIcon" class="p-2 rounded-xl bg-blue-100 text-blue-600"><i data-lucide="list" class="w-6 h-6"></i></div>
-                    <h3 id="listModalTitle" class="text-xl font-bold text-slate-800">รายชื่อลูกค้า</h3>
+                    <div id="statusListIcon" class="p-2 rounded-xl"><i data-lucide="users" class="w-6 h-6"></i></div>
+                    <h3 class="text-xl font-bold text-slate-800" id="statusListTitle">รายชื่อ</h3>
                 </div>
-                <button onclick="closeListModal()" class="text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors">
+                <button onclick="closeStatusListModal()" class="text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            <div id="listModalContent" class="overflow-y-auto pr-2 pb-2 flex-1 space-y-2 mt-2">
-                <!-- รายชื่อจะถูกใส่ตรงนี้ -->
+            <div id="statusListContent" class="overflow-y-auto pr-2 pb-2 flex-1 space-y-3">
+                <!-- ข้อมูลรายชื่อจะถูกเติมตรงนี้ -->
             </div>
         </div>
     </div>
 
     <script>
-        const scriptURL = "https://script.google.com/macros/s/AKfycbzYUeONoxWmgXYqABooKMgC6MVcB-_lK4xVovfP6P2h3OQEP57sFUVbQFFcqco8OnayXQ/exec"; 
+        // เปลี่ยน URL ของ Google Apps Script เป็นลิงก์ใหม่แล้ว
+        const scriptURL = "https://script.google.com/macros/s/AKfycbz-E8br8EuswtE5GlQrMfY8_YK-3b58ZamT4Vi__3sTDLlRjrB8st9KzNWQ4WRblpU48g/exec"; 
         let calendar;
         let allData = [];
         let currentRowId = null; 
         let currentEventProps = null; 
+        let currentReportData = []; // เก็บข้อมูลของวันที่เลือกไว้ใช้ใน Modal
 
         function initIcons() {
             if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -289,73 +307,10 @@
             initIcons();
             initDateFilter(); // เริ่มต้นตัวกรองวันที่
             initCalendar();
-            
-            // อัปเดตการล็อคเวลาเลือกแบบไดนามิก สำหรับฟอร์มเพิ่มคิวใหม่
-            applyDynamicTimeConstraint(document.getElementById('nbDate'), document.getElementById('nbTime'));
-            
             fetchData();
         });
 
-        // ฟังก์ชันจำกัดเวลาขั้นต่ำ (ห้ามเลือกเวลาที่ผ่านมาแล้วของวันนี้)
-        function applyDynamicTimeConstraint(dateEl, timeSelectEl) {
-            if (!dateEl || !timeSelectEl) return;
-            const updateMinTime = () => {
-                const selectedDate = new Date(dateEl.value);
-                const today = new Date();
-                const isToday = selectedDate.toDateString() === today.toDateString();
-                const currentHour = today.getHours();
-                const currentMinute = today.getMinutes();
-
-                Array.from(timeSelectEl.options).forEach(option => {
-                    if (option.value === "") return; 
-                    
-                    if (isToday) {
-                        const optionHour = parseInt(option.value.split(':')[0], 10);
-                        // ปิดการใช้งานตัวเลือกเวลาหากเวลานั้นผ่านไปแล้ว
-                        if (optionHour < currentHour || (optionHour === currentHour && currentMinute > 0)) {
-                            option.disabled = true;
-                            option.classList.add('text-gray-300'); // ให้สีดูจางลง
-                            if (option.selected) timeSelectEl.value = "";
-                        } else {
-                            option.disabled = false;
-                            option.classList.remove('text-gray-300');
-                        }
-                    } else {
-                        option.disabled = false;
-                        option.classList.remove('text-gray-300');
-                    }
-                });
-            };
-            dateEl.addEventListener('change', updateMinTime);
-            updateMinTime(); 
-        }
-
-        // ฟังก์ชัน Validate เวลาจองและเลื่อนนัดให้รัดกุม 11:00 - 20:00 น.
-        function validateBookingTime(dateStr, timeStr) {
-            if (!dateStr || !timeStr) return { valid: false, message: "กรุณาระบุวันที่และเวลาให้ครบถ้วน" };
-            
-            const timeParts = timeStr.split(':');
-            const h = parseInt(timeParts[0], 10);
-            const m = parseInt(timeParts[1], 10);
-            
-            // เช็คภาพรวมเวลาทำการ 11:00 - 20:00
-            if (h < 11 || h > 20 || (h === 20 && m > 0)) {
-                return { valid: false, message: "รับนัดหมายเฉพาะช่วงเวลา 11:00 - 20:00 น. เท่านั้น" };
-            }
-            
-            const selectedDate = new Date(dateStr);
-            const today = new Date();
-            
-            // หากเลือกวันนี้ ห้ามจองเวลาที่ผ่านมาแล้ว
-            if (selectedDate.toDateString() === today.toDateString()) {
-                if (h < today.getHours() || (h === today.getHours() && m < today.getMinutes())) {
-                    return { valid: false, message: "ไม่สามารถทำรายการในเวลาที่ผ่านไปแล้วได้" };
-                }
-            }
-            return { valid: true };
-        }
-
-        // ฟังก์ชันจัดการตัวกรองวันที่ด้านบนรายงาน
+        // 💡 ฟังก์ชันจัดการตัวกรองวันที่ด้านบนรายงาน
         function initDateFilter() {
             const dateFilter = document.getElementById('reportDateFilter');
             const d = new Date();
@@ -401,7 +356,7 @@
                 eventContent: function(arg) {
                     return {
                         html: `<div class="custom-event-content" style="color: ${arg.event.textColor || '#ffffff'};">
-                                <span class="custom-event-time">${arg.event.extendedProps.timeStr} น.</span>
+                                <span class="custom-event-time">${arg.timeText}</span>
                                 <span class="custom-event-title">${arg.event.title}</span>
                                </div>`
                     };
@@ -456,30 +411,11 @@
                 return;
             }
 
-            // ดักจับหากกดเลือกวันนี้ แต่เวลาเลย 20:00 ไปแล้ว จะไม่ให้เปิดฟอร์ม
-            if (clickedDate.toDateString() === new Date().toDateString()) {
-                const now = new Date();
-                if (now.getHours() > 20 || (now.getHours() === 20 && now.getMinutes() > 0)) {
-                    alert("หมดเวลาจองคิวสำหรับวันนี้แล้วครับ (เวลาทำการ 11:00 - 20:00 น.)");
-                    return;
-                }
-            }
-
             document.getElementById('nbDate').value = clickedDateStr;
-            // สั่งอัปเดต Time Constraint เพื่อเช็คว่าควร disabled dropdown ช่องไหนบ้าง
-            document.getElementById('nbDate').dispatchEvent(new Event('change'));
             
             if (info.dateStr.includes('T')) {
-                // ดึงเฉพาะชั่วโมง แล้วปัดเศษนาทีทิ้ง เพื่อจับคู่กับ Dropdown
-                const hour = info.dateStr.split('T')[1].substring(0, 2); 
-                const targetTime = `${hour}:00`;
-                const nbTimeSelect = document.getElementById('nbTime');
-                nbTimeSelect.value = targetTime;
-                
-                // หากถูก Disabled ไว้ ให้ล้างค่าเป็นค่าว่าง
-                if (nbTimeSelect.selectedOptions[0] && nbTimeSelect.selectedOptions[0].disabled) {
-                    nbTimeSelect.value = '';
-                }
+                const timeStr = info.dateStr.split('T')[1].substring(0, 5); 
+                document.getElementById('nbTime').value = timeStr;
             } else {
                 document.getElementById('nbTime').value = ''; 
             }
@@ -498,7 +434,108 @@
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
                 document.getElementById('newBookingForm').reset();
+                // ซ่อนการแจ้งเตือน HN เมื่อปิด Modal
+                document.getElementById('hnWarning').classList.add('hidden');
             }, 300);
+        }
+
+        // 💡 ฟังก์ชันใหม่สำหรับตรวจสอบ HN ซ้ำในวันเดียวกัน
+        function checkDuplicateHN() {
+            const dateInput = document.getElementById('nbDate').value;
+            const hnInput = document.querySelector('input[name="hn"]').value.trim();
+            const warningDiv = document.getElementById('hnWarning');
+            const detailsDiv = document.getElementById('hnWarningDetails');
+
+            if (!hnInput || !dateInput || !allData || allData.length === 0) {
+                warningDiv.classList.add('hidden');
+                return;
+            }
+
+            const getVal = (obj, keyName) => {
+                const key = Object.keys(obj).find(k => k.trim() === keyName);
+                return key ? obj[key] : undefined;
+            };
+
+            const duplicates = allData.filter(item => {
+                const hn = getVal(item, "HN");
+                if (!hn || String(hn).trim().toLowerCase() !== hnInput.toLowerCase()) return false;
+
+                let rawDate = getVal(item, "วันที่นัด");
+                if (!rawDate) return false;
+                
+                rawDate = String(rawDate).trim();
+                let datePart = "";
+                if (rawDate.includes('T')) {
+                    let d = new Date(rawDate);
+                    let thDate = new Date(d.toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
+                    datePart = `${thDate.getFullYear()}-${(thDate.getMonth() + 1).toString().padStart(2, '0')}-${thDate.getDate().toString().padStart(2, '0')}`;
+                } else if (rawDate.includes('/')) {
+                    let parts = rawDate.split('/');
+                    if (parts.length === 3) {
+                        let year = parts[2].length === 2 ? "20" + parts[2] : parts[2];
+                        if (parseInt(year) > 2500) year = (parseInt(year) - 543).toString(); 
+                        datePart = `${year}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+                    }
+                } else {
+                    datePart = rawDate.split(' ')[0];
+                }
+
+                return datePart === dateInput;
+            });
+
+            if (duplicates.length > 0) {
+                let html = '';
+                duplicates.forEach(dup => {
+                    const name = getVal(dup, "ชื่อลูกค้า") || '-';
+                    const proc = getVal(dup, "หัตถการ") || '-';
+                    const status = getVal(dup, "สถานะ") || 'ยังไม่มา';
+                    
+                    let timeKey = Object.keys(dup).find(k => (k.includes('เวลา') || k.toLowerCase().includes('time')) && !k.toLowerCase().includes('timestamp')) || "เวลานัด";
+                    let rawTime = dup[timeKey];
+                    let timePart = "??:??";
+                    
+                    if (rawTime) {
+                        let timeStr = String(rawTime).trim();
+                        let timeNum = parseFloat(timeStr);
+                        if (!isNaN(timeNum) && timeNum > 0 && timeNum < 1 && !timeStr.includes(':') && !timeStr.includes('-')) {
+                            let totalMinutes = Math.round(timeNum * 24 * 60);
+                            let h = Math.floor(totalMinutes / 60);
+                            let m = totalMinutes % 60;
+                            timePart = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+                        } else if (timeStr.includes('T') && (timeStr.includes('Z') || timeStr.includes('+'))) {
+                            let d = new Date(timeStr.replace('1899', '2000'));
+                            if (!isNaN(d)) {
+                                let thTime = new Date(d.toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
+                                let h = thTime.getHours(); let m = thTime.getMinutes();
+                                if (m >= 16 && m <= 19) m = 0; else if (m >= 46 && m <= 49) m = 30;
+                                timePart = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+                            } else {
+                                let match = timeStr.match(/T(\d{2}):(\d{2})/);
+                                if (match) timePart = `${match[1]}:${match[2]}`;
+                            }
+                        } else {
+                            let match = timeStr.match(/(\d{1,2})[:.](\d{2})/);
+                            if (match) timePart = `${match[1].padStart(2, '0')}:${match[2]}`;
+                            else if (/^\d{1,2}$/.test(timeStr)) timePart = `${timeStr.padStart(2, '0')}:00`;
+                        }
+                    }
+
+                    html += `<div class="bg-amber-100/70 p-2 rounded text-[11px] sm:text-xs text-amber-900 border border-amber-200">
+                                <div class="flex justify-between items-center mb-0.5">
+                                    <span class="font-bold text-amber-700"><i data-lucide="clock" class="w-3 h-3 inline pb-0.5"></i> ${timePart} น.</span> 
+                                    <span class="bg-white/60 px-1.5 py-0.5 rounded shadow-sm text-[10px] font-bold">${status}</span>
+                                </div>
+                                <div class="truncate text-amber-800"><i data-lucide="user" class="w-3 h-3 inline pb-0.5"></i> ${name}</div>
+                                <div class="truncate text-amber-800"><i data-lucide="activity" class="w-3 h-3 inline pb-0.5"></i> ${proc}</div>
+                             </div>`;
+                });
+                
+                detailsDiv.innerHTML = html;
+                warningDiv.classList.remove('hidden');
+                initIcons();
+            } else {
+                warningDiv.classList.add('hidden');
+            }
         }
 
         async function submitNewBooking() {
@@ -506,15 +543,6 @@
             
             if (!form.checkValidity()) {
                 form.reportValidity();
-                return;
-            }
-
-            // Validate ช่วงเวลา 11:00 - 20:00
-            const nbDate = document.getElementById('nbDate').value;
-            const nbTime = document.getElementById('nbTime').value;
-            const timeValidation = validateBookingTime(nbDate, nbTime);
-            if (!timeValidation.valid) {
-                alert(timeValidation.message);
                 return;
             }
 
@@ -537,6 +565,7 @@
             try {
                 const response = await fetch(scriptURL, {
                     method: 'POST',
+                    redirect: 'follow',
                     body: params
                 });
                 
@@ -552,8 +581,8 @@
                     alert('เกิดข้อผิดพลาด: ' + result.message);
                 }
             } catch (error) {
-                console.error("Booking Create Error:", error);
-                alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์: " + error.message);
+                console.error("Booking Create Failed:", error);
+                alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
             } finally {
                 btn.innerHTML = '<span>ยืนยันการจองคิวใหม่</span>';
                 btn.disabled = false;
@@ -570,7 +599,10 @@
             
             try {
                 const urlWithCacheBuster = scriptURL + "?action=read&t=" + new Date().getTime();
-                const response = await fetch(urlWithCacheBuster);
+                const response = await fetch(urlWithCacheBuster, {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
                 
                 if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
                 const textData = await response.text();
@@ -578,16 +610,13 @@
                 try {
                     allData = JSON.parse(textData);
                 } catch (parseError) {
-                    throw new Error("ระบบไม่ได้ส่งข้อมูลกลับมาเป็น JSON หรือ URL Apps Script ยังไม่อนุญาตสิทธิ์");
+                    throw new Error("ระบบไม่ได้ส่งข้อมูลกลับมาเป็น JSON (คาดว่าติดหน้าต่างขออนุญาตสิทธิ์การเข้าถึงของ Google)");
                 }
                 
                 updateDashboard(allData);
             } catch (error) {
-                console.error('🚨 Fetch Error:', error.message);
-                if(errorBanner) {
-                    errorBanner.classList.remove('hidden');
-                    document.getElementById('errorText').innerHTML = `ไม่สามารถเชื่อมต่อฐานข้อมูลได้ (${error.message}) <br> <span class="text-red-600 font-semibold mt-1 inline-block">*โปรดตรวจสอบสิทธิ์การเข้าถึง Google Apps Script หรือ URL อีกครั้ง</span>`;
-                }
+                console.error('🚨 Fetch Error:', error);
+                if(errorBanner) errorBanner.classList.remove('hidden');
             } finally {
                 if(refreshIcon) refreshIcon.classList.remove('animate-spin');
             }
@@ -596,34 +625,36 @@
         function updateDashboard(data) {
             if (!data || !Array.isArray(data)) return;
 
-            const getVal = (obj, possibleKeys) => {
-                const keys = Object.keys(obj);
-                for (let k of keys) {
-                    let cleanK = k.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().toLowerCase();
-                    if (possibleKeys.some(pk => pk.toLowerCase() === cleanK)) {
-                        return obj[k];
-                    }
-                }
-                return undefined;
+            const getVal = (obj, keyName) => {
+                const key = Object.keys(obj).find(k => k.trim() === keyName);
+                return key ? obj[key] : undefined;
             };
 
+            // 💡 1. ประมวลผลและจัดรูปแบบวันที่ให้ข้อมูลทั้งหมดก่อน
             const processedData = data.map(item => {
-                let rawDate = getVal(item, ["วันที่นัด", "วันที่", "date", "bookingdate", "วันนัด"]);
-                let rawTime = getVal(item, ["เวลานัด", "เวลา", "time", "bookingtime", "เวลานัดหมาย"]);
-                let rawProc = getVal(item, ["หัตถการ", "procedure", "บริการ", "รายการ"]);
+                let rawDate = getVal(item, "วันที่นัด");
+                
+                // ค้นหาคอลัมน์เวลา และบังคับไม่ให้ดึงจาก Timestamp เด็ดขาด
+                let timeKey = Object.keys(item).find(k => (k.includes('เวลา') || k.toLowerCase().includes('time')) && !k.toLowerCase().includes('timestamp')) || "เวลานัด";
+                let rawTime = item[timeKey];
+                
+                let rawProc = getVal(item, "หัตถการ");
 
                 if (rawProc && String(rawProc).includes('1899-12-30T')) {
-                    if (!rawTime || !String(rawTime).includes('1899-12-30T')) {
+                    if (rawTime && !String(rawTime).includes('1899-12-30T')) {
                         let temp = rawTime; rawTime = rawProc; rawProc = temp;
+                    } else {
+                        rawProc = "-"; 
                     }
                 }
-                if (!rawProc || String(rawProc).includes('1899-12-30T')) rawProc = "-";
 
-                let datePart = "";
                 rawDate = rawDate ? String(rawDate).trim() : "";
+                let datePart = "";
                 if (rawDate.includes('T')) {
                     let d = new Date(rawDate);
-                    datePart = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+                    // บังคับใช้ Timezone ประเทศไทย (Asia/Bangkok) ป้องกันปัญหาเปิดจากเครื่องต่างโซนเวลา
+                    let thDate = new Date(d.toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
+                    datePart = `${thDate.getFullYear()}-${(thDate.getMonth() + 1).toString().padStart(2, '0')}-${thDate.getDate().toString().padStart(2, '0')}`;
                 } else if (rawDate.includes('/')) {
                     let parts = rawDate.split('/');
                     if (parts.length === 3) {
@@ -635,35 +666,56 @@
                     datePart = rawDate.split(' ')[0];
                 }
 
-                let timePart = "11:00:00";
-                if (rawTime !== undefined && rawTime !== null && rawTime !== "") {
-                    let strTime = String(rawTime).trim();
+                let timePart = "00:00:00"; // ค่าเริ่มต้น หากไม่มีข้อมูลจะกลายเป็น 00:00 แทนเพื่อความชัดเจน
+                
+                if (rawTime) {
+                    let timeStr = String(rawTime).trim();
+                    let timeNum = parseFloat(timeStr);
                     
-                    if (strTime.includes('T')) {
-                        let d = new Date(strTime);
-                        if (!isNaN(d.getTime())) {
-                            timePart = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:00`;
+                    if (!isNaN(timeNum) && timeNum > 0 && timeNum < 1 && !timeStr.includes(':') && !timeStr.includes('-')) {
+                        // 1. กรณีเป็นทศนิยมจาก Google Sheets (เช่น 0.583333 -> 14:00)
+                        let totalMinutes = Math.round(timeNum * 24 * 60);
+                        let h = Math.floor(totalMinutes / 60);
+                        let m = totalMinutes % 60;
+                        timePart = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:00`;
+                    } 
+                    else if (timeStr.includes('T') && (timeStr.includes('Z') || timeStr.includes('+'))) {
+                        // 2. กรณีเป็น ISO String (เช่น "1899-12-30T07:00:00.000Z")
+                        let d = new Date(timeStr.replace('1899', '2000'));
+                        if (!isNaN(d)) {
+                            // บังคับใช้ Timezone ประเทศไทย (Asia/Bangkok) ป้องกันปัญหาเปิดจากเครื่องต่างโซนเวลา
+                            let thTime = new Date(d.toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
+                            let h = thTime.getHours();
+                            let m = thTime.getMinutes();
+                            
+                            // 💡 แก้บั๊ก Google Sheets: ปี 1899 ใช้ Timezone +06:42:04 
+                            // เมื่อเบราว์เซอร์ปัจจุบันคำนวณ จะทำให้เวลาเกินมา 17-18 นาทีเสมอ
+                            // จึงต้องดักจับเศษนาที 17, 18 แล้วปัดทิ้งให้กลับมาเป็น .00 ตามที่ตั้งใจจอง
+                            if (m >= 16 && m <= 19) {
+                                m = 0;
+                            } else if (m >= 46 && m <= 49) {
+                                m = 30; // เผื่อกรณีจองแบบ .30
+                            }
+                            
+                            timePart = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:00`;
+                        } else {
+                            let match = timeStr.match(/T(\d{2}):(\d{2})/);
+                            if (match) timePart = `${match[1]}:${match[2]}:00`;
                         }
-                    } else if (strTime.includes(':')) {
-                        let tParts = strTime.split(':');
-                        timePart = `${tParts[0].padStart(2, '0')}:${tParts[1].padStart(2, '0')}:00`;
-                    } else if (strTime.includes('.')) {
-                        let tParts = strTime.replace(/[^0-9.]/g, '').split('.');
-                        if (tParts.length >= 2) {
-                            timePart = `${tParts[0].padStart(2, '0')}:${(tParts[1] + '0').substring(0, 2)}:00`;
-                        }
-                    } else if (!isNaN(strTime)) {
-                        let num = parseFloat(strTime);
-                        if (num < 1) { 
-                            let totalMinutes = Math.round(num * 24 * 60);
-                            let h = Math.floor(totalMinutes / 60);
-                            let m = totalMinutes % 60;
-                            timePart = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`;
+                    }
+                    else {
+                        // 3. กรณีเป็น String ข้อความทั่วไป (เช่น "14:00", "14.00")
+                        let match = timeStr.match(/(\d{1,2})[:.](\d{2})/);
+                        if (match) {
+                            timePart = `${match[1].padStart(2, '0')}:${match[2]}:00`;
+                        } else if (/^\d{1,2}$/.test(timeStr)) {
+                            // กรณีพิมพ์ตัวเลขชั่วโมงโดดๆ เช่น "14" ให้ปัดเป็น 14:00
+                            timePart = `${timeStr.padStart(2, '0')}:00:00`;
                         }
                     }
                 }
 
-                const rawStatus = getVal(item, ["สถานะ", "status"]);
+                const rawStatus = getVal(item, "สถานะ");
                 const status = rawStatus ? String(rawStatus).trim() : "ยังไม่มา";
 
                 return {
@@ -675,8 +727,11 @@
                 };
             });
 
+            // 💡 2. กรองข้อมูลสำหรับทำ "สรุปตัวเลข (Cards)" ให้ตรงกับวันที่เลือก
             const selectedDate = document.getElementById('reportDateFilter').value;
             const reportData = processedData.filter(item => item._normalizedDate === selectedDate);
+            currentReportData = reportData; // เก็บข้อมูลที่กรองแล้วไว้ใช้กับ Modal แสดงรายชื่อ
+            
             const countByStatus = (statusName) => reportData.filter(item => item._status === statusName).length;
 
             document.getElementById('statTotal').textContent = reportData.length;
@@ -686,6 +741,7 @@
             document.getElementById('statNoShow').textContent = countByStatus("ไม่มาตามนัด");
             document.getElementById('statCancelled').textContent = countByStatus("ยกเลิกนัด");
 
+            // 💡 3. เอาข้อมูลทั้งหมด (ไม่ต้องกรองวัน) ไปวาดปฏิทิน
             const events = processedData.map(item => {
                 if (!item._normalizedDate || item._normalizedDate === "" || item._normalizedDate === "undefined") return null;
 
@@ -706,25 +762,19 @@
                     eventColor = '#991b1b'; 
                 }
 
-                let customerName = getVal(item, ["ชื่อลูกค้า", "customername", "ชื่อ", "ชื่อผู้รับบริการ"]);
-                let rowId = getVal(item, ["rowid", "id"]);
-                let hn = getVal(item, ["hn", "เลขที่ hn"]);
-                let phone = getVal(item, ["เบอร์โทรศัพท์", "เบอร์โทร", "phonenumber", "tel"]);
-                let booker = getVal(item, ["ชื่อผู้นัด", "bookername", "ผู้นัด"]);
-
                 return {
-                    title: (customerName || "ไม่มีชื่อ") + titleSuffix, 
+                    title: (getVal(item, "ชื่อลูกค้า") || "ไม่มีชื่อ") + titleSuffix, 
                     start: `${item._normalizedDate}T${item._normalizedTime}`, 
                     color: eventColor,
                     textColor: textColor,
                     display: 'block', 
                     extendedProps: {
-                        rowId: rowId,
-                        name: customerName,
-                        hn: hn,
-                        phone: phone,
+                        rowId: getVal(item, "rowId"),
+                        name: getVal(item, "ชื่อลูกค้า"),
+                        hn: getVal(item, "HN"),
+                        phone: getVal(item, "เบอร์โทรศัพท์"),
                         proc: item._proc || '-', 
-                        booker: booker,
+                        booker: getVal(item, "ชื่อผู้นัด"),
                         status: item._status,
                         dateStr: item._normalizedDate,
                         timeStr: item._normalizedTime.substring(0, 5) 
@@ -732,7 +782,6 @@
                 };
             }).filter(e => e !== null); 
 
-            window._currentEventsList = events; 
             calendar.removeAllEvents();
             calendar.addEventSource(events);
         }
@@ -774,8 +823,8 @@
                         <div><p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">หัตถการ</p><p class="font-bold text-slate-700 text-sm whitespace-normal">${props.proc}</p></div>
                     </div>
                     <div class="flex items-center gap-4 bg-slate-50 p-3 rounded-2xl">
-                        <div class="w-10 h-10 bg-white shadow-sm rounded-xl flex items-center justify-center text-slate-500"><i data-lucide="user" class="w-5 h-5"></i></div>
-                        <div><p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">ชื่อผู้นัด</p><p class="font-bold text-slate-700 text-sm">${props.booker || '-'}</p></div>
+                        <div class="w-10 h-10 bg-white shadow-sm rounded-xl flex items-center justify-center text-slate-500"><i data-lucide="user-check" class="w-5 h-5"></i></div>
+                        <div><p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">ชื่อผู้นัด</p><p class="font-bold text-slate-700 text-sm whitespace-normal">${props.booker || '-'}</p></div>
                     </div>
                 </div>
             `;
@@ -806,12 +855,81 @@
                 </div>
             `;
             
-            applyDynamicTimeConstraint(document.getElementById('rescheduleDate'), document.getElementById('rescheduleTime'));
-            
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             setTimeout(() => { modal.querySelector('.modal-content').classList.remove('scale-95', 'opacity-0'); }, 10);
             initIcons(); 
+        }
+
+        // 💡 ฟังก์ชันใหม่สำหรับคลิกดูรายชื่อในแต่ละสถานะ
+        function showStatusList(statusName) {
+            let filteredData = [];
+            let bgColor = 'bg-blue-100';
+            let textColor = 'text-blue-600';
+            let iconName = 'users';
+
+            if (statusName === 'ทั้งหมด') {
+                filteredData = currentReportData;
+            } else {
+                filteredData = currentReportData.filter(item => item._status === statusName);
+                if(statusName === "มาแล้ว") { bgColor = 'bg-emerald-100'; textColor = 'text-emerald-600'; iconName = 'check-circle'; }
+                else if(statusName === "ยังไม่มา") { bgColor = 'bg-amber-100'; textColor = 'text-amber-600'; iconName = 'clock'; }
+                else if(statusName === "เลื่อนนัด") { bgColor = 'bg-indigo-100'; textColor = 'text-indigo-600'; iconName = 'calendar-days'; }
+                else if(statusName === "ไม่มาตามนัด") { bgColor = 'bg-rose-100'; textColor = 'text-rose-600'; iconName = 'user-x'; }
+                else if(statusName === "ยกเลิกนัด") { bgColor = 'bg-slate-200'; textColor = 'text-slate-600'; iconName = 'x-circle'; }
+            }
+
+            document.getElementById('statusListTitle').textContent = `รายชื่อ${statusName} (${filteredData.length})`;
+            
+            const iconDiv = document.getElementById('statusListIcon');
+            iconDiv.className = `p-2 rounded-xl ${bgColor} ${textColor}`;
+            iconDiv.innerHTML = `<i data-lucide="${iconName}" class="w-6 h-6"></i>`;
+
+            const content = document.getElementById('statusListContent');
+            if (filteredData.length === 0) {
+                content.innerHTML = `<div class="text-center py-8 text-slate-400 font-medium">ไม่มีข้อมูลสำหรับสถานะนี้ในวันนี้</div>`;
+            } else {
+                const getVal = (obj, keyName) => {
+                    const key = Object.keys(obj).find(k => k.trim() === keyName);
+                    return key ? obj[key] : undefined;
+                };
+
+                content.innerHTML = filteredData.map(item => {
+                    const name = getVal(item, "ชื่อลูกค้า") || 'ไม่มีชื่อ';
+                    const phone = getVal(item, "เบอร์โทรศัพท์") || '-';
+                    const time = item._normalizedTime ? item._normalizedTime.substring(0, 5) : '-';
+                    const proc = item._proc || '-';
+                    
+                    return `
+                        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100 flex justify-between items-center hover:bg-slate-100 transition-colors">
+                            <div class="flex-1 overflow-hidden pr-2">
+                                <div class="font-bold text-slate-800 text-sm whitespace-nowrap overflow-hidden text-ellipsis">${name}</div>
+                                <div class="text-xs text-slate-500 font-medium mt-0.5"><i data-lucide="phone" class="w-3 h-3 inline pb-0.5"></i> ${phone}</div>
+                            </div>
+                            <div class="text-right shrink-0">
+                                <div class="text-blue-600 font-bold text-sm">${time} น.</div>
+                                <div class="text-[10px] text-slate-400 max-w-[100px] whitespace-nowrap overflow-hidden text-ellipsis">${proc}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            const modal = document.getElementById('statusListModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => { modal.querySelector('.modal-content').classList.remove('scale-95', 'opacity-0'); }, 10);
+            initIcons();
+        }
+
+        function closeStatusListModal() {
+            const modal = document.getElementById('statusListModal');
+            const modalBody = modal.querySelector('.modal-content');
+            modalBody.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
         }
 
         function toggleRescheduleForm() {
@@ -832,12 +950,6 @@
             
             if (!newDate || !newTime) {
                 alert("กรุณาเลือกวันและเวลาใหม่ให้ครบถ้วน");
-                return;
-            }
-
-            const timeValidation = validateBookingTime(newDate, newTime);
-            if (!timeValidation.valid) {
-                alert(timeValidation.message);
                 return;
             }
             
@@ -862,7 +974,7 @@
                 updateParams.append('rowId', currentRowId);
                 updateParams.append('status', 'เลื่อนนัด');
 
-                let updateResponse = await fetch(scriptURL, { method: 'POST', body: updateParams });
+                let updateResponse = await fetch(scriptURL, { method: 'POST', redirect: 'follow', body: updateParams });
                 let updateResult = await updateResponse.json();
 
                 if (updateResult.status !== 'success') {
@@ -893,7 +1005,7 @@
                 createParams.append('procedure', procVal);
                 createParams.append('bookerName', currentEventProps.booker || '');
 
-                let createResponse = await fetch(scriptURL, { method: 'POST', body: createParams });
+                let createResponse = await fetch(scriptURL, { method: 'POST', redirect: 'follow', body: createParams });
                 let createResult = await createResponse.json();
 
                 if (createResult.status === 'duplicate') {
@@ -903,11 +1015,10 @@
                 }
 
                 allData = allData.map(item => {
-                    const rowIdKey = Object.keys(item).find(k => k.trim() === "rowId") || "rowId";
-                    if (item[rowIdKey] === currentRowId || item.rowId === currentRowId) {
+                    const rowIdKey = Object.keys(item).find(k => k.trim() === "rowId");
+                    if (rowIdKey && item[rowIdKey] === currentRowId) {
                         const statusKey = Object.keys(item).find(k => k.trim() === "สถานะ") || "สถานะ";
                         item[statusKey] = 'เลื่อนนัด';
-                        item._status = 'เลื่อนนัด';
                     }
                     return item;
                 });
@@ -919,11 +1030,11 @@
             } catch (error) {
                 console.error("Reschedule Error:", error);
                 alert("เกิดข้อผิดพลาดในการเลื่อนนัด: " + error.message);
+                btn.innerHTML = '<span>ยืนยันการย้ายคิว</span>';
+                btn.disabled = false;
             } finally {
                 actionContainer.style.opacity = '1';
                 actionContainer.style.pointerEvents = 'auto';
-                btn.innerHTML = '<span>ยืนยันการย้ายคิว</span>';
-                btn.disabled = false;
             }
         }
 
@@ -942,6 +1053,7 @@
             try {
                 const response = await fetch(scriptURL, {
                     method: 'POST',
+                    redirect: 'follow',
                     body: params
                 });
                 
@@ -949,11 +1061,10 @@
                 
                 if (result.status === 'success') {
                     allData = allData.map(item => {
-                        const rowIdKey = Object.keys(item).find(k => k.trim() === "rowId") || "rowId";
-                        if (item[rowIdKey] === currentRowId || item.rowId === currentRowId) {
+                        const rowIdKey = Object.keys(item).find(k => k.trim() === "rowId");
+                        if (rowIdKey && item[rowIdKey] === currentRowId) {
                             const statusKey = Object.keys(item).find(k => k.trim() === "สถานะ") || "สถานะ";
                             item[statusKey] = status;
-                            item._status = status;
                         }
                         return item;
                     });
@@ -965,8 +1076,8 @@
                     alert('ไม่สามารถอัปเดตข้อมูลได้: ' + result.message);
                 }
             } catch (error) {
-                console.error("Update Status Error:", error);
-                alert("เกิดข้อผิดพลาดในการอัปเดตสถานะ: " + error.message);
+                console.error("Update Failed:", error);
+                alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
             } finally {
                 actionContainer.style.opacity = '1';
                 actionContainer.style.pointerEvents = 'auto';
@@ -983,79 +1094,6 @@
                 currentRowId = null;
                 currentEventProps = null;
             }, 300);
-        }
-
-        function showStatusList(status) {
-            if (!window._currentEventsList) return;
-
-            const selectedDate = document.getElementById('reportDateFilter').value;
-            const modal = document.getElementById('listModal');
-            const content = document.getElementById('listModalContent');
-            const title = document.getElementById('listModalTitle');
-            const iconContainer = document.getElementById('listModalIcon');
-
-            title.textContent = `รายชื่อ: ${status}`;
-            let bgClass = 'bg-blue-100';
-            let textClass = 'text-blue-600';
-            let iconName = 'users';
-
-            if(status === 'มาแล้ว') { bgClass = 'bg-emerald-100'; textClass = 'text-emerald-600'; iconName = 'check-circle'; }
-            else if(status === 'ยังไม่มา') { bgClass = 'bg-amber-100'; textClass = 'text-amber-600'; iconName = 'clock'; }
-            else if(status === 'เลื่อนนัด') { bgClass = 'bg-indigo-100'; textClass = 'text-indigo-600'; iconName = 'calendar-days'; }
-            else if(status === 'ไม่มาตามนัด') { bgClass = 'bg-rose-100'; textClass = 'text-rose-600'; iconName = 'user-x'; }
-            else if(status === 'ยกเลิกนัด') { bgClass = 'bg-slate-100'; textClass = 'text-slate-600'; iconName = 'x-circle'; }
-
-            iconContainer.className = `p-2 rounded-xl ${bgClass} ${textClass}`;
-            iconContainer.innerHTML = `<i data-lucide="${iconName}" class="w-6 h-6"></i>`;
-
-            let list = window._currentEventsList.filter(e => e.extendedProps.dateStr === selectedDate);
-            if (status !== 'ทั้งหมด') {
-                list = list.filter(e => e.extendedProps.status === status);
-            }
-
-            list.sort((a, b) => a.extendedProps.timeStr.localeCompare(b.extendedProps.timeStr));
-
-            if (list.length === 0) {
-                content.innerHTML = `<div class="text-center py-10 text-slate-400 flex flex-col items-center gap-3"><i data-lucide="inbox" class="w-10 h-10 opacity-30"></i><p class="font-medium text-sm">ไม่มีรายการในสถานะนี้</p></div>`;
-            } else {
-                content.innerHTML = list.map(e => `
-                    <div onclick="openDetailsFromList('${e.extendedProps.rowId}')" class="p-3.5 border border-slate-100 rounded-2xl flex justify-between items-center hover:bg-blue-50 hover:border-blue-100 cursor-pointer transition-all active:scale-[0.98]">
-                        <div class="flex-1 min-w-0 pr-3">
-                            <div class="font-bold text-slate-800 truncate text-sm mb-0.5">${e.extendedProps.name}</div>
-                            <div class="text-[11px] text-slate-500 truncate flex items-center gap-1 mb-0.5"><i data-lucide="activity" class="w-3 h-3"></i> ${e.extendedProps.proc}</div>
-                            <div class="text-[11px] text-slate-500 truncate flex items-center gap-1"><i data-lucide="user" class="w-3 h-3"></i> ผู้นัด: ${e.extendedProps.booker || '-'}</div>
-                        </div>
-                        <div class="flex flex-col items-end shrink-0">
-                            <div class="font-bold text-blue-700 bg-white shadow-sm border border-blue-100 px-2 py-1 rounded-lg text-xs flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> ${e.extendedProps.timeStr} น.</div>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            setTimeout(() => { modal.querySelector('.modal-content').classList.remove('scale-95', 'opacity-0'); }, 10);
-            initIcons();
-        }
-
-        function closeListModal() {
-            const modal = document.getElementById('listModal');
-            modal.querySelector('.modal-content').classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }, 300);
-        }
-
-        function openDetailsFromList(rowId) {
-            if (!window._currentEventsList) return;
-            const event = window._currentEventsList.find(e => e.extendedProps.rowId === rowId);
-            if (event) {
-                closeListModal();
-                setTimeout(() => {
-                    showDetails(event.extendedProps);
-                }, 300); 
-            }
         }
     </script>
 </body>
