@@ -552,40 +552,12 @@
                     alert('เกิดข้อผิดพลาด: ' + result.message);
                 }
             } catch (error) {
-                console.warn("Booking Create Warning (Mocking locally):", error.message);
-                
-                // Fallback: Add to local memory so UI still functions during API issues
-                const newBooking = {
-                    "rowId": "mock_" + Date.now(),
-                    "วันที่นัด": nbDate,
-                    "เวลานัด": nbTime,
-                    "หัตถการ": formData.get('procedure') || "-",
-                    "ชื่อลูกค้า": formData.get('customerName') || "ไม่มีชื่อ",
-                    "hn": formData.get('hn') || "-",
-                    "เบอร์โทรศัพท์": formData.get('phoneNumber') || "-",
-                    "ชื่อผู้นัด": formData.get('bookerName') || "-",
-                    "สถานะ": "ยังไม่มา"
-                };
-                allData.push(newBooking);
-
-                alert("เพิ่มข้อมูลจำลองสำเร็จ (เนื่องจากไม่สามารถเชื่อมต่อเซิร์ฟเวอร์จริงได้)");
-                closeNewBookingModal();
-                updateDashboard(allData);
+                console.error("Booking Create Error:", error);
+                alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์: " + error.message);
             } finally {
                 btn.innerHTML = '<span>ยืนยันการจองคิวใหม่</span>';
                 btn.disabled = false;
             }
-        }
-
-        // สร้างข้อมูลจำลอง (Mock Data) กรณี API ล่ม
-        function getMockData() {
-            const today = new Date().toISOString().split('T')[0];
-            return [
-                { rowId: "1", "วันที่นัด": today, "เวลานัด": "11:00", "หัตถการ": "ตรวจสภาพผิวหน้า", "ชื่อลูกค้า": "สมชาย ใจดี", "hn": "HN001", "เบอร์โทรศัพท์": "0812345678", "ชื่อผู้นัด": "แอดมิน A", "สถานะ": "มาแล้ว" },
-                { rowId: "2", "วันที่นัด": today, "เวลานัด": "13:00", "หัตถการ": "ทำเลเซอร์", "ชื่อลูกค้า": "สมหญิง รักดี", "hn": "HN002", "เบอร์โทรศัพท์": "0898765432", "ชื่อผู้นัด": "แอดมิน B", "สถานะ": "ยังไม่มา" },
-                { rowId: "3", "วันที่นัด": today, "เวลานัด": "15:00", "หัตถการ": "ฉีดโบท็อกซ์", "ชื่อลูกค้า": "มานี มีตา", "hn": "HN003", "เบอร์โทรศัพท์": "0855555555", "ชื่อผู้นัด": "แอดมิน C", "สถานะ": "เลื่อนนัด" },
-                { rowId: "4", "วันที่นัด": today, "เวลานัด": "17:00", "หัตถการ": "รักษาสิว", "ชื่อลูกค้า": "ปิติ ยินดี", "hn": "-", "เบอร์โทรศัพท์": "0833333333", "ชื่อผู้นัด": "แอดมิน A", "สถานะ": "ไม่มาตามนัด" }
-            ];
         }
 
         async function fetchData() {
@@ -611,16 +583,11 @@
                 
                 updateDashboard(allData);
             } catch (error) {
-                console.warn('🚨 Fetch Warning:', error.message);
+                console.error('🚨 Fetch Error:', error.message);
                 if(errorBanner) {
                     errorBanner.classList.remove('hidden');
-                    document.getElementById('errorText').innerHTML = `ไม่สามารถเชื่อมต่อฐานข้อมูลได้ (${error.message}) <br> <span class="text-blue-600 font-semibold mt-1 inline-block">*ระบบกำลังทำงานด้วยข้อมูลจำลอง (Mock Data) ในหน่วยความจำ</span>`;
+                    document.getElementById('errorText').innerHTML = `ไม่สามารถเชื่อมต่อฐานข้อมูลได้ (${error.message}) <br> <span class="text-red-600 font-semibold mt-1 inline-block">*โปรดตรวจสอบสิทธิ์การเข้าถึง Google Apps Script หรือ URL อีกครั้ง</span>`;
                 }
-                // FALLBACK TO MOCK DATA ONLY IF CURRENT DATA IS EMPTY
-                if (allData.length === 0) {
-                    allData = getMockData();
-                }
-                updateDashboard(allData);
             } finally {
                 if(refreshIcon) refreshIcon.classList.remove('animate-spin');
             }
@@ -950,40 +917,8 @@
                 fetchData(); 
 
             } catch (error) {
-                console.warn("Reschedule Warning (Mocking locally):", error.message);
-                
-                // Fallback: Local data mutation to keep UI functioning without API
-                allData = allData.map(item => {
-                    const rowIdKey = Object.keys(item).find(k => k.trim() === "rowId") || "rowId";
-                    if (item[rowIdKey] === currentRowId || item.rowId === currentRowId) {
-                        const statusKey = Object.keys(item).find(k => k.trim() === "สถานะ") || "สถานะ";
-                        item[statusKey] = 'เลื่อนนัด';
-                        item._status = 'เลื่อนนัด';
-                    }
-                    return item;
-                });
-
-                let oldDateParts = currentEventProps.dateStr.split('-');
-                let formattedOldDate = oldDateParts.length === 3 ? `${oldDateParts[2]}/${oldDateParts[1]}/${oldDateParts[0]}` : currentEventProps.dateStr;
-                let originalProc = currentEventProps.proc === '-' ? '' : String(currentEventProps.proc);
-                originalProc = originalProc.replace(/\s*\(ย้ายจาก.*?\)/g, '').trim(); 
-                let procVal = originalProc ? `${originalProc} (ย้ายจาก ${formattedOldDate} เวลา ${currentEventProps.timeStr} น.)` : `(ย้ายจาก ${formattedOldDate} เวลา ${currentEventProps.timeStr} น.)`;
-
-                const newBooking = {
-                    "rowId": "mock_reschedule_" + Date.now(),
-                    "วันที่นัด": newDate,
-                    "เวลานัด": newTime,
-                    "หัตถการ": procVal,
-                    "ชื่อลูกค้า": currentEventProps.name,
-                    "hn": currentEventProps.hn,
-                    "เบอร์โทรศัพท์": currentEventProps.phone,
-                    "ชื่อผู้นัด": currentEventProps.booker,
-                    "สถานะ": "ยังไม่มา"
-                };
-                allData.push(newBooking);
-
-                updateDashboard(allData); 
-                closeModal();
+                console.error("Reschedule Error:", error);
+                alert("เกิดข้อผิดพลาดในการเลื่อนนัด: " + error.message);
             } finally {
                 actionContainer.style.opacity = '1';
                 actionContainer.style.pointerEvents = 'auto';
@@ -1030,20 +965,8 @@
                     alert('ไม่สามารถอัปเดตข้อมูลได้: ' + result.message);
                 }
             } catch (error) {
-                console.warn("Update Status Warning (Mocking locally):", error.message);
-                
-                // Fallback Update - if API failed, locally update the data array to show working UI
-                allData = allData.map(item => {
-                    const rowIdKey = Object.keys(item).find(k => k.trim() === "rowId") || "rowId";
-                    if (item[rowIdKey] === currentRowId || item.rowId === currentRowId) {
-                        const statusKey = Object.keys(item).find(k => k.trim() === "สถานะ") || "สถานะ";
-                        item[statusKey] = status;
-                        item._status = status;
-                    }
-                    return item;
-                });
-                updateDashboard(allData);
-                closeModal();
+                console.error("Update Status Error:", error);
+                alert("เกิดข้อผิดพลาดในการอัปเดตสถานะ: " + error.message);
             } finally {
                 actionContainer.style.opacity = '1';
                 actionContainer.style.pointerEvents = 'auto';
