@@ -23,7 +23,6 @@
 
         /* ===== FULLCALENDAR MOBILE RESPONSIVE ===== */
         @media (max-width: 640px) {
-            /* Toolbar: Stack ปุ่มต่างๆ บนมือถือ */
             .fc-header-toolbar {
                 padding: 0.75rem !important;
                 flex-wrap: wrap !important;
@@ -34,25 +33,20 @@
                 flex-wrap: wrap !important;
                 gap: 4px !important;
             }
-            /* ซ่อน View Switcher (week/day) บนมือถือ เหลือแค่ prev/next/today */
             .fc-header-toolbar .fc-toolbar-chunk:last-child {
                 display: none !important;
             }
-            /* ย่อขนาด title */
             .fc-toolbar-title {
                 font-size: 1rem !important;
             }
-            /* ปุ่มนำทาง */
             .fc-button-primary {
                 padding: 0.35rem 0.6rem !important;
                 font-size: 0.75rem !important;
             }
-            /* ปุ่มเพิ่มคิว */
             .fc-addBookingBtn-button {
                 padding: 0.35rem 0.7rem !important;
                 font-size: 0.75rem !important;
             }
-            /* ตัวอักษรในปฏิทิน */
             .fc-col-header-cell-cushion {
                 padding: 6px 2px !important;
                 font-size: 0.7rem !important;
@@ -61,7 +55,6 @@
                 padding: 4px !important;
                 font-size: 0.75rem !important;
             }
-            /* Event บนมือถือ */
             .fc-event {
                 padding: 1px 3px !important;
                 margin: 1px !important;
@@ -70,20 +63,16 @@
             }
             .custom-event-time { font-size: 0.62rem !important; }
             .custom-event-title { font-size: 0.68rem !important; }
-            /* ลดความสูง timegrid slot */
             .fc-timegrid-slot { height: 2.5rem !important; }
             .fc-timegrid-axis-cushion { font-size: 0.65rem !important; }
-            /* ซ่อนปุ่ม + บนมือถือ (ใช้ปุ่ม toolbar แทน) */
             .add-event-btn { display: none !important; }
         }
 
         @media (max-width: 480px) {
-            /* ซ่อน label ยาวๆ ของปุ่ม เหลือแค่ icon-like text */
             .fc-addBookingBtn-button { font-size: 0.7rem !important; }
             .fc-toolbar-title { font-size: 0.9rem !important; }
         }
 
-        /* เปลี่ยนเคอร์เซอร์เป็น Pointer เมื่อชี้ที่ช่องปฏิทิน */
         .fc-daygrid-day-frame, .fc-timegrid-slot { cursor: pointer; transition: background-color 0.2s; }
         .fc-daygrid-day-frame:hover, .fc-timegrid-slot:hover { background-color: #f8fafc; }
         
@@ -104,27 +93,22 @@
         .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: #64748b; }
         .legend-color { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
         
-        /* สไตล์ Scrollbar สำหรับ Modal */
         #modalContent::-webkit-scrollbar, #newBookingModalContent::-webkit-scrollbar, #statusListContent::-webkit-scrollbar { width: 4px; }
         #modalContent::-webkit-scrollbar-thumb, #newBookingModalContent::-webkit-scrollbar-thumb, #statusListContent::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
-        /* สไตล์ปุ่ม + ในปฏิทิน */
         .fc-addBookingBtn-button { background-color: #2563eb !important; border-color: #2563eb !important; color: #ffffff !important; font-weight: 600 !important; border-radius: 0.5rem !important; }
         .fc-addBookingBtn-button:hover { background-color: #1d4ed8 !important; border-color: #1d4ed8 !important; }
         @media (max-width: 768px) { .add-event-btn { opacity: 1 !important; background-color: #eff6ff; color: #3b82f6; } }
 
-        /* ===== NAVBAR MOBILE ===== */
         @media (max-width: 640px) {
             .nav-title-text { font-size: 1rem; }
             #realtimeStatus { padding: 0.4rem 0.7rem; font-size: 0.75rem; border-radius: 0.65rem; }
         }
 
-        /* ===== REPORT DATE FILTER MOBILE ===== */
         @media (max-width: 640px) {
             #reportDateFilter { font-size: 0.8rem; }
         }
 
-        /* ===== SUMMARY CARDS MOBILE ===== */
         @media (max-width: 480px) {
             .stat-card { padding: 0.85rem 0.6rem !important; border-radius: 1.25rem !important; }
             .stat-icon-wrap { padding: 0.55rem !important; border-radius: 0.85rem !important; margin-bottom: 0.5rem !important; }
@@ -133,9 +117,7 @@
             .stat-value { font-size: 1.4rem !important; }
         }
 
-        /* ===== MODAL MOBILE ===== */
         @media (max-width: 640px) {
-            /* ให้ modal เต็มหน้าจอจากด้านล่างบนมือถือ */
             #eventModal > div,
             #newBookingModal > div,
             #statusListModal > div {
@@ -154,28 +136,87 @@
             #statusListModal {
                 align-items: flex-end !important;
             }
-            /* Action buttons ใน modal ให้ wrap ได้ */
             #actionContainer .flex.flex-wrap { gap: 0.5rem; }
             #actionContainer button { font-size: 0.8rem !important; padding: 0.6rem 0.5rem !important; }
         }
 
-        /* ===== CALENDAR WRAPPER MOBILE PADDING ===== */
         @media (max-width: 640px) {
             .calendar-wrapper { padding: 0.25rem !important; }
-            /* ลด padding ของ section */
             .section-header { padding: 1rem !important; }
         }
 
-        /* ===== LEGEND MOBILE ===== */
         @media (max-width: 640px) {
             .legend-wrap { gap: 0.5rem !important; }
             .legend-item { font-size: 0.72rem !important; }
             .legend-color { width: 9px !important; height: 9px !important; }
         }
 
-        /* ===== HINT BAR MOBILE ===== */
         @media (max-width: 640px) {
             .hint-bar { font-size: 0.68rem !important; padding: 0.5rem 0.75rem !important; }
+        }
+
+        /* ===== PAGE SYSTEM ===== */
+        .page-content { display: none; }
+        .page-content.active { display: block; }
+        
+        /* ===== NAV TABS ===== */
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #64748b;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .nav-tab:hover {
+            color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .nav-tab.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+        
+        @media (max-width: 640px) {
+            .nav-tab {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* ===== SUMMARY TABLE ===== */
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .summary-table th {
+            background-color: #f1f5f9;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: #475569;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .summary-table td {
+            padding: 0.75rem;
+            font-size: 0.875rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .summary-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+        
+        @media (max-width: 640px) {
+            .summary-table th,
+            .summary-table td {
+                padding: 0.5rem 0.25rem;
+                font-size: 0.7rem;
+            }
+            .summary-table th {
+                font-size: 0.65rem;
+            }
         }
     </style>
 </head>
@@ -201,91 +242,205 @@
         </div>
     </nav>
 
+    <!-- Navigation Tabs -->
+    <div class="bg-white border-b border-gray-200 sticky top-16 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex overflow-x-auto">
+                <div class="nav-tab active" onclick="switchPage('dashboard')">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4 inline mr-1"></i>
+                    Dashboard
+                </div>
+                <div class="nav-tab" onclick="switchPage('summary')">
+                    <i data-lucide="bar-chart-3" class="w-4 h-4 inline mr-1"></i>
+                    สรุปผลการจอง
+                </div>
+            </div>
+        </div>
+    </div>
+
     <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
-        <!-- Report Header with Date Filter -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-5">
-            <div>
-                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 tracking-tight">รายงานประจำวัน</h2>
-                <p class="text-xs sm:text-sm text-gray-500">สรุปข้อมูลการนัดหมายตามวันที่คุณเลือกด้านขวา</p>
-            </div>
-            <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 shadow-sm w-full sm:w-auto hover:border-blue-300 transition-colors">
-                <div class="p-1.5 bg-blue-50 text-blue-600 rounded-lg shrink-0">
-                    <i data-lucide="calendar-search" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+        
+        <!-- Dashboard Page -->
+        <div id="dashboardPage" class="page-content active">
+            <!-- Report Header with Date Filter -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-5">
+                <div>
+                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 tracking-tight">รายงานประจำวัน</h2>
+                    <p class="text-xs sm:text-sm text-gray-500">สรุปข้อมูลการนัดหมายตามวันที่คุณเลือกด้านขวา</p>
                 </div>
-                <div class="flex flex-col flex-1 sm:flex-none">
-                    <label class="text-[9px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider">เลือกวันที่ดูรายงาน</label>
-                    <input type="date" id="reportDateFilter" class="text-sm font-bold text-slate-800 outline-none bg-transparent cursor-pointer w-full">
+                <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 shadow-sm w-full sm:w-auto hover:border-blue-300 transition-colors">
+                    <div class="p-1.5 bg-blue-50 text-blue-600 rounded-lg shrink-0">
+                        <i data-lucide="calendar-search" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                    </div>
+                    <div class="flex flex-col flex-1 sm:flex-none">
+                        <label class="text-[9px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider">เลือกวันที่ดูรายงาน</label>
+                        <input type="date" id="reportDateFilter" class="text-sm font-bold text-slate-800 outline-none bg-transparent cursor-pointer w-full">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Cards Grid -->
+            <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4 mb-5 sm:mb-8">
+                <div onclick="showStatusList('ทั้งหมด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
+                    <div class="stat-icon-wrap p-2 sm:p-3 bg-blue-50 text-blue-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                        <i data-lucide="users" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                    </div>
+                    <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1 leading-tight">ทั้งหมด<br class="sm:hidden">(รายวัน)</p>
+                    <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statTotal">-</h3>
+                </div>
+                <div onclick="showStatusList('มาแล้ว')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
+                    <div class="stat-icon-wrap p-2 sm:p-3 bg-emerald-50 text-emerald-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                        <i data-lucide="check-circle" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                    </div>
+                    <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">มาแล้ว</p>
+                    <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statArrived">-</h3>
+                </div>
+                <div onclick="showStatusList('ยังไม่มา')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
+                    <div class="stat-icon-wrap p-2 sm:p-3 bg-amber-50 text-amber-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                        <i data-lucide="clock" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                    </div>
+                    <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">ยังไม่มา</p>
+                    <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statUpcoming">-</h3>
+                </div>
+                <div onclick="showStatusList('เลื่อนนัด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
+                    <div class="stat-icon-wrap p-2 sm:p-3 bg-indigo-50 text-indigo-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                        <i data-lucide="calendar-days" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                    </div>
+                    <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">เลื่อนนัด</p>
+                    <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statRescheduled">-</h3>
+                </div>
+                <div onclick="showStatusList('ไม่มาตามนัด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
+                    <div class="stat-icon-wrap p-2 sm:p-3 bg-rose-50 text-rose-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                        <i data-lucide="user-x" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                    </div>
+                    <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1 leading-tight">ไม่มา<br class="sm:hidden">ตามนัด</p>
+                    <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statNoShow">-</h3>
+                </div>
+                <div onclick="showStatusList('ยกเลิกนัด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
+                    <div class="stat-icon-wrap p-2 sm:p-3 bg-slate-100 text-slate-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                        <i data-lucide="x-circle" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                    </div>
+                    <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">ยกเลิกนัด</p>
+                    <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statCancelled">-</h3>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-[1.5rem] sm:rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+                <div class="section-header px-4 sm:px-6 py-3 sm:py-4 bg-white border-b border-gray-100 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="calendar" class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600"></i>
+                        <h2 class="font-bold text-gray-800 text-sm sm:text-base">ตารางนัดหมาย</h2>
+                    </div>
+                    <div class="legend-wrap flex flex-wrap gap-2 sm:gap-4">
+                        <div class="legend-item"><div class="legend-color bg-blue-500"></div> ยังไม่มา</div>
+                        <div class="legend-item"><div class="legend-color bg-yellow-500"></div> มาแล้ว</div>
+                        <div class="legend-item"><div class="legend-color bg-indigo-500"></div> เลื่อนนัด</div>
+                        <div class="legend-item"><div class="legend-color bg-red-400"></div> ไม่มานัด</div>
+                        <div class="legend-item"><div class="legend-color bg-red-800"></div> ยกเลิก</div>
+                    </div>
+                </div>
+                <div class="hint-bar px-4 sm:px-6 py-2 bg-blue-50 border-b border-blue-100 text-blue-700 text-xs font-medium flex items-center gap-2">
+                    <i data-lucide="mouse-pointer-click" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0"></i>
+                    <span class="hidden sm:inline">เคล็ดลับ: คุณสามารถเพิ่มคิวใหม่ได้ง่ายๆ เพียงแค่ "คลิก" ไปยังวันที่บนปฏิทินด้านล่าง </span>
+                    <span class="sm:hidden">กด "คลิก" วันที่บนปฏิทิน หรือกดปุ่ม "+ เพิ่มคิวใหม่" เพื่อเพิ่มนัดหมาย</span>
+                </div>
+                <div id="calendar" class="calendar-wrapper p-1 sm:p-2 md:p-4"></div>
+            </div>
+        </div>
+
+        <!-- Summary Page -->
+        <div id="summaryPage" class="page-content">
+            <div class="mb-6">
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 tracking-tight mb-2">สรุปผลการจอง</h2>
+                <p class="text-xs sm:text-sm text-gray-500">รายงานสรุปการนัดหมายแยกตามช่วงเวลาและผู้นัด</p>
+            </div>
+
+            <!-- Date Range Filter -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-6">
+                <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
+                    <div class="flex-1 w-full sm:w-auto">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">วันที่เริ่มต้น</label>
+                        <input type="date" id="summaryStartDate" class="w-full p-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="flex-1 w-full sm:w-auto">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">วันที่สิ้นสุด</label>
+                        <input type="date" id="summaryEndDate" class="w-full p-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <button onclick="generateSummary()" class="w-full sm:w-auto bg-blue-600 text-white font-bold px-6 py-2.5 rounded-xl hover:bg-blue-700 transition-all flex justify-center items-center gap-2">
+                        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                        สร้างรายงาน
+                    </button>
+                </div>
+            </div>
+
+            <!-- Overall Summary -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-6">
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i data-lucide="bar-chart-2" class="w-5 h-5 text-blue-600"></i>
+                    สรุปรวมตามช่วงเวลา
+                </h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 sm:gap-4">
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl">
+                        <p class="text-xs text-blue-600 font-bold mb-1">นัดรวมทั้งหมด</p>
+                        <p class="text-2xl font-bold text-blue-700" id="summaryTotalAll">0</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 p-4 rounded-xl">
+                        <p class="text-xs text-emerald-600 font-bold mb-1">มาแล้ว</p>
+                        <p class="text-2xl font-bold text-emerald-700" id="summaryTotalArrived">0</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-amber-50 to-amber-100 p-4 rounded-xl">
+                        <p class="text-xs text-amber-600 font-bold mb-1">ยังไม่มา</p>
+                        <p class="text-2xl font-bold text-amber-700" id="summaryTotalUpcoming">0</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 p-4 rounded-xl">
+                        <p class="text-xs text-indigo-600 font-bold mb-1">เลื่อนนัด</p>
+                        <p class="text-2xl font-bold text-indigo-700" id="summaryTotalRescheduled">0</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-rose-50 to-rose-100 p-4 rounded-xl">
+                        <p class="text-xs text-rose-600 font-bold mb-1">ไม่มาตามนัด</p>
+                        <p class="text-2xl font-bold text-rose-700" id="summaryTotalNoShow">0</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-4 rounded-xl">
+                        <p class="text-xs text-slate-600 font-bold mb-1">ยกเลิกนัด</p>
+                        <p class="text-2xl font-bold text-slate-700" id="summaryTotalCancelled">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booker Performance Table -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="px-4 sm:px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <i data-lucide="users-2" class="w-5 h-5 text-blue-600"></i>
+                        ผลการนัดแยกตามผู้นัด
+                    </h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="summary-table">
+                        <thead>
+                            <tr>
+                                <th class="text-left">ชื่อผู้นัด</th>
+                                <th class="text-center">นัดทั้งหมด</th>
+                                <th class="text-center">มาแล้ว</th>
+                                <th class="text-center">ยังไม่มา</th>
+                                <th class="text-center">เลื่อนนัด</th>
+                                <th class="text-center">ไม่มานัด</th>
+                                <th class="text-center">ยกเลิก</th>
+                                <th class="text-center">%นัดแล้วมา</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookerTableBody">
+                            <tr>
+                                <td colspan="8" class="text-center text-gray-400 py-8">
+                                    กรุณาเลือกช่วงวันที่และกดปุ่ม "สร้างรายงาน"
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
-        <!-- Summary Cards Grid -->
-        <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4 mb-5 sm:mb-8">
-            <div onclick="showStatusList('ทั้งหมด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
-                <div class="stat-icon-wrap p-2 sm:p-3 bg-blue-50 text-blue-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
-                    <i data-lucide="users" class="w-4 h-4 sm:w-6 sm:h-6"></i>
-                </div>
-                <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1 leading-tight">ทั้งหมด<br class="sm:hidden">(รายวัน)</p>
-                <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statTotal">-</h3>
-            </div>
-            <div onclick="showStatusList('มาแล้ว')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
-                <div class="stat-icon-wrap p-2 sm:p-3 bg-emerald-50 text-emerald-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
-                    <i data-lucide="check-circle" class="w-4 h-4 sm:w-6 sm:h-6"></i>
-                </div>
-                <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">มาแล้ว</p>
-                <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statArrived">-</h3>
-            </div>
-            <div onclick="showStatusList('ยังไม่มา')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
-                <div class="stat-icon-wrap p-2 sm:p-3 bg-amber-50 text-amber-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
-                    <i data-lucide="clock" class="w-4 h-4 sm:w-6 sm:h-6"></i>
-                </div>
-                <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">ยังไม่มา</p>
-                <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statUpcoming">-</h3>
-            </div>
-            <div onclick="showStatusList('เลื่อนนัด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
-                <div class="stat-icon-wrap p-2 sm:p-3 bg-indigo-50 text-indigo-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
-                    <i data-lucide="calendar-days" class="w-4 h-4 sm:w-6 sm:h-6"></i>
-                </div>
-                <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">เลื่อนนัด</p>
-                <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statRescheduled">-</h3>
-            </div>
-            <div onclick="showStatusList('ไม่มาตามนัด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
-                <div class="stat-icon-wrap p-2 sm:p-3 bg-rose-50 text-rose-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
-                    <i data-lucide="user-x" class="w-4 h-4 sm:w-6 sm:h-6"></i>
-                </div>
-                <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1 leading-tight">ไม่มา<br class="sm:hidden">ตามนัด</p>
-                <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statNoShow">-</h3>
-            </div>
-            <div onclick="showStatusList('ยกเลิกนัด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
-                <div class="stat-icon-wrap p-2 sm:p-3 bg-slate-100 text-slate-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
-                    <i data-lucide="x-circle" class="w-4 h-4 sm:w-6 sm:h-6"></i>
-                </div>
-                <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">ยกเลิกนัด</p>
-                <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statCancelled">-</h3>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-[1.5rem] sm:rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
-            <div class="section-header px-4 sm:px-6 py-3 sm:py-4 bg-white border-b border-gray-100 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="calendar" class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600"></i>
-                    <h2 class="font-bold text-gray-800 text-sm sm:text-base">ตารางนัดหมาย</h2>
-                </div>
-                <div class="legend-wrap flex flex-wrap gap-2 sm:gap-4">
-                    <div class="legend-item"><div class="legend-color bg-blue-500"></div> ยังไม่มา</div>
-                    <div class="legend-item"><div class="legend-color bg-yellow-500"></div> มาแล้ว</div>
-                    <div class="legend-item"><div class="legend-color bg-indigo-500"></div> เลื่อนนัด</div>
-                    <div class="legend-item"><div class="legend-color bg-red-400"></div> ไม่มานัด</div>
-                    <div class="legend-item"><div class="legend-color bg-red-800"></div> ยกเลิก</div>
-                </div>
-            </div>
-            <div class="hint-bar px-4 sm:px-6 py-2 bg-blue-50 border-b border-blue-100 text-blue-700 text-xs font-medium flex items-center gap-2">
-                <i data-lucide="mouse-pointer-click" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0"></i>
-                <span class="hidden sm:inline">เคล็ดลับ: คุณสามารถเพิ่มคิวใหม่ได้ง่ายๆ เพียงแค่ "คลิก" ไปยังวันที่บนปฏิทินด้านล่าง </span>
-                <span class="sm:hidden">กด "คลิก" วันที่บนปฏิทิน หรือกดปุ่ม "+ เพิ่มคิวใหม่" เพื่อเพิ่มนัดหมาย</span>
-            </div>
-            <div id="calendar" class="calendar-wrapper p-1 sm:p-2 md:p-4"></div>
-        </div>
     </main>
 
     <!-- Modal: Event Detail -->
@@ -393,7 +548,6 @@
         </div>
     </div>
 
-    <!-- อัปเกรด Firebase Web SDK เป็น 11.6.1 -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { initializeFirestore, collection, addDoc, updateDoc, doc, onSnapshot, query, serverTimestamp, memoryLocalCache } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -424,6 +578,121 @@
         let currentEventProps = null; 
         let currentReportData = [];
 
+        window.switchPage = function(pageName) {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            
+            if (pageName === 'dashboard') {
+                document.getElementById('dashboardPage').classList.add('active');
+                document.querySelector('.nav-tab:nth-child(1)').classList.add('active');
+            } else if (pageName === 'summary') {
+                document.getElementById('summaryPage').classList.add('active');
+                document.querySelector('.nav-tab:nth-child(2)').classList.add('active');
+            }
+            
+            initIcons();
+        }
+
+        window.generateSummary = function() {
+            const startDate = document.getElementById('summaryStartDate').value;
+            const endDate = document.getElementById('summaryEndDate').value;
+            
+            if (!startDate || !endDate) {
+                alert('กรุณาเลือกวันที่เริ่มต้นและสิ้นสุด');
+                return;
+            }
+            
+            if (startDate > endDate) {
+                alert('วันที่เริ่มต้นต้องไม่มากกว่าวันที่สิ้นสุด');
+                return;
+            }
+            
+            console.log('Generating summary for:', startDate, 'to', endDate);
+            console.log('Total data available:', allData.length);
+            
+            // Filter data by date range
+            const filteredData = allData.filter(item => {
+                const bookingDate = item["วันที่นัด"];
+                if (!bookingDate) return false;
+                return bookingDate >= startDate && bookingDate <= endDate;
+            });
+            
+            console.log('Filtered data:', filteredData.length);
+            
+            // Calculate overall summary
+            const totalAll = filteredData.length;
+            const totalArrived = filteredData.filter(item => item["สถานะ"] === "มาแล้ว").length;
+            const totalUpcoming = filteredData.filter(item => item["สถานะ"] === "ยังไม่มา").length;
+            const totalRescheduled = filteredData.filter(item => item["สถานะ"] === "เลื่อนนัด").length;
+            const totalNoShow = filteredData.filter(item => item["สถานะ"] === "ไม่มาตามนัด").length;
+            const totalCancelled = filteredData.filter(item => item["สถานะ"] === "ยกเลิกนัด").length;
+            
+            document.getElementById('summaryTotalAll').textContent = totalAll;
+            document.getElementById('summaryTotalArrived').textContent = totalArrived;
+            document.getElementById('summaryTotalUpcoming').textContent = totalUpcoming;
+            document.getElementById('summaryTotalRescheduled').textContent = totalRescheduled;
+            document.getElementById('summaryTotalNoShow').textContent = totalNoShow;
+            document.getElementById('summaryTotalCancelled').textContent = totalCancelled;
+            
+            // Group by booker name
+            const bookerStats = {};
+            filteredData.forEach(item => {
+                const bookerName = item["ชื่อผู้นัด"] || 'ไม่ระบุ';
+                if (!bookerStats[bookerName]) {
+                    bookerStats[bookerName] = {
+                        total: 0,
+                        arrived: 0,
+                        upcoming: 0,
+                        rescheduled: 0,
+                        noShow: 0,
+                        cancelled: 0
+                    };
+                }
+                
+                bookerStats[bookerName].total++;
+                const status = item["สถานะ"];
+                if (status === "มาแล้ว") bookerStats[bookerName].arrived++;
+                else if (status === "ยังไม่มา") bookerStats[bookerName].upcoming++;
+                else if (status === "เลื่อนนัด") bookerStats[bookerName].rescheduled++;
+                else if (status === "ไม่มาตามนัด") bookerStats[bookerName].noShow++;
+                else if (status === "ยกเลิกนัด") bookerStats[bookerName].cancelled++;
+            });
+            
+            console.log('Booker stats:', bookerStats);
+            
+            // Generate table rows
+            const tbody = document.getElementById('bookerTableBody');
+            if (Object.keys(bookerStats).length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center text-gray-400 py-8">ไม่พบข้อมูลในช่วงเวลาที่เลือก</td></tr>';
+            } else {
+                let html = '';
+                Object.keys(bookerStats).sort().forEach(bookerName => {
+                    const stats = bookerStats[bookerName];
+                    const arrivedPercent = stats.total > 0 ? ((stats.arrived / stats.total) * 100).toFixed(1) : '0.0';
+                    
+                    html += `
+                        <tr>
+                            <td class="font-bold text-gray-800">${bookerName}</td>
+                            <td class="text-center font-bold text-blue-600">${stats.total}</td>
+                            <td class="text-center text-emerald-600">${stats.arrived}</td>
+                            <td class="text-center text-amber-600">${stats.upcoming}</td>
+                            <td class="text-center text-indigo-600">${stats.rescheduled}</td>
+                            <td class="text-center text-rose-600">${stats.noShow}</td>
+                            <td class="text-center text-slate-600">${stats.cancelled}</td>
+                            <td class="text-center">
+                                <span class="inline-block px-2 py-1 rounded-full text-xs font-bold ${arrivedPercent >= 70 ? 'bg-emerald-100 text-emerald-700' : arrivedPercent >= 50 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'}">
+                                    ${arrivedPercent}%
+                                </span>
+                            </td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
+            }
+            
+            initIcons();
+        }
+
         function initIcons() {
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
@@ -431,6 +700,7 @@
         document.addEventListener('DOMContentLoaded', async function() {
             initIcons();
             initDateFilter();
+            initSummaryDateFilter();
             initCalendar();
             
             try {
@@ -442,6 +712,14 @@
                 setupRealtimeListener();
             }
         });
+
+        function initSummaryDateFilter() {
+            const today = new Date();
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            
+            document.getElementById('summaryStartDate').value = firstDayOfMonth.toISOString().split('T')[0];
+            document.getElementById('summaryEndDate').value = today.toISOString().split('T')[0];
+        }
 
         function initDateFilter() {
             const dateFilter = document.getElementById('reportDateFilter');
@@ -492,7 +770,7 @@
                                </div>`
                     };
                 },
-                eventClick: (info) => showDetails(info.event.extendedProps),
+                eventClick: (info) => window.showDetails(info.event.extendedProps),
                 dateClick: function(info) { handleDateClick(info); },
                 dayCellDidMount: function(arg) {
                     const today = new Date();
@@ -740,7 +1018,7 @@
             calendar.addEventSource(events);
         }
 
-        function showDetails(props) {
+        window.showDetails = function(props) {
             currentRowId = props.rowId; 
             currentEventProps = props; 
 
@@ -802,7 +1080,7 @@
                     <div class="flex gap-2">
                         <button onclick="toggleRescheduleForm()" class="px-3 py-2 bg-white text-indigo-600 border border-indigo-200 font-bold rounded-xl text-xs sm:text-sm hover:bg-indigo-50">ยกเลิก</button>
                         <button onclick="submitReschedule()" id="btnSubmitReschedule" class="flex-1 bg-indigo-600 text-white font-bold py-2 rounded-xl text-xs sm:text-sm hover:bg-indigo-700 transition-all flex justify-center items-center gap-2">
-                            <span>ยืนยันการย้ายคิว</span>
+                            <span>ยืนยันการย้ายคิู</span>
                         </button>
                     </div>
                 </div>
