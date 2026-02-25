@@ -63,9 +63,10 @@
                     <span class="text-xl font-bold text-gray-800 tracking-tight">FRC <span class="text-blue-600 font-medium">System</span></span>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button onclick="fetchData()" class="flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-xl hover:bg-blue-100 transition-all active:scale-95 font-semibold text-sm">
-                        <i data-lucide="refresh-cw" id="refreshIcon" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">อัปเดตข้อมูล</span>
+                    <!-- ป้ายสถานะการเชื่อมต่อ Firebase -->
+                    <button id="realtimeStatus" class="flex items-center gap-2 bg-slate-50 text-slate-500 px-4 py-2 rounded-xl font-semibold text-sm transition-all">
+                        <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+                        <span class="hidden sm:inline">กำลังเชื่อมต่อ...</span>
                     </button>
                 </div>
             </div>
@@ -73,28 +74,6 @@
     </nav>
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <div id="errorBanner" class="hidden mb-6 bg-red-50 border border-red-200 text-red-700 p-5 rounded-3xl shadow-sm flex items-start gap-4 transition-all">
-            <div class="bg-red-100 p-2 rounded-2xl shrink-0">
-                <i data-lucide="alert-circle" class="w-6 h-6 text-red-600"></i>
-            </div>
-            <div class="flex-1">
-                <h4 class="font-bold text-lg mb-1 text-red-800">เกิดข้อผิดพลาดจากโดเมนข้ามไซต์ (CORS / Failed to fetch)</h4>
-                <p id="errorText" class="text-sm text-red-700 leading-relaxed">
-                    เบราว์เซอร์บล็อกการเชื่อมต่อไปยัง Google Sheets เนื่องจากสิทธิ์การเข้าถึงไม่ถูกต้อง<br>
-                    <b>วิธีแก้ไขที่ฝั่ง Google Apps Script:</b><br>
-                    1. กดปุ่ม <b>Deploy</b> (การทำให้ใช้งานได้) ด้านบนขวา > เลือก <b>Manage deployments</b><br>
-                    2. กดไอคอนรูป <b>ดินสอ (แก้ไข)</b><br>
-                    3. สำคัญมาก! เปลี่ยน Version เป็น <b>New version (เวอร์ชันใหม่)</b> ทุกครั้ง<br>
-                    4. ช่อง Execute as เลือก <b>Me</b> และช่อง Who has access <b>ต้องเลือกเป็น "Anyone" (ทุกคน) เท่านั้น</b><br>
-                    5. กด Deploy ใหม่ แล้วรีเฟรชหน้านี้อีกครั้ง
-                </p>
-            </div>
-            <button onclick="document.getElementById('errorBanner').classList.add('hidden')" class="text-red-400 hover:text-red-700 bg-red-100/50 hover:bg-red-100 p-2 rounded-full transition-colors shrink-0">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-        </div>
-
         <!-- Report Header with Date Filter -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
             <div>
@@ -160,42 +139,30 @@
                     <div class="legend-item"><div class="legend-color bg-red-800"></div> ยกเลิก</div>
                 </div>
             </div>
-            <!-- ข้อความแนะนำให้กดปฏิทินเพื่อจอง -->
             <div class="px-6 py-2 bg-blue-50 border-b border-blue-100 text-blue-700 text-xs font-medium flex items-center gap-2">
                 <i data-lucide="mouse-pointer-click" class="w-4 h-4"></i>
-                เคล็ดลับ: คุณสามารถเพิ่มคิวใหม่ได้ง่ายๆ เพียงแค่ "คลิก" ไปยังวันที่บนปฏิทินด้านล่าง
+                เคล็ดลับ: คุณสามารถเพิ่มคิวใหม่ได้ง่ายๆ เพียงแค่ "คลิก" ไปยังวันที่บนปฏิทินด้านล่าง ข้อมูลจะบันทึกลง Firebase ทันที
             </div>
             <div id="calendar" class="p-2 sm:p-4"></div>
         </div>
     </main>
 
-    <!-- Modal 1: ดูรายละเอียด / เปลี่ยนสถานะ -->
+    <!-- Modals (โครงสร้าง HTML เหมือนเดิมทุกประการ) -->
     <div id="eventModal" class="fixed inset-0 bg-slate-900/70 hidden items-center justify-center z-[100] p-4 backdrop-blur-sm">
         <div class="bg-white rounded-[2rem] max-w-md w-full p-6 sm:p-8 shadow-2xl modal-content scale-95 opacity-0 transform transition-all duration-300 flex flex-col max-h-[90vh]">
-            <!-- Modal Header -->
             <div class="flex justify-between items-start mb-6 shrink-0">
                 <div id="statusBadge" class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest">STATUS</div>
                 <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            
-            <!-- Scrollable Content -->
-            <div id="modalContent" class="space-y-6 text-slate-800 overflow-y-auto pr-2 pb-2 flex-1">
-                <!-- ข้อมูลลูกค้าจะถูกใส่ที่นี่ -->
-            </div>
-
-            <!-- Action Buttons Footer -->
-            <div class="mt-4 pt-4 border-t border-slate-100 shrink-0" id="actionContainer">
-                <!-- ปุ่มจะถูกสร้างโดย Javascript เพื่ออ้างอิง Row ID -->
-            </div>
+            <div id="modalContent" class="space-y-6 text-slate-800 overflow-y-auto pr-2 pb-2 flex-1"></div>
+            <div class="mt-4 pt-4 border-t border-slate-100 shrink-0" id="actionContainer"></div>
         </div>
     </div>
 
-    <!-- Modal 2: เพิ่มการจองใหม่ (แสดงเมื่อคลิกปฏิทิน) -->
     <div id="newBookingModal" class="fixed inset-0 bg-slate-900/70 hidden items-center justify-center z-[100] p-4 backdrop-blur-sm">
         <div class="bg-white rounded-[2rem] max-w-md w-full p-6 sm:p-8 shadow-2xl modal-content scale-95 opacity-0 transform transition-all duration-300 flex flex-col max-h-[90vh]">
-            
             <div class="flex justify-between items-start mb-4 shrink-0">
                 <div class="flex items-center gap-3 text-blue-600">
                     <div class="p-2 bg-blue-100 rounded-xl"><i data-lucide="calendar-plus" class="w-6 h-6"></i></div>
@@ -205,10 +172,8 @@
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            
             <div id="newBookingModalContent" class="overflow-y-auto pr-2 pb-2 flex-1">
                 <form id="newBookingForm" class="space-y-4 text-sm mt-2">
-                    <!-- วันที่และเวลา -->
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">วันที่ <span class="text-red-500">*</span></label>
@@ -231,12 +196,9 @@
                             </select>
                         </div>
                     </div>
-                    
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">เลขที่ HN (ถ้ามี)</label>
                         <input type="text" name="hn" oninput="checkDuplicateHN()" class="w-full p-2.5 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 bg-white" placeholder="เช่น HN12345">
-                        
-                        <!-- แจ้งเตือน HN ซ้ำ -->
                         <div id="hnWarning" class="hidden mt-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm transition-all">
                             <div class="flex items-start gap-2 text-amber-800">
                                 <i data-lucide="alert-triangle" class="w-4 h-4 mt-0.5 shrink-0"></i>
@@ -265,8 +227,6 @@
                     </div>
                 </form>
             </div>
-
-            <!-- Action Button -->
             <div class="mt-4 pt-4 border-t border-slate-100 shrink-0">
                 <button type="button" onclick="submitNewBooking()" id="btnSubmitNewBooking" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-all flex justify-center items-center gap-2 active:scale-95 shadow-md shadow-blue-200">
                     <span>ยืนยันการจองคิวใหม่</span>
@@ -275,7 +235,6 @@
         </div>
     </div>
 
-    <!-- Modal 3: แสดงรายชื่อตามสถานะ เมื่อคลิกที่ Card -->
     <div id="statusListModal" class="fixed inset-0 bg-slate-900/70 hidden items-center justify-center z-[110] p-4 backdrop-blur-sm">
         <div class="bg-white rounded-[2rem] max-w-md w-full p-6 sm:p-8 shadow-2xl modal-content scale-95 opacity-0 transform transition-all duration-300 flex flex-col max-h-[90vh]">
             <div class="flex justify-between items-start mb-4 shrink-0">
@@ -287,49 +246,77 @@
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            <div id="statusListContent" class="overflow-y-auto pr-2 pb-2 flex-1 space-y-3">
-                <!-- ข้อมูลรายชื่อจะถูกเติมตรงนี้ -->
-            </div>
+            <div id="statusListContent" class="overflow-y-auto pr-2 pb-2 flex-1 space-y-3"></div>
         </div>
     </div>
 
-    <script>
-        // เปลี่ยน URL ของ Google Apps Script เป็นลิงก์ใหม่แล้ว
-        const scriptURL = "https://script.google.com/macros/s/AKfycbwIDqVYvF4Y2EFRoVqJj6zayLDhtA-_alsm29D6GzRVhFzxGZZybaXO6u3befepXgW0rg/exec"; 
+    <!-- อัปเกรด Firebase Web SDK เป็น 11.6.1 -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        // 💡 นำเข้า memoryLocalCache เพื่อปิดการใช้ IndexedDB ของเบราว์เซอร์
+        import { initializeFirestore, collection, addDoc, updateDoc, doc, onSnapshot, query, serverTimestamp, memoryLocalCache } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJ_GO_imi68lGsKv19_q_il_8rBi_gQbk",
+            authDomain: "frc-clinic-booking.firebaseapp.com",
+            projectId: "frc-clinic-booking",
+            storageBucket: "frc-clinic-booking.firebasestorage.app",
+            messagingSenderId: "1002683700465",
+            appId: "1:1002683700465:web:93f3fee201b59d00c3c550",
+            measurementId: "G-74HKC5QSFY"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        
+        // 💡 บังคับให้ Firestore ใช้ Long Polling และเก็บแคชลง Memory เท่านั้น เพื่อหลีกเลี่ยงข้อจำกัดใน Iframe/Canvas
+        const db = initializeFirestore(app, {
+            experimentalForceLongPolling: true,
+            localCache: memoryLocalCache()
+        });
+        
+        const COLLECTION_NAME = "bookings";
+
+        // State variables
         let calendar;
         let allData = [];
         let currentRowId = null; 
         let currentEventProps = null; 
-        let currentReportData = []; // เก็บข้อมูลของวันที่เลือกไว้ใช้ใน Modal
+        let currentReportData = [];
 
         function initIcons() {
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             initIcons();
-            initDateFilter(); // เริ่มต้นตัวกรองวันที่
+            initDateFilter();
             initCalendar();
-            fetchData();
+            
+            try {
+                // รอจนกว่าจะ Login สำเร็จก่อนถึงจะเรียกข้อมูล
+                await signInAnonymously(auth);
+                console.log("Firebase Auth: Signed in anonymously");
+                setupRealtimeListener(); 
+            } catch (error) {
+                console.warn("Firebase Auth Error:", error);
+                // หาก Auth พัง ก็ยังให้ลองดึงข้อมูลดู (เผื่อ Firestore rules เปิดสาธารณะอยู่)
+                setupRealtimeListener();
+            }
         });
 
-        // 💡 ฟังก์ชันจัดการตัวกรองวันที่ด้านบนรายงาน
         function initDateFilter() {
             const dateFilter = document.getElementById('reportDateFilter');
             const d = new Date();
             const year = d.getFullYear();
             const month = String(d.getMonth() + 1).padStart(2, '0');
             const day = String(d.getDate()).padStart(2, '0');
-            const todayStr = `${year}-${month}-${day}`;
+            dateFilter.value = `${year}-${month}-${day}`;
             
-            dateFilter.value = todayStr; // เซ็ตค่าเริ่มต้นเป็น "วันนี้"
-            
-            // เมื่อเปลี่ยนวันที่ ให้คำนวณสรุปใหม่ และเลื่อนปฏิทินไปหาวันนั้น
             dateFilter.addEventListener('change', function() {
                 updateDashboard(allData);
-                if (calendar) {
-                    calendar.gotoDate(this.value);
-                }
+                if (calendar) calendar.gotoDate(this.value);
             });
         }
 
@@ -365,27 +352,21 @@
                     };
                 },
                 eventClick: (info) => showDetails(info.event.extendedProps),
-                dateClick: function(info) {
-                    handleDateClick(info);
-                },
+                dateClick: function(info) { handleDateClick(info); },
                 dayCellDidMount: function(arg) {
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
-                    
                     if (arg.date >= today) {
                         let addIcon = document.createElement('div');
                         addIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>`;
                         addIcon.className = 'add-event-btn absolute top-1 right-1 w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center opacity-0 transition-all duration-200 hover:bg-blue-600 hover:text-white shadow-sm z-10 cursor-pointer';
                         addIcon.title = 'เพิ่มนัดหมาย';
-                        
                         let frame = arg.el.querySelector('.fc-daygrid-day-frame');
                         if (frame) {
                             frame.classList.add('relative');
                             frame.appendChild(addIcon);
-                            
                             frame.addEventListener('mouseenter', () => addIcon.classList.remove('opacity-0'));
                             frame.addEventListener('mouseleave', () => addIcon.classList.add('opacity-0'));
-                            
                             addIcon.addEventListener('click', (e) => {
                                 e.stopPropagation(); 
                                 let year = arg.date.getFullYear();
@@ -402,10 +383,51 @@
             calendar.render();
         }
 
+        function setupRealtimeListener() {
+            const q = query(collection(db, COLLECTION_NAME));
+            
+            onSnapshot(q, { includeMetadataChanges: true }, (snapshot) => {
+                const statusBtn = document.getElementById('realtimeStatus');
+                
+                if (snapshot.metadata.fromCache) {
+                    statusBtn.innerHTML = `<i data-lucide="wifi-off" class="w-4 h-4"></i><span class="hidden sm:inline">ออฟไลน์ (อ่านจากแคช)</span>`;
+                    statusBtn.className = "flex items-center gap-2 bg-amber-50 text-amber-600 px-4 py-2 rounded-xl font-semibold text-sm transition-all";
+                } else {
+                    statusBtn.innerHTML = `<span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span></span><span class="hidden sm:inline">เชื่อมต่อแล้ว (Real-time)</span>`;
+                    statusBtn.className = "flex items-center gap-2 bg-emerald-50 text-emerald-600 px-4 py-2 rounded-xl font-semibold text-sm transition-all";
+                }
+                initIcons();
+
+                const newData = [];
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    newData.push({
+                        rowId: doc.id, 
+                        "วันที่นัด": data.bookingDate,
+                        "เวลานัด": data.bookingTime,
+                        "หัตถการ": data.procedure,
+                        "สถานะ": data.status || "ยังไม่มา",
+                        "ชื่อลูกค้า": data.customerName,
+                        "HN": data.hn,
+                        "เบอร์โทรศัพท์": data.phoneNumber,
+                        "ชื่อผู้นัด": data.bookerName
+                    });
+                });
+                
+                allData = newData;
+                updateDashboard(allData);
+            }, (error) => {
+                console.error("Firebase Error: ", error);
+                const statusBtn = document.getElementById('realtimeStatus');
+                statusBtn.innerHTML = `<i data-lucide="alert-circle" class="w-4 h-4"></i><span class="hidden sm:inline">เชื่อมต่อล้มเหลว</span>`;
+                statusBtn.className = "flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-xl font-semibold text-sm transition-all";
+                initIcons();
+            });
+        }
+
         function handleDateClick(info) {
             const clickedDateStr = info.dateStr.split('T')[0];
             const clickedDate = new Date(clickedDateStr);
-            
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
@@ -415,7 +437,6 @@
             }
 
             document.getElementById('nbDate').value = clickedDateStr;
-            
             if (info.dateStr.includes('T')) {
                 const timeStr = info.dateStr.split('T')[1].substring(0, 5); 
                 document.getElementById('nbTime').value = timeStr;
@@ -430,20 +451,18 @@
             initIcons();
         }
 
-        function closeNewBookingModal() {
+        window.closeNewBookingModal = function() {
             const modal = document.getElementById('newBookingModal');
             modal.querySelector('.modal-content').classList.add('scale-95', 'opacity-0');
             setTimeout(() => {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
                 document.getElementById('newBookingForm').reset();
-                // ซ่อนการแจ้งเตือน HN เมื่อปิด Modal
                 document.getElementById('hnWarning').classList.add('hidden');
             }, 300);
         }
 
-        // 💡 ฟังก์ชันใหม่สำหรับตรวจสอบ HN ซ้ำในวันเดียวกัน
-        function checkDuplicateHN() {
+        window.checkDuplicateHN = function() {
             const dateInput = document.getElementById('nbDate').value;
             const hnInput = document.querySelector('input[name="hn"]').value.trim();
             const warningDiv = document.getElementById('hnWarning');
@@ -454,74 +473,21 @@
                 return;
             }
 
-            const getVal = (obj, keyName) => {
-                const key = Object.keys(obj).find(k => k.trim() === keyName);
-                return key ? obj[key] : undefined;
-            };
-
             const duplicates = allData.filter(item => {
-                const hn = getVal(item, "HN");
+                const hn = item["HN"];
                 if (!hn || String(hn).trim().toLowerCase() !== hnInput.toLowerCase()) return false;
-
-                let rawDate = getVal(item, "วันที่นัด");
-                if (!rawDate) return false;
                 
-                rawDate = String(rawDate).trim();
-                let datePart = "";
-                if (rawDate.includes('T')) {
-                    let d = new Date(rawDate);
-                    let thDate = new Date(d.toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
-                    datePart = `${thDate.getFullYear()}-${(thDate.getMonth() + 1).toString().padStart(2, '0')}-${thDate.getDate().toString().padStart(2, '0')}`;
-                } else if (rawDate.includes('/')) {
-                    let parts = rawDate.split('/');
-                    if (parts.length === 3) {
-                        let year = parts[2].length === 2 ? "20" + parts[2] : parts[2];
-                        if (parseInt(year) > 2500) year = (parseInt(year) - 543).toString(); 
-                        datePart = `${year}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
-                    }
-                } else {
-                    datePart = rawDate.split(' ')[0];
-                }
-
+                const datePart = item["วันที่นัด"];
                 return datePart === dateInput;
             });
 
             if (duplicates.length > 0) {
                 let html = '';
                 duplicates.forEach(dup => {
-                    const name = getVal(dup, "ชื่อลูกค้า") || '-';
-                    const proc = getVal(dup, "หัตถการ") || '-';
-                    const status = getVal(dup, "สถานะ") || 'ยังไม่มา';
-                    
-                    let timeKey = Object.keys(dup).find(k => (k.includes('เวลา') || k.toLowerCase().includes('time')) && !k.toLowerCase().includes('timestamp')) || "เวลานัด";
-                    let rawTime = dup[timeKey];
-                    let timePart = "??:??";
-                    
-                    if (rawTime) {
-                        let timeStr = String(rawTime).trim();
-                        let timeNum = parseFloat(timeStr);
-                        if (!isNaN(timeNum) && timeNum > 0 && timeNum < 1 && !timeStr.includes(':') && !timeStr.includes('-')) {
-                            let totalMinutes = Math.round(timeNum * 24 * 60);
-                            let h = Math.floor(totalMinutes / 60);
-                            let m = totalMinutes % 60;
-                            timePart = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-                        } else if (timeStr.includes('T') && (timeStr.includes('Z') || timeStr.includes('+'))) {
-                            let d = new Date(timeStr.replace('1899', '2000'));
-                            if (!isNaN(d)) {
-                                let thTime = new Date(d.toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
-                                let h = thTime.getHours(); let m = thTime.getMinutes();
-                                if (m >= 16 && m <= 19) m = 0; else if (m >= 46 && m <= 49) m = 30;
-                                timePart = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-                            } else {
-                                let match = timeStr.match(/T(\d{2}):(\d{2})/);
-                                if (match) timePart = `${match[1]}:${match[2]}`;
-                            }
-                        } else {
-                            let match = timeStr.match(/(\d{1,2})[:.](\d{2})/);
-                            if (match) timePart = `${match[1].padStart(2, '0')}:${match[2]}`;
-                            else if (/^\d{1,2}$/.test(timeStr)) timePart = `${timeStr.padStart(2, '0')}:00`;
-                        }
-                    }
+                    const name = dup["ชื่อลูกค้า"] || '-';
+                    const proc = dup["หัตถการ"] || '-';
+                    const status = dup["สถานะ"] || 'ยังไม่มา';
+                    const timePart = dup["เวลานัด"] || '??:??';
 
                     html += `<div class="bg-amber-100/70 p-2 rounded text-[11px] sm:text-xs text-amber-900 border border-amber-200">
                                 <div class="flex justify-between items-center mb-0.5">
@@ -532,7 +498,6 @@
                                 <div class="truncate text-amber-800"><i data-lucide="activity" class="w-3 h-3 inline pb-0.5"></i> ${proc}</div>
                              </div>`;
                 });
-                
                 detailsDiv.innerHTML = html;
                 warningDiv.classList.remove('hidden');
                 initIcons();
@@ -541,9 +506,8 @@
             }
         }
 
-        async function submitNewBooking() {
+        window.submitNewBooking = async function() {
             const form = document.getElementById('newBookingForm');
-            
             if (!form.checkValidity()) {
                 form.reportValidity();
                 return;
@@ -555,185 +519,51 @@
             initIcons();
 
             const formData = new FormData(form);
-            const params = new URLSearchParams();
-            params.append('action', 'create'); 
             
-            let phoneVal = formData.get('phoneNumber');
-            if(phoneVal && !phoneVal.startsWith("'")) formData.set('phoneNumber', phoneVal);
-
-            for (const pair of formData) {
-                params.append(pair[0], pair[1]);
-            }
+            const newBookingData = {
+                bookingDate: formData.get('bookingDate'),
+                bookingTime: formData.get('bookingTime'),
+                hn: formData.get('hn') || '',
+                customerName: formData.get('customerName'),
+                phoneNumber: formData.get('phoneNumber'),
+                procedure: formData.get('procedure'),
+                bookerName: formData.get('bookerName') || '',
+                status: 'ยังไม่มา', 
+                timestamp: serverTimestamp() 
+            };
 
             try {
-                const response = await fetch(scriptURL, {
-                    method: 'POST',
-                    mode: 'cors', // เพิ่ม mode cors
-                    body: params
-                });
-                
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    alert('เพิ่มคิวนัดหมายใหม่เรียบร้อยแล้ว');
-                    closeNewBookingModal();
-                    fetchData(); 
-                } else if (result.status === 'duplicate') {
-                    alert('ไม่สามารถจองคิวได้: ' + result.message);
-                } else {
-                    alert('เกิดข้อผิดพลาด: ' + result.message);
-                }
+                await addDoc(collection(db, COLLECTION_NAME), newBookingData);
+                alert('เพิ่มคิวนัดหมายใหม่เรียบร้อยแล้ว');
+                closeNewBookingModal();
             } catch (error) {
                 console.error("Booking Create Failed:", error);
-                alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์ (CORS): รบกวนตรวจสอบการ Deploy ฝั่ง Google Apps Script ว่าตั้งค่า 'Who has access' เป็น 'Anyone' หรือไม่");
+                alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง");
             } finally {
                 btn.innerHTML = '<span>ยืนยันการจองคิวใหม่</span>';
                 btn.disabled = false;
             }
         }
 
-        async function fetchData() {
-            if (!scriptURL) return;
-            const refreshIcon = document.getElementById('refreshIcon');
-            const errorBanner = document.getElementById('errorBanner');
-            
-            if(refreshIcon) refreshIcon.classList.add('animate-spin');
-            if(errorBanner) errorBanner.classList.add('hidden'); 
-            
-            try {
-                const urlWithCacheBuster = scriptURL + "?action=read&t=" + new Date().getTime();
-                const response = await fetch(urlWithCacheBuster, {
-                    method: 'GET',
-                    mode: 'cors' // เพิ่ม mode cors เพื่อความชัดเจนบน Github/Vercel
-                });
-                
-                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-                const textData = await response.text();
-                
-                try {
-                    allData = JSON.parse(textData);
-                } catch (parseError) {
-                    throw new Error("ระบบไม่ได้ส่งข้อมูลกลับมาเป็น JSON (คาดว่าติดหน้าต่างขออนุญาตสิทธิ์การเข้าถึงของ Google)");
-                }
-                
-                updateDashboard(allData);
-            } catch (error) {
-                console.error('🚨 Fetch Error:', error);
-                if(errorBanner) errorBanner.classList.remove('hidden');
-            } finally {
-                if(refreshIcon) refreshIcon.classList.remove('animate-spin');
-            }
-        }
-
         function updateDashboard(data) {
             if (!data || !Array.isArray(data)) return;
 
-            const getVal = (obj, keyName) => {
-                const key = Object.keys(obj).find(k => k.trim() === keyName);
-                return key ? obj[key] : undefined;
-            };
-
-            // 💡 1. ประมวลผลและจัดรูปแบบวันที่ให้ข้อมูลทั้งหมดก่อน
             const processedData = data.map(item => {
-                let rawDate = getVal(item, "วันที่นัด");
-                
-                // ค้นหาคอลัมน์เวลา และบังคับไม่ให้ดึงจาก Timestamp เด็ดขาด
-                let timeKey = Object.keys(item).find(k => (k.includes('เวลา') || k.toLowerCase().includes('time')) && !k.toLowerCase().includes('timestamp')) || "เวลานัด";
-                let rawTime = item[timeKey];
-                
-                let rawProc = getVal(item, "หัตถการ");
-
-                if (rawProc && String(rawProc).includes('1899-12-30T')) {
-                    if (rawTime && !String(rawTime).includes('1899-12-30T')) {
-                        let temp = rawTime; rawTime = rawProc; rawProc = temp;
-                    } else {
-                        rawProc = "-"; 
-                    }
-                }
-
-                rawDate = rawDate ? String(rawDate).trim() : "";
-                let datePart = "";
-                if (rawDate.includes('T')) {
-                    let d = new Date(rawDate);
-                    // บังคับใช้ Timezone ประเทศไทย (Asia/Bangkok) ป้องกันปัญหาเปิดจากเครื่องต่างโซนเวลา
-                    let thDate = new Date(d.toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
-                    datePart = `${thDate.getFullYear()}-${(thDate.getMonth() + 1).toString().padStart(2, '0')}-${thDate.getDate().toString().padStart(2, '0')}`;
-                } else if (rawDate.includes('/')) {
-                    let parts = rawDate.split('/');
-                    if (parts.length === 3) {
-                        let year = parts[2].length === 2 ? "20" + parts[2] : parts[2];
-                        if (parseInt(year) > 2500) year = (parseInt(year) - 543).toString(); 
-                        datePart = `${year}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
-                    }
-                } else {
-                    datePart = rawDate.split(' ')[0];
-                }
-
-                let timePart = "00:00:00"; // ค่าเริ่มต้น หากไม่มีข้อมูลจะกลายเป็น 00:00 แทนเพื่อความชัดเจน
-                
-                if (rawTime) {
-                    let timeStr = String(rawTime).trim();
-                    let timeNum = parseFloat(timeStr);
-                    
-                    if (!isNaN(timeNum) && timeNum > 0 && timeNum < 1 && !timeStr.includes(':') && !timeStr.includes('-')) {
-                        // 1. กรณีเป็นทศนิยมจาก Google Sheets (เช่น 0.583333 -> 14:00)
-                        let totalMinutes = Math.round(timeNum * 24 * 60);
-                        let h = Math.floor(totalMinutes / 60);
-                        let m = totalMinutes % 60;
-                        timePart = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:00`;
-                    } 
-                    else if (timeStr.includes('T') && (timeStr.includes('Z') || timeStr.includes('+'))) {
-                        // 2. กรณีเป็น ISO String (เช่น "1899-12-30T07:00:00.000Z")
-                        let d = new Date(timeStr.replace('1899', '2000'));
-                        if (!isNaN(d)) {
-                            // บังคับใช้ Timezone ประเทศไทย (Asia/Bangkok) ป้องกันปัญหาเปิดจากเครื่องต่างโซนเวลา
-                            let thTime = new Date(d.toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
-                            let h = thTime.getHours();
-                            let m = thTime.getMinutes();
-                            
-                            // 💡 แก้บั๊ก Google Sheets: ปี 1899 ใช้ Timezone +06:42:04 
-                            // เมื่อเบราว์เซอร์ปัจจุบันคำนวณ จะทำให้เวลาเกินมา 17-18 นาทีเสมอ
-                            // จึงต้องดักจับเศษนาที 17, 18 แล้วปัดทิ้งให้กลับมาเป็น .00 ตามที่ตั้งใจจอง
-                            if (m >= 16 && m <= 19) {
-                                m = 0;
-                            } else if (m >= 46 && m <= 49) {
-                                m = 30; // เผื่อกรณีจองแบบ .30
-                            }
-                            
-                            timePart = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:00`;
-                        } else {
-                            let match = timeStr.match(/T(\d{2}):(\d{2})/);
-                            if (match) timePart = `${match[1]}:${match[2]}:00`;
-                        }
-                    }
-                    else {
-                        // 3. กรณีเป็น String ข้อความทั่วไป (เช่น "14:00", "14.00")
-                        let match = timeStr.match(/(\d{1,2})[:.](\d{2})/);
-                        if (match) {
-                            timePart = `${match[1].padStart(2, '0')}:${match[2]}:00`;
-                        } else if (/^\d{1,2}$/.test(timeStr)) {
-                            // กรณีพิมพ์ตัวเลขชั่วโมงโดดๆ เช่น "14" ให้ปัดเป็น 14:00
-                            timePart = `${timeStr.padStart(2, '0')}:00:00`;
-                        }
-                    }
-                }
-
-                const rawStatus = getVal(item, "สถานะ");
-                const status = rawStatus ? String(rawStatus).trim() : "ยังไม่มา";
+                let timePart = item["เวลานัด"];
+                if(timePart && timePart.length === 5) timePart = `${timePart}:00`;
 
                 return {
                     ...item,
-                    _normalizedDate: datePart,
-                    _normalizedTime: timePart,
-                    _proc: rawProc,
-                    _status: status
+                    _normalizedDate: item["วันที่นัด"],
+                    _normalizedTime: timePart || "00:00:00",
+                    _proc: item["หัตถการ"],
+                    _status: item["สถานะ"]
                 };
             });
 
-            // 💡 2. กรองข้อมูลสำหรับทำ "สรุปตัวเลข (Cards)" ให้ตรงกับวันที่เลือก
             const selectedDate = document.getElementById('reportDateFilter').value;
             const reportData = processedData.filter(item => item._normalizedDate === selectedDate);
-            currentReportData = reportData; // เก็บข้อมูลที่กรองแล้วไว้ใช้กับ Modal แสดงรายชื่อ
+            currentReportData = reportData; 
             
             const countByStatus = (statusName) => reportData.filter(item => item._status === statusName).length;
 
@@ -744,40 +574,31 @@
             document.getElementById('statNoShow').textContent = countByStatus("ไม่มาตามนัด");
             document.getElementById('statCancelled').textContent = countByStatus("ยกเลิกนัด");
 
-            // 💡 3. เอาข้อมูลทั้งหมด (ไม่ต้องกรองวัน) ไปวาดปฏิทิน
             const events = processedData.map(item => {
-                if (!item._normalizedDate || item._normalizedDate === "" || item._normalizedDate === "undefined") return null;
+                if (!item._normalizedDate) return null;
 
                 let eventColor = '#3b82f6'; 
                 let titleSuffix = "";
                 let textColor = '#ffffff'; 
                 
-                if(item._status === "มาแล้ว") {
-                    eventColor = '#eab308'; 
-                    textColor = '#422006'; 
-                } else if(item._status === "เลื่อนนัด") {
-                    eventColor = '#6366f1'; 
-                    titleSuffix = " (เลื่อน)";
-                } else if(item._status === "ไม่มาตามนัด") {
-                    eventColor = '#fca5a5'; 
-                    textColor = '#7f1d1d'; 
-                } else if(item._status === "ยกเลิกนัด") {
-                    eventColor = '#991b1b'; 
-                }
+                if(item._status === "มาแล้ว") { eventColor = '#eab308'; textColor = '#422006'; } 
+                else if(item._status === "เลื่อนนัด") { eventColor = '#6366f1'; titleSuffix = " (เลื่อน)"; } 
+                else if(item._status === "ไม่มาตามนัด") { eventColor = '#fca5a5'; textColor = '#7f1d1d'; } 
+                else if(item._status === "ยกเลิกนัด") { eventColor = '#991b1b'; }
 
                 return {
-                    title: (getVal(item, "ชื่อลูกค้า") || "ไม่มีชื่อ") + titleSuffix, 
+                    title: (item["ชื่อลูกค้า"] || "ไม่มีชื่อ") + titleSuffix, 
                     start: `${item._normalizedDate}T${item._normalizedTime}`, 
                     color: eventColor,
                     textColor: textColor,
                     display: 'block', 
                     extendedProps: {
-                        rowId: getVal(item, "rowId"),
-                        name: getVal(item, "ชื่อลูกค้า"),
-                        hn: getVal(item, "HN"),
-                        phone: getVal(item, "เบอร์โทรศัพท์"),
+                        rowId: item.rowId, 
+                        name: item["ชื่อลูกค้า"],
+                        hn: item["HN"],
+                        phone: item["เบอร์โทรศัพท์"],
                         proc: item._proc || '-', 
-                        booker: getVal(item, "ชื่อผู้นัด"),
+                        booker: item["ชื่อผู้นัด"],
                         status: item._status,
                         dateStr: item._normalizedDate,
                         timeStr: item._normalizedTime.substring(0, 5) 
@@ -864,8 +685,7 @@
             initIcons(); 
         }
 
-        // 💡 ฟังก์ชันใหม่สำหรับคลิกดูรายชื่อในแต่ละสถานะ
-        function showStatusList(statusName) {
+        window.showStatusList = function(statusName) {
             let filteredData = [];
             let bgColor = 'bg-blue-100';
             let textColor = 'text-blue-600';
@@ -892,14 +712,9 @@
             if (filteredData.length === 0) {
                 content.innerHTML = `<div class="text-center py-8 text-slate-400 font-medium">ไม่มีข้อมูลสำหรับสถานะนี้ในวันนี้</div>`;
             } else {
-                const getVal = (obj, keyName) => {
-                    const key = Object.keys(obj).find(k => k.trim() === keyName);
-                    return key ? obj[key] : undefined;
-                };
-
                 content.innerHTML = filteredData.map(item => {
-                    const name = getVal(item, "ชื่อลูกค้า") || 'ไม่มีชื่อ';
-                    const phone = getVal(item, "เบอร์โทรศัพท์") || '-';
+                    const name = item["ชื่อลูกค้า"] || 'ไม่มีชื่อ';
+                    const phone = item["เบอร์โทรศัพท์"] || '-';
                     const time = item._normalizedTime ? item._normalizedTime.substring(0, 5) : '-';
                     const proc = item._proc || '-';
                     
@@ -925,7 +740,7 @@
             initIcons();
         }
 
-        function closeStatusListModal() {
+        window.closeStatusListModal = function() {
             const modal = document.getElementById('statusListModal');
             const modalBody = modal.querySelector('.modal-content');
             modalBody.classList.add('scale-95', 'opacity-0');
@@ -935,7 +750,7 @@
             }, 300);
         }
 
-        function toggleRescheduleForm() {
+        window.toggleRescheduleForm = function() {
             const form = document.getElementById('rescheduleForm');
             const mainBtns = document.getElementById('mainButtonsGroup');
             if(form.classList.contains('hidden')) {
@@ -947,7 +762,7 @@
             }
         }
 
-        async function submitReschedule() {
+        window.submitReschedule = async function() {
             const newDate = document.getElementById('rescheduleDate').value;
             const newTime = document.getElementById('rescheduleTime').value;
             
@@ -955,7 +770,6 @@
                 alert("กรุณาเลือกวันและเวลาใหม่ให้ครบถ้วน");
                 return;
             }
-            
             if (newDate === currentEventProps.dateStr && newTime === currentEventProps.timeStr) {
                 alert("กรุณาเลือกวันหรือเวลาที่ต่างจากเดิม");
                 return;
@@ -971,26 +785,10 @@
             actionContainer.style.pointerEvents = 'none';
 
             try {
-                // 1: อัปเดตคิวเดิม
-                const updateParams = new URLSearchParams();
-                updateParams.append('action', 'update');
-                updateParams.append('rowId', currentRowId);
-                updateParams.append('status', 'เลื่อนนัด');
+                const oldDocRef = doc(db, COLLECTION_NAME, currentRowId);
+                await updateDoc(oldDocRef, { status: 'เลื่อนนัด' });
 
-                let updateResponse = await fetch(scriptURL, { method: 'POST', mode: 'cors', body: updateParams });
-                let updateResult = await updateResponse.json();
-
-                if (updateResult.status !== 'success') {
-                    throw new Error("ไม่สามารถอัปเดตคิวเดิมได้: " + updateResult.message);
-                }
-
-                // 2: สร้างคิวใหม่
-                const createParams = new URLSearchParams();
-                createParams.append('action', 'create');
-                
                 let hnVal = currentEventProps.hn === '-' || currentEventProps.hn === 'ลูกค้าใหม่' ? '' : currentEventProps.hn;
-                let phoneVal = (currentEventProps.phone || '').replace(/^'/, '');
-                
                 let oldDateParts = currentEventProps.dateStr.split('-');
                 let formattedOldDate = oldDateParts.length === 3 ? `${oldDateParts[2]}/${oldDateParts[1]}/${oldDateParts[0]}` : currentEventProps.dateStr;
                 
@@ -1000,94 +798,53 @@
                     ? `${originalProc} (ย้ายจาก ${formattedOldDate} เวลา ${currentEventProps.timeStr} น.)` 
                     : `(ย้ายจาก ${formattedOldDate} เวลา ${currentEventProps.timeStr} น.)`;
 
-                createParams.append('hn', hnVal);
-                createParams.append('customerName', currentEventProps.name || '');
-                createParams.append('phoneNumber', phoneVal);
-                createParams.append('bookingDate', newDate);
-                createParams.append('bookingTime', newTime);
-                createParams.append('procedure', procVal);
-                createParams.append('bookerName', currentEventProps.booker || '');
+                const newBookingData = {
+                    bookingDate: newDate,
+                    bookingTime: newTime,
+                    hn: hnVal,
+                    customerName: currentEventProps.name,
+                    phoneNumber: currentEventProps.phone,
+                    procedure: procVal,
+                    bookerName: currentEventProps.booker,
+                    status: 'ยังไม่มา',
+                    timestamp: serverTimestamp()
+                };
 
-                let createResponse = await fetch(scriptURL, { method: 'POST', mode: 'cors', body: createParams });
-                let createResult = await createResponse.json();
+                await addDoc(collection(db, COLLECTION_NAME), newBookingData);
 
-                if (createResult.status === 'duplicate') {
-                    alert('คิวเดิมถูกเปลี่ยนสถานะเป็น "เลื่อนนัด" แล้ว\nแต่ไม่สามารถสร้างคิวใหม่ได้เนื่องจาก: ' + createResult.message);
-                } else if (createResult.status !== 'success') {
-                    alert('คิวเดิมถูกเปลี่ยนสถานะแล้ว แต่สร้างคิวใหม่ล้มเหลว: ' + createResult.message);
-                }
-
-                allData = allData.map(item => {
-                    const rowIdKey = Object.keys(item).find(k => k.trim() === "rowId");
-                    if (rowIdKey && item[rowIdKey] === currentRowId) {
-                        const statusKey = Object.keys(item).find(k => k.trim() === "สถานะ") || "สถานะ";
-                        item[statusKey] = 'เลื่อนนัด';
-                    }
-                    return item;
-                });
-
-                updateDashboard(allData); 
-                closeModal(); 
-                fetchData(); 
-
+                window.closeModal(); 
             } catch (error) {
                 console.error("Reschedule Error:", error);
-                alert("เกิดข้อผิดพลาดในการเลื่อนนัด (CORS): รบกวนตรวจสอบการ Deploy ฝั่ง Google Apps Script ว่าเลือกเป็น 'Anyone' หรือยัง");
+                alert("เกิดข้อผิดพลาดในการเลื่อนนัด");
+            } finally {
                 btn.innerHTML = '<span>ยืนยันการย้ายคิว</span>';
                 btn.disabled = false;
-            } finally {
                 actionContainer.style.opacity = '1';
                 actionContainer.style.pointerEvents = 'auto';
             }
         }
 
-        async function updateStatus(status) {
+        window.updateStatus = async function(status) {
             if (!currentRowId) return;
 
             const actionContainer = document.getElementById('actionContainer');
             actionContainer.style.opacity = '0.5';
             actionContainer.style.pointerEvents = 'none';
 
-            const params = new URLSearchParams();
-            params.append('action', 'update');
-            params.append('rowId', currentRowId);
-            params.append('status', status);
-
             try {
-                const response = await fetch(scriptURL, {
-                    method: 'POST',
-                    mode: 'cors',
-                    body: params
-                });
-                
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    allData = allData.map(item => {
-                        const rowIdKey = Object.keys(item).find(k => k.trim() === "rowId");
-                        if (rowIdKey && item[rowIdKey] === currentRowId) {
-                            const statusKey = Object.keys(item).find(k => k.trim() === "สถานะ") || "สถานะ";
-                            item[statusKey] = status;
-                        }
-                        return item;
-                    });
-
-                    updateDashboard(allData); 
-                    closeModal(); 
-                    fetchData(); 
-                } else {
-                    alert('ไม่สามารถอัปเดตข้อมูลได้: ' + result.message);
-                }
+                const docRef = doc(db, COLLECTION_NAME, currentRowId);
+                await updateDoc(docRef, { status: status });
+                window.closeModal(); 
             } catch (error) {
                 console.error("Update Failed:", error);
-                alert("เกิดข้อผิดพลาด (CORS): กรุณากด Deploy เป็นเวอร์ชันใหม่ใน Google Apps Script อีกครั้ง");
+                alert("เกิดข้อผิดพลาดในการอัปเดตสถานะ");
             } finally {
                 actionContainer.style.opacity = '1';
                 actionContainer.style.pointerEvents = 'auto';
             }
         }
 
-        function closeModal() {
+        window.closeModal = function() {
             const modal = document.getElementById('eventModal');
             const modalBody = modal.querySelector('.modal-content');
             modalBody.classList.add('scale-95', 'opacity-0');
