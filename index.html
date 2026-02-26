@@ -744,6 +744,7 @@
                 booker: item["ชื่อผู้นัด"],
                 status: item["สถานะ"],
                 cancelNote: item["สาเหตุยกเลิก"] || '',
+                callStatus: item["สถานะโทร"] || 'ยังไม่โทรคอนเฟิม',
                 dateStr: item["วันที่นัด"],
                 timeStr: item["เวลานัด"] || '00:00'
             };
@@ -962,7 +963,8 @@
                         "HN": data.hn,
                         "เบอร์โทรศัพท์": data.phoneNumber,
                         "ชื่อผู้นัด": data.bookerName,
-                        "สาเหตุยกเลิก": data.cancelNote || ''
+                        "สาเหตุยกเลิก": data.cancelNote || '',
+                        "สถานะโทร": data.callStatus || 'ยังไม่โทรคอนเฟิม'
                     });
                 });
                 
@@ -1133,7 +1135,8 @@
                 phoneNumber: formData.get('phoneNumber'),
                 procedure: formData.get('procedure'),
                 bookerName: formData.get('bookerName') || '',
-                status: 'ยังไม่มา', 
+                status: 'ยังไม่มา',
+                callStatus: 'ยังไม่โทรคอนเฟิม',
                 timestamp: serverTimestamp() 
             };
 
@@ -1201,6 +1204,7 @@
                         booker: item["ชื่อผู้นัด"],
                         status: item._status,
                         cancelNote: item["สาเหตุยกเลิก"] || '',
+                        callStatus: item["สถานะโทร"] || 'ยังไม่โทรคอนเฟิม',
                         dateStr: item._normalizedDate,
                         timeStr: item._normalizedTime.substring(0, 5) 
                     }
@@ -1230,8 +1234,35 @@
             content.innerHTML = `
                 <div>
                     <h4 class="text-xl sm:text-3xl font-bold text-slate-900 mb-1">${props.name || 'ไม่มีชื่อ'}</h4>
-                    <div class="flex items-center gap-2 text-blue-600 font-bold text-sm">
+                    <div class="flex items-center gap-2 text-blue-600 font-bold text-sm mb-3">
                         <i data-lucide="hash" class="w-4 h-4"></i><span>HN: ${props.hn || 'ลูกค้าใหม่'}</span>
+                    </div>
+                    <!-- Call Status Widget -->
+                    <div class="bg-slate-50 rounded-2xl p-3 border border-slate-100">
+                        <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-2 flex items-center gap-1.5">
+                            <i data-lucide="phone-call" class="w-3.5 h-3.5"></i> สถานะการโทรยืนยัน
+                        </p>
+                        <div class="flex flex-col gap-1.5" id="callStatusGroup">
+                            ${['ยังไม่โทรคอนเฟิม', 'คอนเฟิมนัดแล้ว', 'ไม่รับสายรอโทรใหม่'].map(opt => {
+                                const isChecked = (props.callStatus || 'ยังไม่โทรคอนเฟิม') === opt;
+                                const colorMap = {
+                                    'ยังไม่โทรคอนเฟิม': { bg: isChecked ? 'bg-slate-200' : 'bg-white', text: 'text-slate-600', border: isChecked ? 'border-slate-400' : 'border-slate-200', dot: 'bg-slate-400' },
+                                    'คอนเฟิมนัดแล้ว':   { bg: isChecked ? 'bg-emerald-50' : 'bg-white', text: 'text-emerald-700', border: isChecked ? 'border-emerald-400' : 'border-slate-200', dot: 'bg-emerald-500' },
+                                    'ไม่รับสายรอโทรใหม่': { bg: isChecked ? 'bg-amber-50' : 'bg-white', text: 'text-amber-700', border: isChecked ? 'border-amber-400' : 'border-slate-200', dot: 'bg-amber-500' },
+                                };
+                                const c = colorMap[opt];
+                                return `<label class="flex items-center gap-2.5 cursor-pointer p-2 rounded-xl border ${c.border} ${c.bg} transition-all hover:border-blue-300 call-status-label" data-value="${opt}">
+                                    <div class="relative w-4 h-4 shrink-0">
+                                        <input type="radio" name="callStatus_${props.rowId}" value="${opt}" ${isChecked ? 'checked' : ''} 
+                                            class="absolute opacity-0 w-0 h-0" onchange="updateCallStatus('${opt}')">
+                                        <div class="w-4 h-4 rounded-full border-2 ${isChecked ? `border-transparent ${c.dot}` : 'border-slate-300 bg-white'} flex items-center justify-center transition-all">
+                                            ${isChecked ? '<div class="w-1.5 h-1.5 rounded-full bg-white"></div>' : ''}
+                                        </div>
+                                    </div>
+                                    <span class="text-xs sm:text-sm font-semibold ${c.text}">${opt}</span>
+                                </label>`;
+                            }).join('')}
+                        </div>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 gap-3 sm:gap-4">
@@ -1420,6 +1451,7 @@
                         booker: item["ชื่อผู้นัด"],
                         status: item._status,
                         cancelNote: item["สาเหตุยกเลิก"] || '',
+                        callStatus: item["สถานะโทร"] || 'ยังไม่โทรคอนเฟิม',
                         dateStr: item._normalizedDate,
                         timeStr: item._normalizedTime ? item._normalizedTime.substring(0, 5) : '00:00'
                     }).replace(/'/g, '&#39;');
@@ -1609,6 +1641,36 @@
                 actionContainer.style.opacity = '1';
                 actionContainer.style.pointerEvents = 'auto';
                 initIcons();
+            }
+        }
+
+        window.updateCallStatus = async function(callStatus) {
+            if (!currentRowId) return;
+            // อัปเดต UI ทันทีก่อน (optimistic)
+            document.querySelectorAll('.call-status-label').forEach(label => {
+                const val = label.dataset.value;
+                const isSelected = val === callStatus;
+                const colorMap = {
+                    'ยังไม่โทรคอนเฟิม': { bg: 'bg-slate-200', text: 'text-slate-600', border: 'border-slate-400', dot: 'bg-slate-400' },
+                    'คอนเฟิมนัดแล้ว':   { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-400', dot: 'bg-emerald-500' },
+                    'ไม่รับสายรอโทรใหม่': { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-400', dot: 'bg-amber-500' },
+                };
+                const c = colorMap[val];
+                label.className = `flex items-center gap-2.5 cursor-pointer p-2 rounded-xl border transition-all hover:border-blue-300 call-status-label ${isSelected ? `${c.border} ${c.bg}` : 'border-slate-200 bg-white'}`;
+                const dotEl = label.querySelector('div > div');
+                const spanEl = label.querySelector('span');
+                if (dotEl) {
+                    dotEl.className = `w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? `border-transparent ${c.dot}` : 'border-slate-300 bg-white'}`;
+                    dotEl.innerHTML = isSelected ? '<div class="w-1.5 h-1.5 rounded-full bg-white"></div>' : '';
+                }
+                if (spanEl) spanEl.className = `text-xs sm:text-sm font-semibold ${isSelected ? c.text : 'text-slate-500'}`;
+            });
+            // บันทึก Firestore
+            try {
+                await updateDoc(doc(db, COLLECTION_NAME, currentRowId), { callStatus });
+                if (currentEventProps) currentEventProps.callStatus = callStatus;
+            } catch (e) {
+                console.error("updateCallStatus failed:", e);
             }
         }
 
