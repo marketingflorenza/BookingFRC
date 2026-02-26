@@ -743,6 +743,7 @@
                 proc: item["หัตถการ"] || '-',
                 booker: item["ชื่อผู้นัด"],
                 status: item["สถานะ"],
+                cancelNote: item["สาเหตุยกเลิก"] || '',
                 dateStr: item["วันที่นัด"],
                 timeStr: item["เวลานัด"] || '00:00'
             };
@@ -960,7 +961,8 @@
                         "ชื่อลูกค้า": data.customerName,
                         "HN": data.hn,
                         "เบอร์โทรศัพท์": data.phoneNumber,
-                        "ชื่อผู้นัด": data.bookerName
+                        "ชื่อผู้นัด": data.bookerName,
+                        "สาเหตุยกเลิก": data.cancelNote || ''
                     });
                 });
                 
@@ -1198,6 +1200,7 @@
                         proc: item._proc || '-', 
                         booker: item["ชื่อผู้นัด"],
                         status: item._status,
+                        cancelNote: item["สาเหตุยกเลิก"] || '',
                         dateStr: item._normalizedDate,
                         timeStr: item._normalizedTime.substring(0, 5) 
                     }
@@ -1248,6 +1251,11 @@
                         <div class="w-9 h-9 sm:w-10 sm:h-10 bg-white shadow-sm rounded-xl flex items-center justify-center text-slate-500 shrink-0"><i data-lucide="user-check" class="w-4 h-4 sm:w-5 sm:h-5"></i></div>
                         <div><p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">ชื่อผู้นัด</p><p class="font-bold text-slate-700 text-sm whitespace-normal">${props.booker || '-'}</p></div>
                     </div>
+                    ${props.status === 'ยกเลิกนัด' && props.cancelNote ? `
+                    <div class="flex items-start gap-3 sm:gap-4 bg-red-50 p-3 rounded-2xl border border-red-100">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 bg-white shadow-sm rounded-xl flex items-center justify-center text-red-400 shrink-0 mt-0.5"><i data-lucide="message-square-warning" class="w-4 h-4 sm:w-5 sm:h-5"></i></div>
+                        <div><p class="text-[10px] uppercase font-bold text-red-400 tracking-wider">สาเหตุยกเลิก</p><p class="font-bold text-red-700 text-sm whitespace-normal">${props.cancelNote}</p></div>
+                    </div>` : ''}
                 </div>
             `;
 
@@ -1257,9 +1265,87 @@
             actionContainer.innerHTML = `
                 <div class="flex flex-wrap gap-2" id="mainButtonsGroup">
                     <button onclick="updateStatus('มาแล้ว')" class="flex-1 min-w-[70px] bg-yellow-100 hover:bg-yellow-200 text-yellow-700 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95">มาแล้ว</button>
+                    <button onclick="updateStatus('ยังไม่มา')" class="flex-1 min-w-[70px] bg-blue-100 hover:bg-blue-200 text-blue-700 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95">ยังไม่มา</button>
                     <button onclick="toggleRescheduleForm()" class="flex-1 min-w-[70px] bg-indigo-100 hover:bg-indigo-200 text-indigo-700 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95">เลื่อนนัด</button>
                     <button onclick="updateStatus('ไม่มาตามนัด')" class="flex-1 min-w-[70px] bg-red-100 hover:bg-red-200 text-red-600 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95">ไม่มา</button>
-                    <button onclick="updateStatus('ยกเลิกนัด')" class="flex-1 min-w-[70px] bg-red-800 hover:bg-red-900 text-white py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95">ยกเลิก</button>
+                    <button onclick="toggleCancelForm()" class="flex-1 min-w-[70px] bg-red-800 hover:bg-red-900 text-white py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95">ยกเลิก</button>
+                </div>
+                <!-- Cancel form panel -->
+                <div id="cancelFormPanel" class="hidden mt-3 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-2xl">
+                    <h5 class="text-xs sm:text-sm font-bold text-red-800 mb-3 flex items-center gap-2">
+                        <i data-lucide="x-circle" class="w-4 h-4"></i> ระบุสาเหตุการยกเลิกนัด
+                    </h5>
+                    <div class="mb-3">
+                        <label class="block text-[10px] font-bold text-red-700 mb-1.5 uppercase tracking-wider">สาเหตุการยกเลิก <span class="text-red-500">*</span></label>
+                        <div class="grid grid-cols-2 gap-1.5 mb-2" id="cancelReasonBtns">
+                            ${['ติดธุระ', 'ไม่สะดวก', 'อาการดีขึ้น', 'เปลี่ยนใจ', 'ติดต่อไม่ได้', 'อื่นๆ'].map(r =>
+                                `<button type="button" onclick="selectCancelReason(this)" class="cancel-reason-btn px-2 py-1.5 rounded-lg border border-red-200 bg-white text-red-700 text-[11px] sm:text-xs font-medium hover:bg-red-100 transition-all text-left">${r}</button>`
+                            ).join('')}
+                        </div>
+                        <input type="text" id="cancelNoteInput" placeholder="หมายเหตุเพิ่มเติม (ถ้ามี)" class="w-full p-2 rounded-xl border border-red-200 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-red-400 bg-white mt-1">
+                        <p id="cancelNoteError" class="hidden text-red-600 text-[10px] mt-1 font-medium">⚠ กรุณาเลือกสาเหตุหรือกรอกหมายเหตุ</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="toggleCancelForm()" class="px-3 py-2 bg-white text-slate-600 border border-slate-200 font-bold rounded-xl text-xs sm:text-sm hover:bg-slate-50 transition-all">ยกเลิก</button>
+                        <button onclick="submitCancel()" id="btnSubmitCancel" class="flex-1 bg-red-700 hover:bg-red-800 text-white font-bold py-2 rounded-xl text-xs sm:text-sm transition-all flex justify-center items-center gap-1.5 active:scale-95">
+                            <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
+                            <span>ยืนยันยกเลิกนัด</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- ปุ่มแก้ไขข้อมูล -->
+                <div class="mt-2 pt-2 border-t border-slate-100">
+                    <button onclick="toggleEditForm()" id="btnShowEdit" class="w-full flex items-center justify-center gap-2 py-2 text-xs sm:text-sm text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-all font-medium">
+                        <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                        <span>แก้ไขข้อมูล</span>
+                    </button>
+                </div>
+                <!-- Edit form panel -->
+                <div id="editFormPanel" class="hidden mt-2 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-2xl">
+                    <h5 class="text-xs sm:text-sm font-bold text-blue-800 mb-3 flex items-center gap-2">
+                        <i data-lucide="pencil" class="w-4 h-4"></i> แก้ไขข้อมูลการนัดหมาย
+                    </h5>
+                    <div class="space-y-2.5">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[10px] font-bold text-blue-700 mb-1 uppercase tracking-wider">วันที่</label>
+                                <input type="date" id="editDate" class="w-full p-2 rounded-xl border border-blue-200 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-blue-400 bg-white" value="${props.dateStr}">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-blue-700 mb-1 uppercase tracking-wider">เวลา</label>
+                                <select id="editTime" class="w-full p-2 rounded-xl border border-blue-200 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-blue-400 bg-white">
+                                    ${['11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'].map(t => `<option value="${t}" ${t === props.timeStr ? 'selected' : ''}>${t}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-blue-700 mb-1 uppercase tracking-wider">HN</label>
+                            <input type="text" id="editHN" class="w-full p-2 rounded-xl border border-blue-200 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-blue-400 bg-white" value="${props.hn && props.hn !== 'ลูกค้าใหม่' ? props.hn : ''}" placeholder="เช่น HN12345">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-blue-700 mb-1 uppercase tracking-wider">ชื่อ-นามสกุล <span class="text-red-500">*</span></label>
+                            <input type="text" id="editName" class="w-full p-2 rounded-xl border border-blue-200 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-blue-400 bg-white" value="${props.name || ''}" required>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-blue-700 mb-1 uppercase tracking-wider">เบอร์โทรศัพท์ <span class="text-red-500">*</span></label>
+                            <input type="tel" id="editPhone" class="w-full p-2 rounded-xl border border-blue-200 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-blue-400 bg-white" value="${props.phone || ''}">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-blue-700 mb-1 uppercase tracking-wider">หัตถการ <span class="text-red-500">*</span></label>
+                            <input type="text" id="editProc" class="w-full p-2 rounded-xl border border-blue-200 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-blue-400 bg-white" value="${props.proc !== '-' ? props.proc : ''}">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-blue-700 mb-1 uppercase tracking-wider">ชื่อผู้นัด</label>
+                            <input type="text" id="editBooker" class="w-full p-2 rounded-xl border border-blue-200 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-blue-400 bg-white" value="${props.booker || ''}">
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mt-3">
+                        <button onclick="toggleEditForm()" class="px-3 py-2 bg-white text-slate-600 border border-slate-200 font-bold rounded-xl text-xs sm:text-sm hover:bg-slate-50 transition-all">ยกเลิก</button>
+                        <button onclick="submitEdit()" id="btnConfirmEdit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-xl text-xs sm:text-sm transition-all flex justify-center items-center gap-1.5 active:scale-95">
+                            <i data-lucide="save" class="w-3.5 h-3.5"></i>
+                            <span>บันทึกการแก้ไข</span>
+                        </button>
+                    </div>
                 </div>
                 <div id="rescheduleForm" class="hidden mt-3 p-3 sm:p-4 bg-indigo-50 border border-indigo-100 rounded-2xl">
                     <h5 class="text-xs sm:text-sm font-bold text-indigo-800 mb-3 flex items-center gap-2"><i data-lucide="calendar-clock" class="w-4 h-4"></i> ระบุวันและเวลาใหม่</h5>
@@ -1351,9 +1437,11 @@
         window.toggleRescheduleForm = function() {
             const form = document.getElementById('rescheduleForm');
             const mainBtns = document.getElementById('mainButtonsGroup');
+            const cancelPanel = document.getElementById('cancelFormPanel');
             if(form.classList.contains('hidden')) {
                 form.classList.remove('hidden');
                 mainBtns.classList.add('hidden');
+                if (cancelPanel && !cancelPanel.classList.contains('hidden')) { cancelPanel.classList.add('hidden'); mainBtns.classList.remove('hidden'); mainBtns.classList.add('hidden'); }
             } else {
                 form.classList.add('hidden');
                 mainBtns.classList.remove('hidden');
@@ -1422,6 +1510,79 @@
             }
         }
 
+        window.toggleCancelForm = function() {
+            const panel = document.getElementById('cancelFormPanel');
+            const mainBtns = document.getElementById('mainButtonsGroup');
+            const rescheduleForm = document.getElementById('rescheduleForm');
+            const editPanel = document.getElementById('editFormPanel');
+            const btnEdit = document.getElementById('btnShowEdit');
+
+            if (panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                mainBtns.classList.add('hidden');
+                // ซ่อน panel อื่นถ้าเปิดอยู่
+                if (rescheduleForm && !rescheduleForm.classList.contains('hidden')) rescheduleForm.classList.add('hidden');
+                if (editPanel && !editPanel.classList.contains('hidden')) { editPanel.classList.add('hidden'); if(btnEdit) btnEdit.classList.remove('hidden'); }
+                // reset form
+                document.querySelectorAll('.cancel-reason-btn').forEach(b => b.classList.remove('bg-red-700','text-white','border-red-700'));
+                document.getElementById('cancelNoteInput').value = '';
+                document.getElementById('cancelNoteError').classList.add('hidden');
+            } else {
+                panel.classList.add('hidden');
+                mainBtns.classList.remove('hidden');
+            }
+            initIcons();
+        }
+
+        window.selectCancelReason = function(btn) {
+            // toggle selected state
+            const isSelected = btn.classList.contains('bg-red-700');
+            document.querySelectorAll('.cancel-reason-btn').forEach(b => b.classList.remove('bg-red-700','text-white','border-red-700'));
+            if (!isSelected) {
+                btn.classList.add('bg-red-700','text-white','border-red-700');
+            }
+            document.getElementById('cancelNoteError').classList.add('hidden');
+        }
+
+        window.submitCancel = async function() {
+            if (!currentRowId) return;
+
+            const selectedBtn = document.querySelector('.cancel-reason-btn.bg-red-700');
+            const noteInput = document.getElementById('cancelNoteInput').value.trim();
+            const errorEl = document.getElementById('cancelNoteError');
+
+            if (!selectedBtn && !noteInput) {
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            const reason = selectedBtn ? selectedBtn.textContent.trim() : '';
+            const cancelNote = reason && noteInput ? `${reason} - ${noteInput}` : reason || noteInput;
+
+            const btn = document.getElementById('btnSubmitCancel');
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>กำลังบันทึก...</span>';
+            btn.disabled = true;
+            initIcons();
+
+            const actionContainer = document.getElementById('actionContainer');
+            actionContainer.style.opacity = '0.5';
+            actionContainer.style.pointerEvents = 'none';
+
+            try {
+                const docRef = doc(db, COLLECTION_NAME, currentRowId);
+                await updateDoc(docRef, { status: 'ยกเลิกนัด', cancelNote: cancelNote });
+                window.closeModal();
+            } catch (error) {
+                console.error("Cancel Failed:", error);
+                alert("เกิดข้อผิดพลาดในการบันทึก กรุณาลองใหม่อีกครั้ง");
+                btn.innerHTML = '<i data-lucide="x-circle" class="w-3.5 h-3.5"></i><span>ยืนยันยกเลิกนัด</span>';
+                btn.disabled = false;
+                actionContainer.style.opacity = '1';
+                actionContainer.style.pointerEvents = 'auto';
+                initIcons();
+            }
+        }
+
         window.updateStatus = async function(status) {
             if (!currentRowId) return;
             const actionContainer = document.getElementById('actionContainer');
@@ -1437,6 +1598,68 @@
             } finally {
                 actionContainer.style.opacity = '1';
                 actionContainer.style.pointerEvents = 'auto';
+            }
+        }
+
+        window.toggleEditForm = function() {
+            const panel = document.getElementById('editFormPanel');
+            const btnShow = document.getElementById('btnShowEdit');
+            const rescheduleForm = document.getElementById('rescheduleForm');
+            const cancelPanel = document.getElementById('cancelFormPanel');
+            const mainBtns = document.getElementById('mainButtonsGroup');
+
+            if (panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                btnShow.classList.add('hidden');
+                if (rescheduleForm && !rescheduleForm.classList.contains('hidden')) { rescheduleForm.classList.add('hidden'); mainBtns.classList.remove('hidden'); }
+                if (cancelPanel && !cancelPanel.classList.contains('hidden')) { cancelPanel.classList.add('hidden'); mainBtns.classList.remove('hidden'); }
+            } else {
+                panel.classList.add('hidden');
+                btnShow.classList.remove('hidden');
+            }
+            initIcons();
+        }
+
+        window.submitEdit = async function() {
+            if (!currentRowId) return;
+
+            const nameVal = document.getElementById('editName').value.trim();
+            const phoneVal = document.getElementById('editPhone').value.trim();
+            const procVal = document.getElementById('editProc').value.trim();
+
+            if (!nameVal) { alert('กรุณากรอกชื่อ-นามสกุลลูกค้า'); return; }
+            if (!phoneVal) { alert('กรุณากรอกเบอร์โทรศัพท์'); return; }
+            if (!procVal) { alert('กรุณากรอกหัตถการ'); return; }
+
+            const btn = document.getElementById('btnConfirmEdit');
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>กำลังบันทึก...</span>';
+            btn.disabled = true;
+            initIcons();
+
+            const actionContainer = document.getElementById('actionContainer');
+            actionContainer.style.opacity = '0.6';
+            actionContainer.style.pointerEvents = 'none';
+
+            try {
+                const docRef = doc(db, COLLECTION_NAME, currentRowId);
+                await updateDoc(docRef, {
+                    bookingDate: document.getElementById('editDate').value,
+                    bookingTime: document.getElementById('editTime').value,
+                    hn: document.getElementById('editHN').value.trim(),
+                    customerName: nameVal,
+                    phoneNumber: phoneVal,
+                    procedure: procVal,
+                    bookerName: document.getElementById('editBooker').value.trim(),
+                });
+                window.closeModal();
+            } catch (error) {
+                console.error("Edit Failed:", error);
+                alert("เกิดข้อผิดพลาดในการแก้ไขข้อมูล กรุณาลองใหม่อีกครั้ง");
+                btn.innerHTML = '<i data-lucide="save" class="w-3.5 h-3.5"></i><span>บันทึกการแก้ไข</span>';
+                btn.disabled = false;
+                actionContainer.style.opacity = '1';
+                actionContainer.style.pointerEvents = 'auto';
+                initIcons();
             }
         }
 
