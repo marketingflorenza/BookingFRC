@@ -6,14 +6,11 @@
     <title>Dashboard ระบบนัดหมาย FRC</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <!-- FullCalendar CDN -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
-    <!-- Lucide Icons -->
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
     <style>
         body { font-family: 'Kanit', sans-serif; background-color: #f8fafc; }
         
-        /* ===== FULLCALENDAR BASE ===== */
         .fc { --fc-border-color: #e2e8f0; --fc-daygrid-event-dot-width: 8px; background-color: white; }
         .fc-header-toolbar { padding: 1.25rem !important; margin-bottom: 0 !important; background-color: #ffffff; }
         .fc-toolbar-title { font-size: 1.25rem !important; font-weight: 700 !important; color: #1e293b; }
@@ -21,46 +18,16 @@
         .fc-button-primary:hover { background-color: #f1f5f9 !important; border-color: #cbd5e1 !important; }
         .fc-button-active { background-color: #3b82f6 !important; border-color: #3b82f6 !important; color: #ffffff !important; }
 
-        /* ===== FULLCALENDAR MOBILE RESPONSIVE ===== */
         @media (max-width: 640px) {
-            .fc-header-toolbar {
-                padding: 0.75rem !important;
-                flex-wrap: wrap !important;
-                gap: 0.5rem !important;
-            }
-            .fc-toolbar-chunk {
-                display: flex !important;
-                flex-wrap: wrap !important;
-                gap: 4px !important;
-            }
-            .fc-header-toolbar .fc-toolbar-chunk:last-child {
-                display: none !important;
-            }
-            .fc-toolbar-title {
-                font-size: 1rem !important;
-            }
-            .fc-button-primary {
-                padding: 0.35rem 0.6rem !important;
-                font-size: 0.75rem !important;
-            }
-            .fc-addBookingBtn-button {
-                padding: 0.35rem 0.7rem !important;
-                font-size: 0.75rem !important;
-            }
-            .fc-col-header-cell-cushion {
-                padding: 6px 2px !important;
-                font-size: 0.7rem !important;
-            }
-            .fc-daygrid-day-number {
-                padding: 4px !important;
-                font-size: 0.75rem !important;
-            }
-            .fc-event {
-                padding: 1px 3px !important;
-                margin: 1px !important;
-                font-size: 0.72rem !important;
-                border-radius: 4px !important;
-            }
+            .fc-header-toolbar { padding: 0.75rem !important; flex-wrap: wrap !important; gap: 0.5rem !important; }
+            .fc-toolbar-chunk { display: flex !important; flex-wrap: wrap !important; gap: 4px !important; }
+            .fc-header-toolbar .fc-toolbar-chunk:last-child { display: none !important; }
+            .fc-toolbar-title { font-size: 1rem !important; }
+            .fc-button-primary { padding: 0.35rem 0.6rem !important; font-size: 0.75rem !important; }
+            .fc-addBookingBtn-button { padding: 0.35rem 0.7rem !important; font-size: 0.75rem !important; }
+            .fc-col-header-cell-cushion { padding: 6px 2px !important; font-size: 0.7rem !important; }
+            .fc-daygrid-day-number { padding: 4px !important; font-size: 0.75rem !important; }
+            .fc-event { padding: 1px 3px !important; margin: 1px !important; font-size: 0.72rem !important; border-radius: 4px !important; }
             .custom-event-time { font-size: 0.62rem !important; }
             .custom-event-title { font-size: 0.68rem !important; }
             .fc-timegrid-slot { height: 2.5rem !important; }
@@ -105,9 +72,7 @@
             #realtimeStatus { padding: 0.4rem 0.7rem; font-size: 0.75rem; border-radius: 0.65rem; }
         }
 
-        @media (max-width: 640px) {
-            #reportDateFilter { font-size: 0.8rem; }
-        }
+        @media (max-width: 640px) { #reportDateFilter { font-size: 0.8rem; } }
 
         @media (max-width: 480px) {
             .stat-card { padding: 0.85rem 0.6rem !important; border-radius: 1.25rem !important; }
@@ -118,24 +83,13 @@
         }
 
         @media (max-width: 640px) {
-            #eventModal > div,
-            #newBookingModal > div,
-            #statusListModal > div {
-                border-bottom-left-radius: 0 !important;
-                border-bottom-right-radius: 0 !important;
-                max-height: 92vh !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                margin: 0 !important;
-                position: absolute !important;
-                bottom: 0 !important;
+            #eventModal > div, #newBookingModal > div, #statusListModal > div {
+                border-bottom-left-radius: 0 !important; border-bottom-right-radius: 0 !important;
+                max-height: 92vh !important; width: 100% !important; max-width: 100% !important;
+                margin: 0 !important; position: absolute !important; bottom: 0 !important;
                 border-radius: 1.75rem 1.75rem 0 0 !important;
             }
-            #eventModal,
-            #newBookingModal,
-            #statusListModal {
-                align-items: flex-end !important;
-            }
+            #eventModal, #newBookingModal, #statusListModal { align-items: flex-end !important; }
             #actionContainer .flex.flex-wrap { gap: 0.5rem; }
             #actionContainer button { font-size: 0.8rem !important; padding: 0.6rem 0.5rem !important; }
         }
@@ -151,72 +105,28 @@
             .legend-color { width: 9px !important; height: 9px !important; }
         }
 
-        @media (max-width: 640px) {
-            .hint-bar { font-size: 0.68rem !important; padding: 0.5rem 0.75rem !important; }
-        }
+        @media (max-width: 640px) { .hint-bar { font-size: 0.68rem !important; padding: 0.5rem 0.75rem !important; } }
 
-        /* ===== PAGE SYSTEM ===== */
         .page-content { display: none; }
         .page-content.active { display: block; }
         
-        /* ===== NAV TABS ===== */
         .nav-tab {
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            font-size: 0.875rem;
-            color: #64748b;
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s;
-            cursor: pointer;
+            padding: 0.75rem 1.5rem; font-weight: 600; font-size: 0.875rem;
+            color: #64748b; border-bottom: 3px solid transparent; transition: all 0.2s; cursor: pointer;
         }
-        .nav-tab:hover {
-            color: #3b82f6;
-            background-color: #eff6ff;
-        }
-        .nav-tab.active {
-            color: #3b82f6;
-            border-bottom-color: #3b82f6;
-        }
+        .nav-tab:hover { color: #3b82f6; background-color: #eff6ff; }
+        .nav-tab.active { color: #3b82f6; border-bottom-color: #3b82f6; }
         
-        @media (max-width: 640px) {
-            .nav-tab {
-                padding: 0.5rem 0.75rem;
-                font-size: 0.75rem;
-            }
-        }
+        @media (max-width: 640px) { .nav-tab { padding: 0.5rem 0.75rem; font-size: 0.75rem; } }
 
-        /* ===== SUMMARY TABLE ===== */
-        .summary-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .summary-table th {
-            background-color: #f1f5f9;
-            padding: 0.75rem;
-            text-align: left;
-            font-weight: 600;
-            font-size: 0.75rem;
-            color: #475569;
-            border-bottom: 2px solid #e2e8f0;
-        }
-        .summary-table td {
-            padding: 0.75rem;
-            font-size: 0.875rem;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .summary-table tbody tr:hover {
-            background-color: #f8fafc;
-        }
+        .summary-table { width: 100%; border-collapse: collapse; }
+        .summary-table th { background-color: #f1f5f9; padding: 0.75rem; text-align: left; font-weight: 600; font-size: 0.75rem; color: #475569; border-bottom: 2px solid #e2e8f0; }
+        .summary-table td { padding: 0.75rem; font-size: 0.875rem; border-bottom: 1px solid #e2e8f0; }
+        .summary-table tbody tr:hover { background-color: #f8fafc; }
         
         @media (max-width: 640px) {
-            .summary-table th,
-            .summary-table td {
-                padding: 0.5rem 0.25rem;
-                font-size: 0.7rem;
-            }
-            .summary-table th {
-                font-size: 0.65rem;
-            }
+            .summary-table th, .summary-table td { padding: 0.5rem 0.25rem; font-size: 0.7rem; }
+            .summary-table th { font-size: 0.65rem; }
         }
     </style>
 </head>
@@ -242,7 +152,6 @@
         </div>
     </nav>
 
-    <!-- Navigation Tabs -->
     <div class="bg-white border-b border-gray-200 sticky top-16 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex overflow-x-auto">
@@ -262,7 +171,6 @@
         
         <!-- Dashboard Page -->
         <div id="dashboardPage" class="page-content active">
-            <!-- Report Header with Date Filter -->
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-5">
                 <div>
                     <h2 class="text-xl sm:text-2xl font-bold text-gray-800 tracking-tight">รายงานประจำวัน</h2>
@@ -303,7 +211,6 @@
                     </button>
                 </div>
                 
-                <!-- Search Results -->
                 <div id="searchResults" class="hidden mt-4 pt-4 border-t border-gray-100">
                     <div class="flex items-center justify-between mb-3">
                         <h4 class="font-bold text-gray-700 text-sm">ผลการค้นหา</h4>
@@ -375,7 +282,7 @@
                 </div>
                 <div class="hint-bar px-4 sm:px-6 py-2 bg-blue-50 border-b border-blue-100 text-blue-700 text-xs font-medium flex items-center gap-2">
                     <i data-lucide="mouse-pointer-click" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0"></i>
-                    <span class="hidden sm:inline">เคล็ดลับ: คุณสามารถเพิ่มคิวใหม่ได้ง่ายๆ เพียงแค่ "คลิก" ไปยังวันที่บนปฏิทินด้านล่าง </span>
+                    <span class="hidden sm:inline">เคล็ดลับ: คุณสามารถเพิ่มคิวใหม่ได้ง่ายๆ เพียงแค่ "คลิก" ไปยังวันที่บนปฏิทินด้านล่าง</span>
                     <span class="sm:hidden">กด "คลิก" วันที่บนปฏิทิน หรือกดปุ่ม "+ เพิ่มคิวใหม่" เพื่อเพิ่มนัดหมาย</span>
                 </div>
                 <div id="calendar" class="calendar-wrapper p-1 sm:p-2 md:p-4"></div>
@@ -389,7 +296,6 @@
                 <p class="text-xs sm:text-sm text-gray-500">รายงานสรุปการนัดหมายแยกตามช่วงเวลาและผู้นัด</p>
             </div>
 
-            <!-- Date Range Filter -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-6">
                 <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
                     <div class="flex-1 w-full sm:w-auto">
@@ -407,13 +313,12 @@
                 </div>
             </div>
 
-            <!-- Overall Summary -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-6">
                 <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                     <i data-lucide="bar-chart-2" class="w-5 h-5 text-blue-600"></i>
                     สรุปรวมตามช่วงเวลา
                 </h3>
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 sm:gap-4">
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
                     <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl">
                         <p class="text-xs text-blue-600 font-bold mb-1">นัดรวมทั้งหมด</p>
                         <p class="text-2xl font-bold text-blue-700" id="summaryTotalAll">0</p>
@@ -441,7 +346,6 @@
                 </div>
             </div>
 
-            <!-- Booker Performance Table -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="px-4 sm:px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100">
                     <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
@@ -621,6 +525,11 @@
             return `${year}-${month}-${day}`;
         }
 
+        // ===== HELPER: สถานะที่ถือว่า "ปิดแล้ว" ไม่นับเป็น HN ซ้ำ =====
+        function isClosedStatus(status) {
+            return status === 'ยกเลิกนัด' || status === 'เลื่อนนัด' || status === 'ไม่มาตามนัด';
+        }
+
         window.switchPage = function(pageName) {
             document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
@@ -632,7 +541,6 @@
                 document.getElementById('summaryPage').classList.add('active');
                 document.querySelector('.nav-tab:nth-child(2)').classList.add('active');
             }
-            
             initIcons();
         }
 
@@ -651,10 +559,7 @@
                 const hn = (item["HN"] || '').toString().toLowerCase();
                 const name = (item["ชื่อลูกค้า"] || '').toString().toLowerCase();
                 const phone = (item["เบอร์โทรศัพท์"] || '').toString().toLowerCase();
-                
-                return hn.includes(searchTerm) || 
-                       name.includes(searchTerm) || 
-                       phone.includes(searchTerm);
+                return hn.includes(searchTerm) || name.includes(searchTerm) || phone.includes(searchTerm);
             });
             
             searchResults.classList.remove('hidden');
@@ -683,9 +588,7 @@
                     let displayDate = dateStr;
                     if (dateStr !== '-') {
                         const parts = dateStr.split('-');
-                        if (parts.length === 3) {
-                            displayDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
-                        }
+                        if (parts.length === 3) displayDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
                     }
                     
                     return `
@@ -702,17 +605,11 @@
                                         </span>
                                     </div>
                                 </div>
-                                <span class="px-3 py-1 rounded-full text-xs font-bold ${statusColor} whitespace-nowrap ml-2">
-                                    ${status}
-                                </span>
+                                <span class="px-3 py-1 rounded-full text-xs font-bold ${statusColor} whitespace-nowrap ml-2">${status}</span>
                             </div>
                             <div class="flex items-center gap-3 text-sm text-gray-600 pt-2 border-t border-gray-100">
-                                <span class="font-semibold">
-                                    <i data-lucide="calendar" class="w-3.5 h-3.5 inline pb-0.5"></i> ${displayDate}
-                                </span>
-                                <span class="font-semibold">
-                                    <i data-lucide="clock" class="w-3.5 h-3.5 inline pb-0.5"></i> ${timeStr}
-                                </span>
+                                <span class="font-semibold"><i data-lucide="calendar" class="w-3.5 h-3.5 inline pb-0.5"></i> ${displayDate}</span>
+                                <span class="font-semibold"><i data-lucide="clock" class="w-3.5 h-3.5 inline pb-0.5"></i> ${timeStr}</span>
                             </div>
                             <div class="mt-2 text-xs text-gray-500 truncate">
                                 <i data-lucide="activity" class="w-3.5 h-3.5 inline pb-0.5"></i> ${item["หัตถการ"] || '-'}
@@ -721,7 +618,6 @@
                     `;
                 }).join('');
             }
-            
             initIcons();
         }
 
@@ -734,7 +630,6 @@
         window.showSearchResultDetail = function(rowId) {
             const item = allData.find(d => d.rowId === rowId);
             if (!item) return;
-            
             const props = {
                 rowId: rowId,
                 name: item["ชื่อลูกค้า"],
@@ -748,7 +643,6 @@
                 dateStr: item["วันที่นัด"],
                 timeStr: item["เวลานัด"] || '00:00'
             };
-            
             window.showDetails(props);
         }
 
@@ -756,15 +650,8 @@
             const startDate = document.getElementById('summaryStartDate').value;
             const endDate = document.getElementById('summaryEndDate').value;
             
-            if (!startDate || !endDate) {
-                alert('กรุณาเลือกวันที่เริ่มต้นและสิ้นสุด');
-                return;
-            }
-            
-            if (startDate > endDate) {
-                alert('วันที่เริ่มต้นต้องไม่มากกว่าวันที่สิ้นสุด');
-                return;
-            }
+            if (!startDate || !endDate) { alert('กรุณาเลือกวันที่เริ่มต้นและสิ้นสุด'); return; }
+            if (startDate > endDate) { alert('วันที่เริ่มต้นต้องไม่มากกว่าวันที่สิ้นสุด'); return; }
             
             const filteredData = allData.filter(item => {
                 const bookingDate = item["วันที่นัด"];
@@ -772,19 +659,12 @@
                 return bookingDate >= startDate && bookingDate <= endDate;
             });
             
-            const totalAll = filteredData.length;
-            const totalArrived = filteredData.filter(item => item["สถานะ"] === "มาแล้ว").length;
-            const totalUpcoming = filteredData.filter(item => item["สถานะ"] === "ยังไม่มา").length;
-            const totalRescheduled = filteredData.filter(item => item["สถานะ"] === "เลื่อนนัด").length;
-            const totalNoShow = filteredData.filter(item => item["สถานะ"] === "ไม่มาตามนัด").length;
-            const totalCancelled = filteredData.filter(item => item["สถานะ"] === "ยกเลิกนัด").length;
-            
-            document.getElementById('summaryTotalAll').textContent = totalAll;
-            document.getElementById('summaryTotalArrived').textContent = totalArrived;
-            document.getElementById('summaryTotalUpcoming').textContent = totalUpcoming;
-            document.getElementById('summaryTotalRescheduled').textContent = totalRescheduled;
-            document.getElementById('summaryTotalNoShow').textContent = totalNoShow;
-            document.getElementById('summaryTotalCancelled').textContent = totalCancelled;
+            document.getElementById('summaryTotalAll').textContent = filteredData.length;
+            document.getElementById('summaryTotalArrived').textContent = filteredData.filter(item => item["สถานะ"] === "มาแล้ว").length;
+            document.getElementById('summaryTotalUpcoming').textContent = filteredData.filter(item => item["สถานะ"] === "ยังไม่มา").length;
+            document.getElementById('summaryTotalRescheduled').textContent = filteredData.filter(item => item["สถานะ"] === "เลื่อนนัด").length;
+            document.getElementById('summaryTotalNoShow').textContent = filteredData.filter(item => item["สถานะ"] === "ไม่มาตามนัด").length;
+            document.getElementById('summaryTotalCancelled').textContent = filteredData.filter(item => item["สถานะ"] === "ยกเลิกนัด").length;
             
             const bookerStats = {};
             filteredData.forEach(item => {
@@ -792,7 +672,6 @@
                 if (!bookerStats[bookerName]) {
                     bookerStats[bookerName] = { total: 0, arrived: 0, upcoming: 0, rescheduled: 0, noShow: 0, cancelled: 0 };
                 }
-                
                 bookerStats[bookerName].total++;
                 const status = item["สถานะ"];
                 if (status === "มาแล้ว") bookerStats[bookerName].arrived++;
@@ -810,7 +689,6 @@
                 Object.keys(bookerStats).sort().forEach(bookerName => {
                     const stats = bookerStats[bookerName];
                     const arrivedPercent = stats.total > 0 ? ((stats.arrived / stats.total) * 100).toFixed(1) : '0.0';
-                    
                     html += `
                         <tr>
                             <td class="font-bold text-gray-800">${bookerName}</td>
@@ -821,7 +699,7 @@
                             <td class="text-center text-rose-600">${stats.noShow}</td>
                             <td class="text-center text-slate-600">${stats.cancelled}</td>
                             <td class="text-center">
-                                <span class="inline-block px-2 py-1 rounded-full text-xs font-bold ${arrivedPercent >= 70 ? 'bg-emerald-100 text-emerald-700' : arrivedPercent >= 50 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'}">
+                                <span class="inline-block px-2 py-1 rounded-full text-xs font-bold ${parseFloat(arrivedPercent) >= 70 ? 'bg-emerald-100 text-emerald-700' : parseFloat(arrivedPercent) >= 50 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'}">
                                     ${arrivedPercent}%
                                 </span>
                             </td>
@@ -830,7 +708,6 @@
                 });
                 tbody.innerHTML = html;
             }
-            
             initIcons();
         }
 
@@ -856,7 +733,6 @@
         function initSummaryDateFilter() {
             const today = new Date();
             const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-            
             document.getElementById('summaryStartDate').value = firstDayOfMonth.toISOString().split('T')[0];
             document.getElementById('summaryEndDate').value = getTodayLocalString();
         }
@@ -864,7 +740,6 @@
         function initDateFilter() {
             const dateFilter = document.getElementById('reportDateFilter');
             dateFilter.value = getTodayLocalString();
-            
             dateFilter.addEventListener('change', function() {
                 updateDashboard(allData);
                 if (calendar) calendar.gotoDate(this.value);
@@ -882,9 +757,7 @@
                 customButtons: {
                     addBookingBtn: {
                         text: isMobile ? '+ เพิ่มคิว' : '+ เพิ่มคิวใหม่',
-                        click: function() {
-                            handleDateClick({ dateStr: getTodayLocalString() });
-                        }
+                        click: function() { handleDateClick({ dateStr: getTodayLocalString() }); }
                     }
                 },
                 headerToolbar: isMobile
@@ -1011,7 +884,6 @@
                 modal.classList.remove('flex');
                 document.getElementById('newBookingForm').reset();
                 document.getElementById('hnWarning').classList.add('hidden');
-                // รีเซ็ต HN input border และปุ่ม submit
                 const hnInputEl = document.getElementById('hnInput');
                 if (hnInputEl) {
                     hnInputEl.classList.remove('border-red-400', 'bg-red-50', 'border-amber-400', 'focus:ring-red-400', 'focus:border-red-400');
@@ -1026,15 +898,14 @@
         }
 
         // ===== ตรวจสอบ HN ซ้ำในวันเดียวกัน =====
-        // คืนค่า true = มีซ้ำ (บล็อก), false = ไม่มีซ้ำ (ผ่าน)
-        function getHNDuplicates(hnValue, dateValue) {
+        // excludeRowId: ใช้ตอนแก้ไข เพื่อข้ามตัวเอง
+        function getHNDuplicates(hnValue, dateValue, excludeRowId = null) {
             if (!hnValue || !dateValue || !allData || allData.length === 0) return [];
             return allData.filter(item => {
+                if (excludeRowId && item.rowId === excludeRowId) return false; // ข้ามตัวเอง
                 const hn = item["HN"];
                 if (!hn || String(hn).trim().toLowerCase() !== hnValue.toLowerCase()) return false;
-                // ไม่นับสถานะยกเลิกนัดและเลื่อนนัด เพราะถือว่าปิดไปแล้ว
-                const status = item["สถานะ"] || '';
-                if (status === 'ยกเลิกนัด' || status === 'เลื่อนนัด') return false;
+                if (isClosedStatus(item["สถานะ"] || '')) return false; // ข้ามสถานะปิดแล้ว
                 return item["วันที่นัด"] === dateValue;
             });
         }
@@ -1061,7 +932,6 @@
             const duplicates = getHNDuplicates(hnValue, dateInput);
 
             if (duplicates.length > 0) {
-                // ===== มีซ้ำ → บล็อกการลงทะเบียน =====
                 let html = '';
                 duplicates.forEach(dup => {
                     const name = dup["ชื่อลูกค้า"] || '-';
@@ -1079,7 +949,6 @@
                 });
                 detailsDiv.innerHTML = html;
 
-                // สีแดง = บล็อก
                 warningDiv.className = 'mt-2 p-2.5 sm:p-3 bg-red-50 border border-red-300 rounded-xl text-sm transition-all';
                 warningTitle.textContent = `❌ ไม่สามารถลงทะเบียนได้! HN นี้มีนัดหมายในวันเดียวกันอยู่แล้ว`;
                 warningTitle.className = 'font-bold block mb-1 text-xs sm:text-sm text-red-700';
@@ -1087,17 +956,13 @@
                 warningIcon.className = 'w-4 h-4 mt-0.5 shrink-0 text-red-600';
                 warningDiv.classList.remove('hidden');
 
-                // เปลี่ยน border input เป็นแดง
                 hnInputEl.classList.remove('border-slate-200', 'border-amber-400');
                 hnInputEl.classList.add('border-red-400', 'bg-red-50', 'focus:ring-red-400', 'focus:border-red-400');
 
-                // Disable ปุ่ม submit
                 submitBtn.disabled = true;
                 submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
-
                 initIcons();
             } else {
-                // ไม่มีซ้ำ → ล้าง error
                 warningDiv.classList.add('hidden');
                 hnInputEl.classList.remove('border-red-400', 'bg-red-50', 'border-amber-400', 'focus:ring-red-400', 'focus:border-red-400');
                 hnInputEl.classList.add('border-slate-200');
@@ -1110,7 +975,7 @@
             const form = document.getElementById('newBookingForm');
             if (!form.checkValidity()) { form.reportValidity(); return; }
 
-            // ===== Double-check HN ซ้ำก่อน submit (ป้องกัน bypass) =====
+            // Double-check HN ซ้ำก่อน submit
             const hnValue = document.getElementById('hnInput').value.trim();
             const dateValue = document.getElementById('nbDate').value;
             if (hnValue && dateValue) {
@@ -1237,7 +1102,6 @@
                     <div class="flex items-center gap-2 text-blue-600 font-bold text-sm mb-3">
                         <i data-lucide="hash" class="w-4 h-4"></i><span>HN: ${props.hn || 'ลูกค้าใหม่'}</span>
                     </div>
-                    <!-- Call Status Widget -->
                     <div class="bg-slate-50 rounded-2xl p-3 border border-slate-100">
                         <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-2 flex items-center gap-1.5">
                             <i data-lucide="phone-call" class="w-3.5 h-3.5"></i> สถานะการโทรยืนยัน
@@ -1290,7 +1154,6 @@
                 </div>
             `;
 
-            // ===== FIX: คำนวณ todayStr ด้วย local timezone ก่อนสร้าง reschedule form =====
             const todayStr = getTodayLocalString();
 
             actionContainer.innerHTML = `
@@ -1369,6 +1232,8 @@
                             <label class="block text-[10px] font-bold text-blue-700 mb-1 uppercase tracking-wider">ชื่อผู้นัด</label>
                             <input type="text" id="editBooker" class="w-full p-2 rounded-xl border border-blue-200 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-blue-400 bg-white" value="${props.booker || ''}">
                         </div>
+                        <!-- HN ซ้ำ warning สำหรับ Edit form -->
+                        <div id="editHnWarning" class="hidden p-2.5 bg-red-50 border border-red-300 rounded-xl text-xs text-red-700 font-bold"></div>
                     </div>
                     <div class="flex gap-2 mt-3">
                         <button onclick="toggleEditForm()" class="px-3 py-2 bg-white text-slate-600 border border-slate-200 font-bold rounded-xl text-xs sm:text-sm hover:bg-slate-50 transition-all">ยกเลิก</button>
@@ -1430,7 +1295,6 @@
             } else {
                 content.innerHTML = filteredData.map(item => {
                     const name = item["ชื่อลูกค้า"] || 'ไม่มีชื่อ';
-                    const phone = item["เบอร์โทรศัพท์"] || '-';
                     const time = item._normalizedTime ? item._normalizedTime.substring(0, 5) : '-';
                     const proc = item._proc || '-';
                     const hn = item["HN"] || '';
@@ -1442,7 +1306,7 @@
                     else if (status === 'ไม่มาตามนัด') statusDot = 'bg-red-400';
                     else if (status === 'ยกเลิกนัด') statusDot = 'bg-red-800';
 
-                    const props = JSON.stringify({
+                    const propsJson = JSON.stringify({
                         rowId: item.rowId,
                         name: item["ชื่อลูกค้า"],
                         hn: item["HN"],
@@ -1458,7 +1322,7 @@
 
                     return `
                         <div class="bg-white p-3 rounded-2xl border-2 border-slate-100 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer active:scale-[0.98]"
-                             onclick='closeStatusListModal(); setTimeout(() => showDetails(${props}), 320)'>
+                             onclick='closeStatusListModal(); setTimeout(() => showDetails(${propsJson}), 320)'>
                             <div class="flex justify-between items-start gap-2">
                                 <div class="flex-1 overflow-hidden">
                                     <div class="flex items-center gap-2 mb-0.5">
@@ -1499,10 +1363,13 @@
             const form = document.getElementById('rescheduleForm');
             const mainBtns = document.getElementById('mainButtonsGroup');
             const cancelPanel = document.getElementById('cancelFormPanel');
+            const editPanel = document.getElementById('editFormPanel');
+            const btnEdit = document.getElementById('btnShowEdit');
             if(form.classList.contains('hidden')) {
                 form.classList.remove('hidden');
                 mainBtns.classList.add('hidden');
-                if (cancelPanel && !cancelPanel.classList.contains('hidden')) { cancelPanel.classList.add('hidden'); mainBtns.classList.remove('hidden'); mainBtns.classList.add('hidden'); }
+                if (cancelPanel && !cancelPanel.classList.contains('hidden')) cancelPanel.classList.add('hidden');
+                if (editPanel && !editPanel.classList.contains('hidden')) { editPanel.classList.add('hidden'); if(btnEdit) btnEdit.classList.remove('hidden'); }
             } else {
                 form.classList.add('hidden');
                 mainBtns.classList.remove('hidden');
@@ -1515,7 +1382,6 @@
             
             if (!newDate || !newTime) { alert("กรุณาเลือกวันและเวลาใหม่ให้ครบถ้วน"); return; }
 
-            // ===== FIX: ตรวจสอบไม่ให้เลื่อนนัดไปวันที่ย้อนหลัง =====
             const todayStr = getTodayLocalString();
             if (newDate < todayStr) {
                 alert("ไม่อนุญาตให้เลื่อนนัดไปยังวันที่ที่ผ่านมาแล้ว กรุณาเลือกวันที่ปัจจุบันหรือในอนาคต");
@@ -1581,10 +1447,8 @@
             if (panel.classList.contains('hidden')) {
                 panel.classList.remove('hidden');
                 mainBtns.classList.add('hidden');
-                // ซ่อน panel อื่นถ้าเปิดอยู่
                 if (rescheduleForm && !rescheduleForm.classList.contains('hidden')) rescheduleForm.classList.add('hidden');
                 if (editPanel && !editPanel.classList.contains('hidden')) { editPanel.classList.add('hidden'); if(btnEdit) btnEdit.classList.remove('hidden'); }
-                // reset form
                 document.querySelectorAll('.cancel-reason-btn').forEach(b => b.classList.remove('bg-red-700','text-white','border-red-700'));
                 document.getElementById('cancelNoteInput').value = '';
                 document.getElementById('cancelNoteError').classList.add('hidden');
@@ -1596,7 +1460,6 @@
         }
 
         window.selectCancelReason = function(btn) {
-            // toggle selected state
             const isSelected = btn.classList.contains('bg-red-700');
             document.querySelectorAll('.cancel-reason-btn').forEach(b => b.classList.remove('bg-red-700','text-white','border-red-700'));
             if (!isSelected) {
@@ -1646,7 +1509,6 @@
 
         window.updateCallStatus = async function(callStatus) {
             if (!currentRowId) return;
-            // อัปเดต UI ทันทีก่อน (optimistic)
             document.querySelectorAll('.call-status-label').forEach(label => {
                 const val = label.dataset.value;
                 const isSelected = val === callStatus;
@@ -1665,7 +1527,6 @@
                 }
                 if (spanEl) spanEl.className = `text-xs sm:text-sm font-semibold ${isSelected ? c.text : 'text-slate-500'}`;
             });
-            // บันทึก Firestore
             try {
                 await updateDoc(doc(db, COLLECTION_NAME, currentRowId), { callStatus });
                 if (currentEventProps) currentEventProps.callStatus = callStatus;
@@ -1717,10 +1578,27 @@
             const nameVal = document.getElementById('editName').value.trim();
             const phoneVal = document.getElementById('editPhone').value.trim();
             const procVal = document.getElementById('editProc').value.trim();
+            const editHNVal = document.getElementById('editHN').value.trim();
+            const editDateVal = document.getElementById('editDate').value;
+            const editHnWarning = document.getElementById('editHnWarning');
 
             if (!nameVal) { alert('กรุณากรอกชื่อ-นามสกุลลูกค้า'); return; }
             if (!phoneVal) { alert('กรุณากรอกเบอร์โทรศัพท์'); return; }
             if (!procVal) { alert('กรุณากรอกหัตถการ'); return; }
+
+            // ===== ตรวจสอบ HN ซ้ำในวันเดียวกัน (ข้ามตัวเอง) =====
+            if (editHNVal && editDateVal) {
+                const dupsOnEdit = getHNDuplicates(editHNVal, editDateVal, currentRowId);
+                if (dupsOnEdit.length > 0) {
+                    const dupDetails = dupsOnEdit.map(d => `• ${d["ชื่อลูกค้า"] || '-'} เวลา ${d["เวลานัด"] || '??:??'} (${d["สถานะ"] || '-'})`).join('\n');
+                    editHnWarning.textContent = `❌ HN "${editHNVal}" มีนัดหมายในวันที่ ${editDateVal} อยู่แล้ว:\n${dupDetails}`;
+                    editHnWarning.style.whiteSpace = 'pre-line';
+                    editHnWarning.classList.remove('hidden');
+                    alert(`❌ ไม่สามารถบันทึกได้\n\nHN "${editHNVal}" มีนัดหมายในวันที่ ${editDateVal} อยู่แล้ว:\n${dupDetails}`);
+                    return;
+                }
+            }
+            if (editHnWarning) editHnWarning.classList.add('hidden');
 
             const btn = document.getElementById('btnConfirmEdit');
             btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>กำลังบันทึก...</span>';
@@ -1734,9 +1612,9 @@
             try {
                 const docRef = doc(db, COLLECTION_NAME, currentRowId);
                 await updateDoc(docRef, {
-                    bookingDate: document.getElementById('editDate').value,
+                    bookingDate: editDateVal,
                     bookingTime: document.getElementById('editTime').value,
-                    hn: document.getElementById('editHN').value.trim(),
+                    hn: editHNVal,
                     customerName: nameVal,
                     phoneNumber: phoneVal,
                     procedure: procVal,
