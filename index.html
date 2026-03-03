@@ -128,6 +128,22 @@
             .summary-table th, .summary-table td { padding: 0.5rem 0.25rem; font-size: 0.7rem; }
             .summary-table th { font-size: 0.65rem; }
         }
+
+        /* Call status card styles */
+        .call-stat-card {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .call-stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        @media (max-width: 480px) {
+            .call-stat-card { padding: 0.75rem 0.5rem !important; }
+            .call-stat-card .call-stat-value { font-size: 1.3rem !important; }
+            .call-stat-card .call-stat-label { font-size: 0.58rem !important; }
+        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -220,51 +236,99 @@
                 </div>
             </div>
 
-            <!-- Summary Cards Grid -->
-            <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4 mb-5 sm:mb-8">
-                <div onclick="showStatusList('ทั้งหมด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
-                    <div class="stat-icon-wrap p-2 sm:p-3 bg-blue-50 text-blue-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
-                        <i data-lucide="users" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+            <!-- Summary Cards Grid: Appointment Status -->
+            <div class="mb-3">
+                <p class="text-[10px] sm:text-xs uppercase font-bold text-gray-400 tracking-widest mb-2 px-1 flex items-center gap-1.5">
+                    <i data-lucide="calendar-check" class="w-3.5 h-3.5"></i>
+                    สถานะนัดหมาย
+                </p>
+                <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4">
+                    <div onclick="showStatusList('ทั้งหมด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
+                        <div class="stat-icon-wrap p-2 sm:p-3 bg-blue-50 text-blue-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                            <i data-lucide="users" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                        </div>
+                        <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1 leading-tight">ทั้งหมด<br class="sm:hidden">(รายวัน)</p>
+                        <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statTotal">-</h3>
                     </div>
-                    <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1 leading-tight">ทั้งหมด<br class="sm:hidden">(รายวัน)</p>
-                    <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statTotal">-</h3>
-                </div>
-                <div onclick="showStatusList('มาแล้ว')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
-                    <div class="stat-icon-wrap p-2 sm:p-3 bg-emerald-50 text-emerald-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
-                        <i data-lucide="check-circle" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                    <div onclick="showStatusList('มาแล้ว')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
+                        <div class="stat-icon-wrap p-2 sm:p-3 bg-emerald-50 text-emerald-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                            <i data-lucide="check-circle" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                        </div>
+                        <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">มาแล้ว</p>
+                        <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statArrived">-</h3>
                     </div>
-                    <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">มาแล้ว</p>
-                    <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statArrived">-</h3>
-                </div>
-                <div onclick="showStatusList('ยังไม่มา')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
-                    <div class="stat-icon-wrap p-2 sm:p-3 bg-amber-50 text-amber-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
-                        <i data-lucide="clock" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                    <div onclick="showStatusList('ยังไม่มา')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
+                        <div class="stat-icon-wrap p-2 sm:p-3 bg-amber-50 text-amber-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                            <i data-lucide="clock" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                        </div>
+                        <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">ยังไม่มา</p>
+                        <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statUpcoming">-</h3>
                     </div>
-                    <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">ยังไม่มา</p>
-                    <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statUpcoming">-</h3>
-                </div>
-                <div onclick="showStatusList('เลื่อนนัด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
-                    <div class="stat-icon-wrap p-2 sm:p-3 bg-indigo-50 text-indigo-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
-                        <i data-lucide="calendar-days" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                    <div onclick="showStatusList('เลื่อนนัด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
+                        <div class="stat-icon-wrap p-2 sm:p-3 bg-indigo-50 text-indigo-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                            <i data-lucide="calendar-days" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                        </div>
+                        <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">เลื่อนนัด</p>
+                        <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statRescheduled">-</h3>
                     </div>
-                    <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">เลื่อนนัด</p>
-                    <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statRescheduled">-</h3>
-                </div>
-                <div onclick="showStatusList('ไม่มาตามนัด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
-                    <div class="stat-icon-wrap p-2 sm:p-3 bg-rose-50 text-rose-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
-                        <i data-lucide="user-x" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                    <div onclick="showStatusList('ไม่มาตามนัด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
+                        <div class="stat-icon-wrap p-2 sm:p-3 bg-rose-50 text-rose-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                            <i data-lucide="user-x" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                        </div>
+                        <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1 leading-tight">ไม่มา<br class="sm:hidden">ตามนัด</p>
+                        <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statNoShow">-</h3>
                     </div>
-                    <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1 leading-tight">ไม่มา<br class="sm:hidden">ตามนัด</p>
-                    <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statNoShow">-</h3>
-                </div>
-                <div onclick="showStatusList('ยกเลิกนัด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
-                    <div class="stat-icon-wrap p-2 sm:p-3 bg-slate-100 text-slate-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
-                        <i data-lucide="x-circle" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                    <div onclick="showStatusList('ยกเลิกนัด')" class="stat-card cursor-pointer hover:-translate-y-1 bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-all">
+                        <div class="stat-icon-wrap p-2 sm:p-3 bg-slate-100 text-slate-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                            <i data-lucide="x-circle" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                        </div>
+                        <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">ยกเลิกนัด</p>
+                        <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statCancelled">-</h3>
                     </div>
-                    <p class="stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1">ยกเลิกนัด</p>
-                    <h3 class="stat-value text-xl sm:text-2xl font-bold text-gray-800" id="statCancelled">-</h3>
                 </div>
             </div>
+
+            <!-- ===== Call Status Summary Cards ===== -->
+            <div class="mb-5 sm:mb-8">
+                <p class="text-[10px] sm:text-xs uppercase font-bold text-gray-400 tracking-widest mb-2 px-1 flex items-center gap-1.5">
+                    <i data-lucide="phone-call" class="w-3.5 h-3.5"></i>
+                    สถานะการโทรยืนยัน (เฉพาะวันที่เลือก)
+                </p>
+                <div class="grid grid-cols-3 gap-2 sm:gap-4">
+
+                    <!-- ยังไม่โทรคอนเฟิม -->
+                    <div onclick="showCallStatusList('ยังไม่โทรคอนเฟิม')"
+                         class="call-stat-card bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center">
+                        <div class="p-2 sm:p-3 bg-slate-100 text-slate-500 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                            <i data-lucide="phone-missed" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                        </div>
+                        <p class="call-stat-label text-[8px] sm:text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-0.5 sm:mb-1 leading-tight">ยังไม่<br class="sm:hidden">โทรคอนเฟิม</p>
+                        <h3 class="call-stat-value text-xl sm:text-2xl font-bold text-slate-600" id="statCallNotYet">-</h3>
+                    </div>
+
+                    <!-- คอนเฟิมนัดแล้ว -->
+                    <div onclick="showCallStatusList('คอนเฟิมนัดแล้ว')"
+                         class="call-stat-card bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-emerald-100 flex flex-col items-center text-center">
+                        <div class="p-2 sm:p-3 bg-emerald-50 text-emerald-600 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                            <i data-lucide="phone-incoming" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                        </div>
+                        <p class="call-stat-label text-[8px] sm:text-[10px] uppercase font-bold text-emerald-400 tracking-wider mb-0.5 sm:mb-1 leading-tight">คอนเฟิม<br class="sm:hidden">นัดแล้ว</p>
+                        <h3 class="call-stat-value text-xl sm:text-2xl font-bold text-emerald-600" id="statCallConfirmed">-</h3>
+                    </div>
+
+                    <!-- ไม่รับสายรอโทรใหม่ -->
+                    <div onclick="showCallStatusList('ไม่รับสายรอโทรใหม่')"
+                         class="call-stat-card bg-white p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-sm border border-amber-100 flex flex-col items-center text-center">
+                        <div class="p-2 sm:p-3 bg-amber-50 text-amber-500 rounded-xl sm:rounded-2xl mb-2 sm:mb-3">
+                            <i data-lucide="phone-off" class="w-4 h-4 sm:w-6 sm:h-6"></i>
+                        </div>
+                        <p class="call-stat-label text-[8px] sm:text-[10px] uppercase font-bold text-amber-400 tracking-wider mb-0.5 sm:mb-1 leading-tight">ไม่รับสาย<br class="sm:hidden">รอโทรใหม่</p>
+                        <h3 class="call-stat-value text-xl sm:text-2xl font-bold text-amber-500" id="statCallNoAnswer">-</h3>
+                    </div>
+
+                </div>
+            </div>
+            <!-- ===== End Call Status Summary Cards ===== -->
 
             <div class="bg-white rounded-[1.5rem] sm:rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
                 <div class="section-header px-4 sm:px-6 py-3 sm:py-4 bg-white border-b border-gray-100 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
@@ -516,7 +580,6 @@
         let currentEventProps = null; 
         let currentReportData = [];
 
-        // ===== HELPER: Get today's date string in YYYY-MM-DD using local timezone =====
         function getTodayLocalString() {
             const now = new Date();
             const year = now.getFullYear();
@@ -525,7 +588,6 @@
             return `${year}-${month}-${day}`;
         }
 
-        // ===== HELPER: สถานะที่ถือว่า "ปิดแล้ว" ไม่นับเป็น HN ซ้ำ =====
         function isClosedStatus(status) {
             return status === 'ยกเลิกนัด' || status === 'เลื่อนนัด' || status === 'ไม่มาตามนัด';
         }
@@ -533,7 +595,6 @@
         window.switchPage = function(pageName) {
             document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            
             if (pageName === 'dashboard') {
                 document.getElementById('dashboardPage').classList.add('active');
                 document.querySelector('.nav-tab:nth-child(1)').classList.add('active');
@@ -549,22 +610,15 @@
             const searchResults = document.getElementById('searchResults');
             const searchResultsList = document.getElementById('searchResultsList');
             const searchCount = document.getElementById('searchCount');
-            
-            if (searchTerm === '') {
-                searchResults.classList.add('hidden');
-                return;
-            }
-            
+            if (searchTerm === '') { searchResults.classList.add('hidden'); return; }
             const results = allData.filter(item => {
                 const hn = (item["HN"] || '').toString().toLowerCase();
                 const name = (item["ชื่อลูกค้า"] || '').toString().toLowerCase();
                 const phone = (item["เบอร์โทรศัพท์"] || '').toString().toLowerCase();
                 return hn.includes(searchTerm) || name.includes(searchTerm) || phone.includes(searchTerm);
             });
-            
             searchResults.classList.remove('hidden');
             searchCount.textContent = `${results.length} รายการ`;
-            
             if (results.length === 0) {
                 searchResultsList.innerHTML = '<div class="text-center py-8 text-gray-400 text-sm">ไม่พบข้อมูลที่ค้นหา</div>';
             } else {
@@ -573,7 +627,6 @@
                     const dateB = b["วันที่นัด"] + ' ' + (b["เวลานัด"] || '00:00');
                     return dateB.localeCompare(dateA);
                 });
-                
                 searchResultsList.innerHTML = results.map(item => {
                     const status = item["สถานะ"] || 'ยังไม่มา';
                     let statusColor = 'bg-blue-100 text-blue-700';
@@ -581,16 +634,13 @@
                     else if (status === 'เลื่อนนัด') statusColor = 'bg-indigo-100 text-indigo-700';
                     else if (status === 'ไม่มาตามนัด') statusColor = 'bg-rose-100 text-rose-700';
                     else if (status === 'ยกเลิกนัด') statusColor = 'bg-red-200 text-red-800';
-                    
                     const dateStr = item["วันที่นัด"] || '-';
                     const timeStr = item["เวลานัด"] || '-';
-                    
                     let displayDate = dateStr;
                     if (dateStr !== '-') {
                         const parts = dateStr.split('-');
                         if (parts.length === 3) displayDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
                     }
-                    
                     return `
                         <div class="bg-gradient-to-r from-slate-50 to-white p-4 rounded-xl border-2 border-gray-100 hover:border-purple-300 transition-all cursor-pointer" onclick="showSearchResultDetail('${item.rowId}')">
                             <div class="flex justify-between items-start mb-2">
@@ -649,23 +699,19 @@
         window.generateSummary = function() {
             const startDate = document.getElementById('summaryStartDate').value;
             const endDate = document.getElementById('summaryEndDate').value;
-            
             if (!startDate || !endDate) { alert('กรุณาเลือกวันที่เริ่มต้นและสิ้นสุด'); return; }
             if (startDate > endDate) { alert('วันที่เริ่มต้นต้องไม่มากกว่าวันที่สิ้นสุด'); return; }
-            
             const filteredData = allData.filter(item => {
                 const bookingDate = item["วันที่นัด"];
                 if (!bookingDate) return false;
                 return bookingDate >= startDate && bookingDate <= endDate;
             });
-            
             document.getElementById('summaryTotalAll').textContent = filteredData.length;
             document.getElementById('summaryTotalArrived').textContent = filteredData.filter(item => item["สถานะ"] === "มาแล้ว").length;
             document.getElementById('summaryTotalUpcoming').textContent = filteredData.filter(item => item["สถานะ"] === "ยังไม่มา").length;
             document.getElementById('summaryTotalRescheduled').textContent = filteredData.filter(item => item["สถานะ"] === "เลื่อนนัด").length;
             document.getElementById('summaryTotalNoShow').textContent = filteredData.filter(item => item["สถานะ"] === "ไม่มาตามนัด").length;
             document.getElementById('summaryTotalCancelled').textContent = filteredData.filter(item => item["สถานะ"] === "ยกเลิกนัด").length;
-            
             const bookerStats = {};
             filteredData.forEach(item => {
                 const bookerName = item["ชื่อผู้นัด"] || 'ไม่ระบุ';
@@ -680,7 +726,6 @@
                 else if (status === "ไม่มาตามนัด") bookerStats[bookerName].noShow++;
                 else if (status === "ยกเลิกนัด") bookerStats[bookerName].cancelled++;
             });
-            
             const tbody = document.getElementById('bookerTableBody');
             if (Object.keys(bookerStats).length === 0) {
                 tbody.innerHTML = '<tr><td colspan="8" class="text-center text-gray-400 py-8">ไม่พบข้อมูลในช่วงเวลาที่เลือก</td></tr>';
@@ -720,10 +765,9 @@
             initDateFilter();
             initSummaryDateFilter();
             initCalendar();
-            
             try {
                 await signInAnonymously(auth);
-                setupRealtimeListener(); 
+                setupRealtimeListener();
             } catch (error) {
                 console.warn("Firebase Auth Error:", error);
                 setupRealtimeListener();
@@ -749,11 +793,10 @@
         function initCalendar() {
             const calendarEl = document.getElementById('calendar');
             const isMobile = window.innerWidth < 640;
-
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: isMobile ? 'dayGridMonth' : 'dayGridMonth',
                 locale: 'th',
-                firstDay: 1, 
+                firstDay: 1,
                 customButtons: {
                     addBookingBtn: {
                         text: isMobile ? '+ เพิ่มคิว' : '+ เพิ่มคิวใหม่',
@@ -764,7 +807,7 @@
                     ? { left: 'prev,next', center: 'title', right: 'addBookingBtn' }
                     : { left: 'prev,next today addBookingBtn', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay' },
                 buttonText: { today: 'วันนี้', month: 'เดือน', week: 'สัปดาห์', day: 'วัน' },
-                slotMinTime: '11:00:00', slotMaxTime: '21:00:00', allDaySlot: false,       
+                slotMinTime: '11:00:00', slotMaxTime: '21:00:00', allDaySlot: false,
                 expandRows: true, stickyHeaderDates: true, nowIndicator: true,
                 events: [],
                 eventContent: function(arg) {
@@ -783,7 +826,6 @@
                     const cellMonth = String(arg.date.getMonth() + 1).padStart(2, '0');
                     const cellDay = String(arg.date.getDate()).padStart(2, '0');
                     const cellDateStr = `${cellYear}-${cellMonth}-${cellDay}`;
-
                     if (cellDateStr >= todayStr) {
                         let addIcon = document.createElement('div');
                         addIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>`;
@@ -796,7 +838,7 @@
                             frame.addEventListener('mouseenter', () => addIcon.classList.remove('opacity-0'));
                             frame.addEventListener('mouseleave', () => addIcon.classList.add('opacity-0'));
                             addIcon.addEventListener('click', (e) => {
-                                e.stopPropagation(); 
+                                e.stopPropagation();
                                 handleDateClick({ dateStr: cellDateStr });
                             });
                         }
@@ -810,10 +852,8 @@
 
         function setupRealtimeListener() {
             const q = query(collection(db, COLLECTION_NAME));
-            
             onSnapshot(q, { includeMetadataChanges: true }, (snapshot) => {
                 const statusBtn = document.getElementById('realtimeStatus');
-                
                 if (snapshot.metadata.fromCache) {
                     statusBtn.innerHTML = `<i data-lucide="wifi-off" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i><span class="hidden sm:inline">ออฟไลน์ (อ่านจากแคช)</span><span class="sm:hidden">ออฟไลน์</span>`;
                     statusBtn.className = "flex items-center gap-1.5 sm:gap-2 bg-amber-50 text-amber-600 px-3 sm:px-4 py-2 rounded-xl font-semibold text-xs sm:text-sm transition-all";
@@ -822,12 +862,11 @@
                     statusBtn.className = "flex items-center gap-1.5 sm:gap-2 bg-emerald-50 text-emerald-600 px-3 sm:px-4 py-2 rounded-xl font-semibold text-xs sm:text-sm transition-all";
                 }
                 initIcons();
-
                 const newData = [];
                 snapshot.forEach((doc) => {
                     const data = doc.data();
                     newData.push({
-                        rowId: doc.id, 
+                        rowId: doc.id,
                         "วันที่นัด": data.bookingDate,
                         "เวลานัด": data.bookingTime,
                         "หัตถการ": data.procedure,
@@ -840,7 +879,6 @@
                         "สถานะโทร": data.callStatus || 'ยังไม่โทรคอนเฟิม'
                     });
                 });
-                
                 allData = newData;
                 updateDashboard(allData);
             }, (error) => {
@@ -855,20 +893,17 @@
         function handleDateClick(info) {
             const clickedDateStr = info.dateStr.split('T')[0];
             const todayStr = getTodayLocalString();
-
             if (clickedDateStr < todayStr) {
                 alert("ไม่อนุญาตให้ทำรายการย้อนหลังวันที่ปัจจุบันได้ครับ");
                 return;
             }
-
             document.getElementById('nbDate').value = clickedDateStr;
             if (info.dateStr.includes('T')) {
-                const timeStr = info.dateStr.split('T')[1].substring(0, 5); 
+                const timeStr = info.dateStr.split('T')[1].substring(0, 5);
                 document.getElementById('nbTime').value = timeStr;
             } else {
-                document.getElementById('nbTime').value = ''; 
+                document.getElementById('nbTime').value = '';
             }
-
             const modal = document.getElementById('newBookingModal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -897,15 +932,13 @@
             }, 300);
         }
 
-        // ===== ตรวจสอบ HN ซ้ำในวันเดียวกัน =====
-        // excludeRowId: ใช้ตอนแก้ไข เพื่อข้ามตัวเอง
         function getHNDuplicates(hnValue, dateValue, excludeRowId = null) {
             if (!hnValue || !dateValue || !allData || allData.length === 0) return [];
             return allData.filter(item => {
-                if (excludeRowId && item.rowId === excludeRowId) return false; // ข้ามตัวเอง
+                if (excludeRowId && item.rowId === excludeRowId) return false;
                 const hn = item["HN"];
                 if (!hn || String(hn).trim().toLowerCase() !== hnValue.toLowerCase()) return false;
-                if (isClosedStatus(item["สถานะ"] || '')) return false; // ข้ามสถานะปิดแล้ว
+                if (isClosedStatus(item["สถานะ"] || '')) return false;
                 return item["วันที่นัด"] === dateValue;
             });
         }
@@ -919,7 +952,6 @@
             const warningTitle = document.getElementById('hnWarningTitle');
             const warningIcon = document.getElementById('hnWarningIcon');
             const submitBtn = document.getElementById('btnSubmitNewBooking');
-
             if (!hnValue || !dateInput) {
                 warningDiv.classList.add('hidden');
                 hnInputEl.classList.remove('border-red-400', 'border-amber-400', 'bg-red-50');
@@ -928,9 +960,7 @@
                 submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
                 return;
             }
-
             const duplicates = getHNDuplicates(hnValue, dateInput);
-
             if (duplicates.length > 0) {
                 let html = '';
                 duplicates.forEach(dup => {
@@ -948,17 +978,14 @@
                              </div>`;
                 });
                 detailsDiv.innerHTML = html;
-
                 warningDiv.className = 'mt-2 p-2.5 sm:p-3 bg-red-50 border border-red-300 rounded-xl text-sm transition-all';
                 warningTitle.textContent = `❌ ไม่สามารถลงทะเบียนได้! HN นี้มีนัดหมายในวันเดียวกันอยู่แล้ว`;
                 warningTitle.className = 'font-bold block mb-1 text-xs sm:text-sm text-red-700';
                 warningIcon.setAttribute('data-lucide', 'ban');
                 warningIcon.className = 'w-4 h-4 mt-0.5 shrink-0 text-red-600';
                 warningDiv.classList.remove('hidden');
-
                 hnInputEl.classList.remove('border-slate-200', 'border-amber-400');
                 hnInputEl.classList.add('border-red-400', 'bg-red-50', 'focus:ring-red-400', 'focus:border-red-400');
-
                 submitBtn.disabled = true;
                 submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
                 initIcons();
@@ -974,8 +1001,6 @@
         window.submitNewBooking = async function() {
             const form = document.getElementById('newBookingForm');
             if (!form.checkValidity()) { form.reportValidity(); return; }
-
-            // Double-check HN ซ้ำก่อน submit
             const hnValue = document.getElementById('hnInput').value.trim();
             const dateValue = document.getElementById('nbDate').value;
             if (hnValue && dateValue) {
@@ -985,12 +1010,10 @@
                     return;
                 }
             }
-
             const btn = document.getElementById('btnSubmitNewBooking');
             btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> กำลังบันทึกข้อมูล...';
             btn.disabled = true;
             initIcons();
-
             const formData = new FormData(form);
             const newBookingData = {
                 bookingDate: formData.get('bookingDate'),
@@ -1002,9 +1025,8 @@
                 bookerName: formData.get('bookerName') || '',
                 status: 'ยังไม่มา',
                 callStatus: 'ยังไม่โทรคอนเฟิม',
-                timestamp: serverTimestamp() 
+                timestamp: serverTimestamp()
             };
-
             try {
                 await addDoc(collection(db, COLLECTION_NAME), newBookingData);
                 alert('เพิ่มคิวนัดหมายใหม่เรียบร้อยแล้ว');
@@ -1020,7 +1042,6 @@
 
         function updateDashboard(data) {
             if (!data || !Array.isArray(data)) return;
-
             const processedData = data.map(item => {
                 let timePart = item["เวลานัด"];
                 if(timePart && timePart.length === 5) timePart = `${timePart}:00`;
@@ -1035,8 +1056,9 @@
 
             const selectedDate = document.getElementById('reportDateFilter').value;
             const reportData = processedData.filter(item => item._normalizedDate === selectedDate);
-            currentReportData = reportData; 
-            
+            currentReportData = reportData;
+
+            // Appointment status counts
             const countByStatus = (statusName) => reportData.filter(item => item._status === statusName).length;
             document.getElementById('statTotal').textContent = reportData.length;
             document.getElementById('statArrived').textContent = countByStatus("มาแล้ว");
@@ -1045,57 +1067,141 @@
             document.getElementById('statNoShow').textContent = countByStatus("ไม่มาตามนัด");
             document.getElementById('statCancelled').textContent = countByStatus("ยกเลิกนัด");
 
+            // ===== Call status counts (เฉพาะ reportData ของวันที่เลือก) =====
+            const countByCallStatus = (callStatusName) =>
+                reportData.filter(item => (item["สถานะโทร"] || 'ยังไม่โทรคอนเฟิม') === callStatusName).length;
+            document.getElementById('statCallNotYet').textContent = countByCallStatus("ยังไม่โทรคอนเฟิม");
+            document.getElementById('statCallConfirmed').textContent = countByCallStatus("คอนเฟิมนัดแล้ว");
+            document.getElementById('statCallNoAnswer').textContent = countByCallStatus("ไม่รับสายรอโทรใหม่");
+
+            // Calendar events
             const events = processedData.map(item => {
                 if (!item._normalizedDate) return null;
-                let eventColor = '#3b82f6'; 
+                let eventColor = '#3b82f6';
                 let titleSuffix = "";
-                let textColor = '#ffffff'; 
-                if(item._status === "มาแล้ว") { eventColor = '#eab308'; textColor = '#422006'; } 
-                else if(item._status === "เลื่อนนัด") { eventColor = '#6366f1'; titleSuffix = " (เลื่อน)"; } 
-                else if(item._status === "ไม่มาตามนัด") { eventColor = '#fca5a5'; textColor = '#7f1d1d'; } 
+                let textColor = '#ffffff';
+                if(item._status === "มาแล้ว") { eventColor = '#eab308'; textColor = '#422006'; }
+                else if(item._status === "เลื่อนนัด") { eventColor = '#6366f1'; titleSuffix = " (เลื่อน)"; }
+                else if(item._status === "ไม่มาตามนัด") { eventColor = '#fca5a5'; textColor = '#7f1d1d'; }
                 else if(item._status === "ยกเลิกนัด") { eventColor = '#991b1b'; }
                 return {
-                    title: (item["ชื่อลูกค้า"] || "ไม่มีชื่อ") + titleSuffix, 
-                    start: `${item._normalizedDate}T${item._normalizedTime}`, 
+                    title: (item["ชื่อลูกค้า"] || "ไม่มีชื่อ") + titleSuffix,
+                    start: `${item._normalizedDate}T${item._normalizedTime}`,
                     color: eventColor,
                     textColor: textColor,
-                    display: 'block', 
+                    display: 'block',
                     extendedProps: {
-                        rowId: item.rowId, 
+                        rowId: item.rowId,
                         name: item["ชื่อลูกค้า"],
                         hn: item["HN"],
                         phone: item["เบอร์โทรศัพท์"],
-                        proc: item._proc || '-', 
+                        proc: item._proc || '-',
                         booker: item["ชื่อผู้นัด"],
                         status: item._status,
                         cancelNote: item["สาเหตุยกเลิก"] || '',
                         callStatus: item["สถานะโทร"] || 'ยังไม่โทรคอนเฟิม',
                         dateStr: item._normalizedDate,
-                        timeStr: item._normalizedTime.substring(0, 5) 
+                        timeStr: item._normalizedTime.substring(0, 5)
                     }
                 };
-            }).filter(e => e !== null); 
+            }).filter(e => e !== null);
 
             calendar.removeAllEvents();
             calendar.addEventSource(events);
         }
 
-        window.showDetails = function(props) {
-            currentRowId = props.rowId; 
-            currentEventProps = props; 
+        // ===== showCallStatusList: แสดง modal รายชื่อตามสถานะโทร =====
+        window.showCallStatusList = function(callStatusName) {
+            const filteredData = currentReportData.filter(item =>
+                (item["สถานะโทร"] || 'ยังไม่โทรคอนเฟิม') === callStatusName
+            );
 
+            const configMap = {
+                'ยังไม่โทรคอนเฟิม':  { bg: 'bg-slate-100', text: 'text-slate-600', icon: 'phone-missed' },
+                'คอนเฟิมนัดแล้ว':    { bg: 'bg-emerald-100', text: 'text-emerald-600', icon: 'phone-incoming' },
+                'ไม่รับสายรอโทรใหม่': { bg: 'bg-amber-100', text: 'text-amber-600', icon: 'phone-off' },
+            };
+            const cfg = configMap[callStatusName] || { bg: 'bg-blue-100', text: 'text-blue-600', icon: 'phone' };
+
+            document.getElementById('statusListTitle').textContent = `${callStatusName} (${filteredData.length})`;
+            const iconDiv = document.getElementById('statusListIcon');
+            iconDiv.className = `p-2 rounded-xl ${cfg.bg} ${cfg.text}`;
+            iconDiv.innerHTML = `<i data-lucide="${cfg.icon}" class="w-5 h-5 sm:w-6 sm:h-6"></i>`;
+
+            const content = document.getElementById('statusListContent');
+            if (filteredData.length === 0) {
+                content.innerHTML = `<div class="text-center py-8 text-slate-400 font-medium text-sm">ไม่มีข้อมูลสำหรับสถานะนี้ในวันนี้</div>`;
+            } else {
+                content.innerHTML = filteredData.map(item => {
+                    const name = item["ชื่อลูกค้า"] || 'ไม่มีชื่อ';
+                    const time = item._normalizedTime ? item._normalizedTime.substring(0, 5) : '-';
+                    const proc = item._proc || '-';
+                    const hn = item["HN"] || '';
+                    const apptStatus = item._status || 'ยังไม่มา';
+                    let apptStatusColor = 'bg-blue-100 text-blue-700';
+                    if (apptStatus === 'มาแล้ว') apptStatusColor = 'bg-yellow-100 text-yellow-700';
+                    else if (apptStatus === 'เลื่อนนัด') apptStatusColor = 'bg-indigo-100 text-indigo-700';
+                    else if (apptStatus === 'ไม่มาตามนัด') apptStatusColor = 'bg-rose-100 text-rose-700';
+                    else if (apptStatus === 'ยกเลิกนัด') apptStatusColor = 'bg-red-200 text-red-800';
+
+                    const propsJson = JSON.stringify({
+                        rowId: item.rowId,
+                        name: item["ชื่อลูกค้า"],
+                        hn: item["HN"],
+                        phone: item["เบอร์โทรศัพท์"],
+                        proc: item._proc || '-',
+                        booker: item["ชื่อผู้นัด"],
+                        status: item._status,
+                        cancelNote: item["สาเหตุยกเลิก"] || '',
+                        callStatus: item["สถานะโทร"] || 'ยังไม่โทรคอนเฟิม',
+                        dateStr: item._normalizedDate,
+                        timeStr: item._normalizedTime ? item._normalizedTime.substring(0, 5) : '00:00'
+                    }).replace(/'/g, '&#39;');
+
+                    return `
+                        <div class="bg-white p-3 rounded-2xl border-2 border-slate-100 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer active:scale-[0.98]"
+                             onclick='closeStatusListModal(); setTimeout(() => showDetails(${propsJson}), 320)'>
+                            <div class="flex justify-between items-start gap-2">
+                                <div class="flex-1 overflow-hidden">
+                                    <div class="flex items-center gap-2 mb-0.5">
+                                        <span class="font-bold text-slate-800 text-sm truncate">${name}</span>
+                                    </div>
+                                    ${hn ? `<div class="text-[11px] text-blue-500 font-bold">HN: ${hn}</div>` : ''}
+                                    <div class="text-xs text-slate-400 font-medium mt-0.5 truncate">
+                                        <i data-lucide="activity" class="w-3 h-3 inline pb-0.5"></i> ${proc}
+                                    </div>
+                                    <span class="inline-block mt-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold ${apptStatusColor}">${apptStatus}</span>
+                                </div>
+                                <div class="text-right shrink-0">
+                                    <div class="text-blue-600 font-bold text-sm">${time} น.</div>
+                                    <div class="text-[10px] text-slate-400 mt-0.5"><i data-lucide="chevron-right" class="w-3 h-3 inline"></i> ดูรายละเอียด</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            const modal = document.getElementById('statusListModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => { modal.querySelector('.modal-content').classList.remove('scale-95', 'opacity-0'); }, 10);
+            initIcons();
+        }
+
+        window.showDetails = function(props) {
+            currentRowId = props.rowId;
+            currentEventProps = props;
             const modal = document.getElementById('eventModal');
             const content = document.getElementById('modalContent');
             const badge = document.getElementById('statusBadge');
             const actionContainer = document.getElementById('actionContainer');
-            
             badge.textContent = props.status;
             if(props.status === "มาแล้ว") badge.className = "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest bg-yellow-100 text-yellow-700";
             else if(props.status === "ไม่มาตามนัด") badge.className = "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest bg-red-100 text-red-500";
             else if(props.status === "ยกเลิกนัด") badge.className = "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest bg-red-200 text-red-900";
             else if(props.status === "เลื่อนนัด") badge.className = "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest bg-indigo-100 text-indigo-700";
             else badge.className = "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest bg-blue-100 text-blue-700";
-            
             content.innerHTML = `
                 <div>
                     <h4 class="text-xl sm:text-3xl font-bold text-slate-900 mb-1">${props.name || 'ไม่มีชื่อ'}</h4>
@@ -1153,9 +1259,7 @@
                     </div>` : ''}
                 </div>
             `;
-
             const todayStr = getTodayLocalString();
-
             actionContainer.innerHTML = `
                 <div class="flex flex-wrap gap-2" id="mainButtonsGroup">
                     <button onclick="updateStatus('มาแล้ว')" class="flex-1 min-w-[70px] bg-yellow-100 hover:bg-yellow-200 text-yellow-700 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95">มาแล้ว</button>
@@ -1164,7 +1268,6 @@
                     <button onclick="updateStatus('ไม่มาตามนัด')" class="flex-1 min-w-[70px] bg-red-100 hover:bg-red-200 text-red-600 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95">ไม่มา</button>
                     <button onclick="toggleCancelForm()" class="flex-1 min-w-[70px] bg-red-800 hover:bg-red-900 text-white py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95">ยกเลิก</button>
                 </div>
-                <!-- Cancel form panel -->
                 <div id="cancelFormPanel" class="hidden mt-3 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-2xl">
                     <h5 class="text-xs sm:text-sm font-bold text-red-800 mb-3 flex items-center gap-2">
                         <i data-lucide="x-circle" class="w-4 h-4"></i> ระบุสาเหตุการยกเลิกนัด
@@ -1187,14 +1290,12 @@
                         </button>
                     </div>
                 </div>
-                <!-- ปุ่มแก้ไขข้อมูล -->
                 <div class="mt-2 pt-2 border-t border-slate-100">
                     <button onclick="toggleEditForm()" id="btnShowEdit" class="w-full flex items-center justify-center gap-2 py-2 text-xs sm:text-sm text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-all font-medium">
                         <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
                         <span>แก้ไขข้อมูล</span>
                     </button>
                 </div>
-                <!-- Edit form panel -->
                 <div id="editFormPanel" class="hidden mt-2 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-2xl">
                     <h5 class="text-xs sm:text-sm font-bold text-blue-800 mb-3 flex items-center gap-2">
                         <i data-lucide="pencil" class="w-4 h-4"></i> แก้ไขข้อมูลการนัดหมาย
@@ -1232,7 +1333,6 @@
                             <label class="block text-[10px] font-bold text-blue-700 mb-1 uppercase tracking-wider">ชื่อผู้นัด</label>
                             <input type="text" id="editBooker" class="w-full p-2 rounded-xl border border-blue-200 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-blue-400 bg-white" value="${props.booker || ''}">
                         </div>
-                        <!-- HN ซ้ำ warning สำหรับ Edit form -->
                         <div id="editHnWarning" class="hidden p-2.5 bg-red-50 border border-red-300 rounded-xl text-xs text-red-700 font-bold"></div>
                     </div>
                     <div class="flex gap-2 mt-3">
@@ -1260,11 +1360,10 @@
                     </div>
                 </div>
             `;
-            
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             setTimeout(() => { modal.querySelector('.modal-content').classList.remove('scale-95', 'opacity-0'); }, 10);
-            initIcons(); 
+            initIcons();
         }
 
         window.showStatusList = function(statusName) {
@@ -1272,7 +1371,6 @@
             let bgColor = 'bg-blue-100';
             let textColor = 'text-blue-600';
             let iconName = 'users';
-
             if (statusName === 'ทั้งหมด') {
                 filteredData = currentReportData;
             } else {
@@ -1283,12 +1381,10 @@
                 else if(statusName === "ไม่มาตามนัด") { bgColor = 'bg-rose-100'; textColor = 'text-rose-600'; iconName = 'user-x'; }
                 else if(statusName === "ยกเลิกนัด") { bgColor = 'bg-slate-200'; textColor = 'text-slate-600'; iconName = 'x-circle'; }
             }
-
             document.getElementById('statusListTitle').textContent = `รายชื่อ${statusName} (${filteredData.length})`;
             const iconDiv = document.getElementById('statusListIcon');
             iconDiv.className = `p-2 rounded-xl ${bgColor} ${textColor}`;
             iconDiv.innerHTML = `<i data-lucide="${iconName}" class="w-5 h-5 sm:w-6 sm:h-6"></i>`;
-
             const content = document.getElementById('statusListContent');
             if (filteredData.length === 0) {
                 content.innerHTML = `<div class="text-center py-8 text-slate-400 font-medium text-sm">ไม่มีข้อมูลสำหรับสถานะนี้ในวันนี้</div>`;
@@ -1299,13 +1395,11 @@
                     const proc = item._proc || '-';
                     const hn = item["HN"] || '';
                     const status = item._status || 'ยังไม่มา';
-
                     let statusDot = 'bg-blue-400';
                     if (status === 'มาแล้ว') statusDot = 'bg-yellow-400';
                     else if (status === 'เลื่อนนัด') statusDot = 'bg-indigo-400';
                     else if (status === 'ไม่มาตามนัด') statusDot = 'bg-red-400';
                     else if (status === 'ยกเลิกนัด') statusDot = 'bg-red-800';
-
                     const propsJson = JSON.stringify({
                         rowId: item.rowId,
                         name: item["ชื่อลูกค้า"],
@@ -1319,7 +1413,6 @@
                         dateStr: item._normalizedDate,
                         timeStr: item._normalizedTime ? item._normalizedTime.substring(0, 5) : '00:00'
                     }).replace(/'/g, '&#39;');
-
                     return `
                         <div class="bg-white p-3 rounded-2xl border-2 border-slate-100 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer active:scale-[0.98]"
                              onclick='closeStatusListModal(); setTimeout(() => showDetails(${propsJson}), 320)'>
@@ -1341,7 +1434,6 @@
                     `;
                 }).join('');
             }
-
             const modal = document.getElementById('statusListModal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -1379,39 +1471,31 @@
         window.submitReschedule = async function() {
             const newDate = document.getElementById('rescheduleDate').value;
             const newTime = document.getElementById('rescheduleTime').value;
-            
             if (!newDate || !newTime) { alert("กรุณาเลือกวันและเวลาใหม่ให้ครบถ้วน"); return; }
-
             const todayStr = getTodayLocalString();
             if (newDate < todayStr) {
                 alert("ไม่อนุญาตให้เลื่อนนัดไปยังวันที่ที่ผ่านมาแล้ว กรุณาเลือกวันที่ปัจจุบันหรือในอนาคต");
                 return;
             }
-
             if (newDate === currentEventProps.dateStr && newTime === currentEventProps.timeStr) { alert("กรุณาเลือกวันหรือเวลาที่ต่างจากเดิม"); return; }
-
             const btn = document.getElementById('btnSubmitReschedule');
             btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> กำลังดำเนินการ...';
             btn.disabled = true;
             initIcons();
-            
             const actionContainer = document.getElementById('actionContainer');
             actionContainer.style.opacity = '0.5';
             actionContainer.style.pointerEvents = 'none';
-
             try {
                 const oldDocRef = doc(db, COLLECTION_NAME, currentRowId);
                 await updateDoc(oldDocRef, { status: 'เลื่อนนัด' });
-
                 let hnVal = currentEventProps.hn === '-' || currentEventProps.hn === 'ลูกค้าใหม่' ? '' : currentEventProps.hn;
                 let oldDateParts = currentEventProps.dateStr.split('-');
                 let formattedOldDate = oldDateParts.length === 3 ? `${oldDateParts[2]}/${oldDateParts[1]}/${oldDateParts[0]}` : currentEventProps.dateStr;
                 let originalProc = currentEventProps.proc === '-' ? '' : String(currentEventProps.proc);
-                originalProc = originalProc.replace(/\s*\(ย้ายจาก.*?\)/g, '').trim(); 
-                let procVal = originalProc 
-                    ? `${originalProc} (ย้ายจาก ${formattedOldDate} เวลา ${currentEventProps.timeStr} น.)` 
+                originalProc = originalProc.replace(/\s*\(ย้ายจาก.*?\)/g, '').trim();
+                let procVal = originalProc
+                    ? `${originalProc} (ย้ายจาก ${formattedOldDate} เวลา ${currentEventProps.timeStr} น.)`
                     : `(ย้ายจาก ${formattedOldDate} เวลา ${currentEventProps.timeStr} น.)`;
-
                 const newBookingData = {
                     bookingDate: newDate,
                     bookingTime: newTime,
@@ -1423,9 +1507,8 @@
                     status: 'ยังไม่มา',
                     timestamp: serverTimestamp()
                 };
-
                 await addDoc(collection(db, COLLECTION_NAME), newBookingData);
-                window.closeModal(); 
+                window.closeModal();
             } catch (error) {
                 console.error("Reschedule Error:", error);
                 alert("เกิดข้อผิดพลาดในการเลื่อนนัด");
@@ -1443,7 +1526,6 @@
             const rescheduleForm = document.getElementById('rescheduleForm');
             const editPanel = document.getElementById('editFormPanel');
             const btnEdit = document.getElementById('btnShowEdit');
-
             if (panel.classList.contains('hidden')) {
                 panel.classList.remove('hidden');
                 mainBtns.classList.add('hidden');
@@ -1462,36 +1544,25 @@
         window.selectCancelReason = function(btn) {
             const isSelected = btn.classList.contains('bg-red-700');
             document.querySelectorAll('.cancel-reason-btn').forEach(b => b.classList.remove('bg-red-700','text-white','border-red-700'));
-            if (!isSelected) {
-                btn.classList.add('bg-red-700','text-white','border-red-700');
-            }
+            if (!isSelected) { btn.classList.add('bg-red-700','text-white','border-red-700'); }
             document.getElementById('cancelNoteError').classList.add('hidden');
         }
 
         window.submitCancel = async function() {
             if (!currentRowId) return;
-
             const selectedBtn = document.querySelector('.cancel-reason-btn.bg-red-700');
             const noteInput = document.getElementById('cancelNoteInput').value.trim();
             const errorEl = document.getElementById('cancelNoteError');
-
-            if (!selectedBtn && !noteInput) {
-                errorEl.classList.remove('hidden');
-                return;
-            }
-
+            if (!selectedBtn && !noteInput) { errorEl.classList.remove('hidden'); return; }
             const reason = selectedBtn ? selectedBtn.textContent.trim() : '';
             const cancelNote = reason && noteInput ? `${reason} - ${noteInput}` : reason || noteInput;
-
             const btn = document.getElementById('btnSubmitCancel');
             btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>กำลังบันทึก...</span>';
             btn.disabled = true;
             initIcons();
-
             const actionContainer = document.getElementById('actionContainer');
             actionContainer.style.opacity = '0.5';
             actionContainer.style.pointerEvents = 'none';
-
             try {
                 const docRef = doc(db, COLLECTION_NAME, currentRowId);
                 await updateDoc(docRef, { status: 'ยกเลิกนัด', cancelNote: cancelNote });
@@ -1543,7 +1614,7 @@
             try {
                 const docRef = doc(db, COLLECTION_NAME, currentRowId);
                 await updateDoc(docRef, { status: status });
-                window.closeModal(); 
+                window.closeModal();
             } catch (error) {
                 console.error("Update Failed:", error);
                 alert("เกิดข้อผิดพลาดในการอัปเดตสถานะ");
@@ -1559,7 +1630,6 @@
             const rescheduleForm = document.getElementById('rescheduleForm');
             const cancelPanel = document.getElementById('cancelFormPanel');
             const mainBtns = document.getElementById('mainButtonsGroup');
-
             if (panel.classList.contains('hidden')) {
                 panel.classList.remove('hidden');
                 btnShow.classList.add('hidden');
@@ -1574,19 +1644,15 @@
 
         window.submitEdit = async function() {
             if (!currentRowId) return;
-
             const nameVal = document.getElementById('editName').value.trim();
             const phoneVal = document.getElementById('editPhone').value.trim();
             const procVal = document.getElementById('editProc').value.trim();
             const editHNVal = document.getElementById('editHN').value.trim();
             const editDateVal = document.getElementById('editDate').value;
             const editHnWarning = document.getElementById('editHnWarning');
-
             if (!nameVal) { alert('กรุณากรอกชื่อ-นามสกุลลูกค้า'); return; }
             if (!phoneVal) { alert('กรุณากรอกเบอร์โทรศัพท์'); return; }
             if (!procVal) { alert('กรุณากรอกหัตถการ'); return; }
-
-            // ===== ตรวจสอบ HN ซ้ำในวันเดียวกัน (ข้ามตัวเอง) =====
             if (editHNVal && editDateVal) {
                 const dupsOnEdit = getHNDuplicates(editHNVal, editDateVal, currentRowId);
                 if (dupsOnEdit.length > 0) {
@@ -1599,16 +1665,13 @@
                 }
             }
             if (editHnWarning) editHnWarning.classList.add('hidden');
-
             const btn = document.getElementById('btnConfirmEdit');
             btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>กำลังบันทึก...</span>';
             btn.disabled = true;
             initIcons();
-
             const actionContainer = document.getElementById('actionContainer');
             actionContainer.style.opacity = '0.6';
             actionContainer.style.pointerEvents = 'none';
-
             try {
                 const docRef = doc(db, COLLECTION_NAME, currentRowId);
                 await updateDoc(docRef, {
